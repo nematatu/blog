@@ -6,14 +6,15 @@
 		"postinstall": "npm rebuild sharp --force",
 		"dev": "astro dev",
 		"dev:wrangler": "wrangler dev",
-		"start": "astro dev",
+		"new:post": "node scripts/new-post.mjs",
 		"build": "astro build",
 		"postbuild": "pagefind --site dist",
 		"preview": "astro preview",
 		"check": "astro check && biome check",
 		"lint": "biome check --write",
 		"format": "prettier -w . --cache",
-		"deploy": "astro build && wrangler deploy"
+		"deploy": "astro build && wrangler deploy", 
+    "new:post": "node scripts/new-post.mjs"
 	},
 	"dependencies": {
 		"@astrojs/markdown-remark": "^6.3.10",

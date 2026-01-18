@@ -20,7 +20,7 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 
 {
 	data.coverImage && (
-		<div class="mb-6 aspect-video">
+		<div class="mb-20 aspect-video">
 			<Image
 				alt={data.coverImage.alt}
 				layout="constrained"
@@ -33,10 +33,10 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	)
 }
 {data.draft ? <span class="text-base text-red-500">(Draft)</span> : null}
-<h1 class="title text-4xl mb-4">
+<h1 class="title text-4xl my-6">
 	{data.title}
 </h1>
-<div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+<div class="flex flex-wrap items-center gap-x-3 gap-y-2 mb-3">
 	<p class="font-semibold">
 		<FormattedDate date={data.publishDate} dateTimeOptions={dateTimeOptions} /> /{" "}
 		{readingTime}

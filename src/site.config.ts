@@ -6,19 +6,19 @@ export const siteConfig: SiteConfig = {
 	author: "tatu's blog",
 	// Date.prototype.toLocaleDateString() parameters, found in src/utils/date.ts.
 	date: {
-		locale: "jp",
+		locale: "ja-JP",
 		options: {
-			day: "numeric",
-			month: "short",
 			year: "numeric",
+			month: "long",
+			day: "numeric",
 		},
 	},
 	// Used as the default description meta property and webmanifest description
 	description: "tatu's blog",
 	// HTML lang property, found in src/layouts/Base.astro L:18 & astro.config.ts L:48
-	lang: "jp",
+	lang: "ja",
 	// Meta property, found in src/components/BaseHead.astro L:42
-	ogLocale: "jp",
+	ogLocale: "ja_JP",
 	/* 
 		- Used to construct the meta title property found in src/components/BaseHead.astro L:11 
 		- The webmanifest name found in astro.config.ts L:42
