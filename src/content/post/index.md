@@ -4,8 +4,8 @@ description: "This post is an example of how to add a cover/hero image"
 publishDate: "04 July 2023"
 updatedDate: "14 August 2023"
 coverImage:
-  src: "./cover.png"
-  alt: "Astro build wallpaper"
+  src: "https://cdn-ak.f.st-hatena.com/images/fotolife/a/amtT/20251014/20251014160027.jpg"
+  alt: "博多wallpaper"
 tags: ["はてな"]
 ---
 https://x.com/ilovebadm/status/1981732140803899821

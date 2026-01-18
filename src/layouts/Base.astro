@@ -30,6 +30,24 @@ const {
 			<slot />
 		</main>
 		<Footer />
+		<script is:inline>
+			const loadTwitterWidgets = () => {
+				if (window.twttr?.widgets) {
+					window.twttr.widgets.load();
+					return;
+				}
+				if (document.querySelector("script[data-twitter-wjs]")) return;
+				const script = document.createElement("script");
+				script.src = "https://platform.twitter.com/widgets.js";
+				script.async = true;
+				script.charset = "utf-8";
+				script.dataset.twitterWjs = "true";
+				script.onload = () => window.twttr?.widgets?.load();
+				document.body.appendChild(script);
+			};
+			window.addEventListener("load", loadTwitterWidgets);
+			document.addEventListener("astro:page-load", loadTwitterWidgets);
+		</script>
 		<script is:inline type="speculationrules">
 			{
 				"prefetch": [

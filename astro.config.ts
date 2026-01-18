@@ -17,14 +17,17 @@ import remarkDirective from "remark-directive"; /* Handle ::: directives as node
 import { remarkAdmonitions } from "./src/plugins/remark-admonitions"; /* Add admonitions */
 import { remarkGithubCard } from "./src/plugins/remark-github-card";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time";
+import { remarkTwitterCard } from "./src/plugins/remark-twitter-card";
 import { expressiveCodeOptions, siteConfig } from "./src/site.config";
 
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.url,
+
 	image: {
 		domains: ["webmention.io"],
 	},
+
 	integrations: [
 		expressiveCode(expressiveCodeOptions),
 		icon(),
@@ -66,6 +69,7 @@ export default defineConfig({
 			},
 		}),
 	],
+
 	markdown: {
 		rehypePlugins: [
 			rehypeHeadingIds,
@@ -79,19 +83,27 @@ export default defineConfig({
 			],
 			rehypeUnwrapImages,
 		],
-		remarkPlugins: [remarkReadingTime, remarkDirective, remarkGithubCard, remarkAdmonitions],
+		remarkPlugins: [
+			remarkReadingTime,
+			remarkDirective,
+			remarkGithubCard,
+			remarkTwitterCard,
+			remarkAdmonitions,
+		],
 		remarkRehype: {
 			footnoteLabelProperties: {
 				className: [""],
 			},
 		},
 	},
+
 	vite: {
 		optimizeDeps: {
 			exclude: ["@resvg/resvg-js"],
 		},
 		plugins: [tailwind(), rawFonts([".ttf", ".woff"])],
 	},
+
 	env: {
 		schema: {
 			WEBMENTION_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),

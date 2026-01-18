@@ -1,0 +1,8 @@
+.twitter-card {
+	@apply my-6 flex justify-center;
+}
+
+.twitter-card .twitter-tweet {
+	margin: 0 auto !important;
+	max-width: 100%;
+}
