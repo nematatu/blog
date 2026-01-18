@@ -9,6 +9,7 @@ function getTweetUrl(node: Paragraph): string | null {
 	if (node.children.length !== 1) return null;
 
 	const child = node.children[0];
+	if (!child) return null;
 	let rawUrl: string | null = null;
 	if (child.type === "link") rawUrl = child.url;
 	if (child.type === "text") rawUrl = child.value;
