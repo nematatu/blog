@@ -1,12 +1,11 @@
 ---
-title: "はてなから移植"
+title: "丁寧に情報発信したら人の目に留まるかもしれない"
 description: "This post is an example of how to add a cover/hero image"
-publishDate: "04 July 2023"
-updatedDate: "14 August 2023"
+publishDate: "26 Oct 2025"
 coverImage:
   src: "https://cdn-ak.f.st-hatena.com/images/fotolife/a/amtT/20251014/20251014160027.jpg"
   alt: "博多wallpaper"
-tags: ["はてな"]
+tags: ["バドミントン"]
 ---
 https://x.com/ilovebadm/status/1981732140803899821
 
