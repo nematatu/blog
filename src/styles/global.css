@@ -41,9 +41,9 @@
 		scroll-margin-block: 5ex;
 	}
 
-	@view-transition {
-		navigation: auto;
-	}
+	/* @view-transition { */
+	/* 	navigation: auto; */
+	/* } */
 
 	/* Astro image responsive styles, modified from -> https://docs.astro.build/en/guides/images/#responsive-image-styles */
 	:where([data-astro-image]) {
@@ -81,4 +81,11 @@
 	--tw-prose-links: var(--color-global-text);
 	--tw-prose-quotes: var(--color-quote);
 	--tw-prose-th-borders: #666;
+}
+
+.post {
+  font-weight: 400;
+	font-family:
+		"Hiragino Sans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "Meiryo", system-ui,
+		sans-serif;
 }

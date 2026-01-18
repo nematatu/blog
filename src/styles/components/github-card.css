@@ -1,4 +1,8 @@
 .github-card {
+	font-family:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+		monospace;
+	font-size: 14px;
 	@apply bg-global-text/5 rounded-md px-4 py-3;
 
 	.gh-title {
