@@ -62,6 +62,7 @@
 	@import "./components/admonition.css";
 	@import "./components/github-card.css";
 	@import "./components/twitter-card.css";
+	@import "./components/image-lightbox.css";
 
 	.cactus-link {
 		@apply hover:decoration-link underline underline-offset-2 hover:decoration-2;

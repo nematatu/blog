@@ -6,7 +6,6 @@
 		"postinstall": "npm rebuild sharp --force",
 		"dev": "astro dev",
 		"dev:wrangler": "wrangler dev",
-		"new:post": "node scripts/new-post.mjs",
 		"build": "astro build",
 		"postbuild": "pagefind --site dist",
 		"preview": "astro preview",

@@ -45,8 +45,54 @@ const {
 				script.onload = () => window.twttr?.widgets?.load();
 				document.body.appendChild(script);
 			};
+			const initImageLightbox = () => {
+				if (document.body.dataset.lightboxBound) return;
+				document.body.dataset.lightboxBound = "true";
+
+				const overlay = document.createElement("div");
+				overlay.className = "image-lightbox";
+				overlay.dataset.open = "false";
+				const overlayImg = document.createElement("img");
+				overlayImg.alt = "";
+				overlay.appendChild(overlayImg);
+				document.body.appendChild(overlay);
+
+				const close = () => {
+					overlay.dataset.open = "false";
+					document.body.classList.remove("image-lightbox-open");
+				};
+
+				overlay.addEventListener("click", (event) => {
+					event.preventDefault();
+					close();
+				});
+
+				document.addEventListener("keydown", (event) => {
+					if (event.key === "Escape" && overlay.dataset.open === "true") close();
+				});
+
+				document.addEventListener(
+					"click",
+					(event) => {
+						const target = event.target;
+						if (!(target instanceof HTMLElement)) return;
+						const img = target.closest("img");
+						if (!img) return;
+						if (!img.closest("article")) return;
+
+						event.preventDefault();
+						overlayImg.src = img.currentSrc || img.src;
+						overlayImg.alt = img.getAttribute("alt") ?? "";
+						overlay.dataset.open = "true";
+						document.body.classList.add("image-lightbox-open");
+					},
+					{ capture: true },
+				);
+			};
 			window.addEventListener("load", loadTwitterWidgets);
 			document.addEventListener("astro:page-load", loadTwitterWidgets);
+			window.addEventListener("load", initImageLightbox);
+			document.addEventListener("astro:page-load", initImageLightbox);
 		</script>
 		<script is:inline type="speculationrules">
 			{

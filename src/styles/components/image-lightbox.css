@@ -1,0 +1,38 @@
+.image-lightbox-open {
+	overflow: hidden;
+}
+
+.image-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: color-mix(in oklab, var(--color-global-text) 65%, transparent);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 180ms ease;
+}
+
+.image-lightbox img {
+	max-width: min(92vw, 1200px);
+	max-height: 92vh;
+	border-radius: 12px;
+	box-shadow: 0 24px 80px color-mix(in oklab, var(--color-global-text) 30%, transparent);
+	transform: scale(0.98);
+	transition: transform 220ms ease;
+}
+
+.image-lightbox[data-open="true"] {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.image-lightbox[data-open="true"] img {
+	transform: scale(1);
+}
+
+.post :where(img) {
+	cursor: zoom-in;
+}
