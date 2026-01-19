@@ -15,6 +15,14 @@ export function getFormattedDate(
 	}).format(date);
 }
 
+export function ymd(date: Date | string | number | undefined) {
+	const safeDate = coerceDate(date);
+	if (Number.isNaN(safeDate.getTime())) {
+		return "Invalid Date";
+	}
+	return `${safeDate.getFullYear()}-${safeDate.getMonth() + 1}-${safeDate.getDate()}`;
+}
+
 function coerceDate(value: Date | string | number | undefined) {
 	if (value instanceof Date) return value;
 	return new Date(value ?? "");
