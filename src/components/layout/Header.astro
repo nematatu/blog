@@ -6,42 +6,42 @@ import { siteConfig } from "../../site.config";
 ---
 
 <header class="group relative mb-10 flex flex-wrap items-center" id="main-header">
-	<div class="flex flex-col">
-		<div class="flex items-center sm:space-x-4">
-			<a
-				aria-current={Astro.url.pathname === "/" ? "page" : false}
-				class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none"
-				href="/"
-			>
-				<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[80px] sm:w-[80px]">
-					<img
-						src="/logo.jpeg"
-						alt="Logo"
-						width="80"
-						height="80"
-						class="h-full w-full object-cover object-center"
-					/>
-				</span>
-			</a>
-			<span class="text-lg font-bold sm:text-3xl font-hiragino">{siteConfig.title}</span>
-		</div>
-		<nav
-			aria-label="Main menu"
-			class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:ms-[96px] sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
-			id="navigation-menu"
+	<div class="flex items-center sm:space-x-4">
+		<a
+			aria-current={Astro.url.pathname === "/" ? "page" : false}
+			class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none"
+			href="/"
 		>
-			{
-				menuLinks.map((link) => (
-					<a
-						aria-current={Astro.url.pathname === link.path ? "page" : false}
-						class="text-accent px-2 py-4 font-semibold sm:px-4 sm:py-0 sm:underline-offset-2 sm:hover:underline"
-						href={link.path}
-					>
-						{link.title}
-					</a>
-				))
-			}
-		</nav>
+			<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[80px] sm:w-[80px]">
+				<img
+					src="/logo.jpeg"
+					alt="Logo"
+					width="80"
+					height="80"
+					class="h-full w-full object-cover object-center"
+				/>
+			</span>
+		</a>
+		<div class="flex flex-col space-y-3 justify-center">
+			<span class="text-lg font-bold sm:text-3xl font-hiragino">{siteConfig.title}</span>
+			<nav
+				aria-label="Main menu"
+				class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
+				id="navigation-menu"
+			>
+				{
+					menuLinks.map((link) => (
+						<a
+							aria-current={Astro.url.pathname === link.path ? "page" : false}
+							class="text-accent px-2 py-4 font-semibold sm:py-0 sm:underline-offset-2 sm:hover:underline"
+							href={link.path}
+						>
+							{link.title}
+						</a>
+					))
+				}
+			</nav>
+		</div>
 	</div>
 	<!-- <Search /> -->
 	<div class="ms-auto">
