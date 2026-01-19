@@ -6,28 +6,28 @@ import { siteConfig } from "../../site.config";
 ---
 
 <header class="group relative mb-10 flex flex-wrap items-center" id="main-header">
-	<div class="flex items-end space-x-4">
-		<a
-			aria-current={Astro.url.pathname === "/" ? "page" : false}
-			class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none"
-			href="/"
-    >
-			<span class="me-3 inline-block h-[100px] w-[100px] overflow-hidden rounded-lg">
-				<img
-					src="/logo.jpeg"
-					alt="Logo"
-					width="80"
-					height="80"
-					class="h-full w-full object-cover object-center"
-				/>
-			</span>
-		</a>
-    <div class="flex flex-col space-y-2">
-
-			<span class="text-xl font-bold sm:text-3xl font-hiragino">{siteConfig.title}</span>
+	<div class="flex flex-col">
+		<div class="flex items-center sm:space-x-4">
+			<a
+				aria-current={Astro.url.pathname === "/" ? "page" : false}
+				class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none"
+				href="/"
+			>
+				<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[80px] sm:w-[80px]">
+					<img
+						src="/logo.jpeg"
+						alt="Logo"
+						width="80"
+						height="80"
+						class="h-full w-full object-cover object-center"
+					/>
+				</span>
+			</a>
+			<span class="text-lg font-bold sm:text-3xl font-hiragino">{siteConfig.title}</span>
+		</div>
 		<nav
 			aria-label="Main menu"
-			class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:-ms-4 sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
+			class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:ms-[96px] sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
 			id="navigation-menu"
 		>
 			{
@@ -42,49 +42,50 @@ import { siteConfig } from "../../site.config";
 				))
 			}
 		</nav>
-    </div>
 	</div>
-	<Search />
-	<ThemeToggle />
-	<mobile-button>
-		<button
-			aria-expanded="false"
-			aria-haspopup="menu"
-			class="group relative ms-4 h-7 w-7 sm:invisible sm:hidden"
-			id="toggle-navigation-menu"
-			type="button"
-		>
-			<span class="sr-only">Open main menu</span>
-			<svg
-				aria-hidden="true"
-				class="absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 transition-all group-aria-expanded:scale-0 group-aria-expanded:opacity-0"
-				fill="none"
-				focusable="false"
-				id="line-svg"
-				stroke="currentColor"
-				stroke-width="1.5"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path d="M3.75 9h16.5m-16.5 6.75h16.5" stroke-linecap="round" stroke-linejoin="round"
-				></path>
-			</svg>
-			<svg
-				aria-hidden="true"
-				class="text-accent absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 transition-all group-aria-expanded:scale-100 group-aria-expanded:opacity-100"
-				class="text-accent"
-				fill="none"
-				focusable="false"
-				id="cross-svg"
-				stroke="currentColor"
-				stroke-width="1.5"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
-			</svg>
-		</button>
-	</mobile-button>
+	<!-- <Search /> -->
+	<div class="ms-auto">
+		<ThemeToggle />
+	</div>
+	<!-- <mobile-button> -->
+	<!-- 	<button -->
+	<!-- 		aria-expanded="false" -->
+	<!-- 		aria-haspopup="menu" -->
+	<!-- 		class="group relative ms-4 h-7 w-7 sm:invisible sm:hidden" -->
+	<!-- 		id="toggle-navigation-menu" -->
+	<!-- 		type="button" -->
+	<!-- 	> -->
+	<!-- 		<span class="sr-only">Open main menu</span> -->
+	<!-- 		<svg -->
+	<!-- 			aria-hidden="true" -->
+	<!-- 			class="absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 transition-all group-aria-expanded:scale-0 group-aria-expanded:opacity-0" -->
+	<!-- 			fill="none" -->
+	<!-- 			focusable="false" -->
+	<!-- 			id="line-svg" -->
+	<!-- 			stroke="currentColor" -->
+	<!-- 			stroke-width="1.5" -->
+	<!-- 			viewBox="0 0 24 24" -->
+	<!-- 			xmlns="http://www.w3.org/2000/svg" -->
+	<!-- 		> -->
+	<!-- 			<path d="M3.75 9h16.5m-16.5 6.75h16.5" stroke-linecap="round" stroke-linejoin="round" -->
+	<!-- 			></path> -->
+	<!-- 		</svg> -->
+	<!-- 		<svg -->
+	<!-- 			aria-hidden="true" -->
+	<!-- 			class="text-accent absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 transition-all group-aria-expanded:scale-100 group-aria-expanded:opacity-100" -->
+	<!-- 			class="text-accent" -->
+	<!-- 			fill="none" -->
+	<!-- 			focusable="false" -->
+	<!-- 			id="cross-svg" -->
+	<!-- 			stroke="currentColor" -->
+	<!-- 			stroke-width="1.5" -->
+	<!-- 			viewBox="0 0 24 24" -->
+	<!-- 			xmlns="http://www.w3.org/2000/svg" -->
+	<!-- 		> -->
+	<!-- 			<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path> -->
+	<!-- 		</svg> -->
+	<!-- 	</button> -->
+	<!-- </mobile-button> -->
 </header>
 
 <script>
