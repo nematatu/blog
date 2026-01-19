@@ -18,6 +18,7 @@ import { remarkAdmonitions } from "./src/plugins/remark-admonitions"; /* Add adm
 import { remarkGithubCard } from "./src/plugins/remark-github-card";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time";
 import { remarkTwitterCard } from "./src/plugins/remark-twitter-card";
+import { rehypeImageCaption } from "./src/plugins/rehype-image-caption";
 import { expressiveCodeOptions, siteConfig } from "./src/site.config";
 
 // https://astro.build/config
@@ -82,6 +83,7 @@ export default defineConfig({
 				},
 			],
 			rehypeUnwrapImages,
+			rehypeImageCaption,
 		],
 		remarkPlugins: [
 			remarkReadingTime,

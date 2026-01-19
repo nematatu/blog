@@ -9,7 +9,8 @@ interface Props {
 
 const { headings } = Astro.props;
 
-const toc = generateToc(headings);
+// include all heading levels (H1–H6) in the TOC for blog posts
+const toc = generateToc(headings, { minHeadingLevel: 1, maxHeadingLevel: 6 });
 ---
 
 <details open class="lg:sticky lg:top-12 lg:order-2 lg:-me-32 lg:basis-64">

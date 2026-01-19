@@ -8,12 +8,17 @@ interface Props {
 const {
 	heading: { children, depth, slug, text },
 } = Astro.props;
+
+const hashMarks = "#".repeat(Math.max(1, depth));
+const indent = Math.max(0, depth - 1) * 0.75;
 ---
 
-<li class={`${depth > 2 ? "ms-2" : ""}`}>
+<li style={`padding-inline-start: ${indent}rem;`}>
 	<a
-		class={`line-clamp-2 hover:text-accent ${depth <= 2 ? "mt-3" : "mt-2 text-xs"}`}
-		href={`#${slug}`}><span aria-hidden="true" class="me-0.5">#</span>{text}</a
+		class={`block truncate hover:text-accent ${depth <= 2 ? "mt-3" : "mt-2 text-xs"}`}
+		href={`#${slug}`}
+		title={text}
+		><span aria-hidden="true" class="me-1 text-gray-500">{hashMarks}</span>{text}</a
 	>
 	{
 		!!children.length && (
