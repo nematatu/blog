@@ -32,7 +32,7 @@ const readingTime: string = remarkPluginFrontmatter.readingTime;
 		<div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
 			{!!headings.length && <TOC headings={headings} />}
 			<div
-				class="prose prose-sm prose-headings:font-semibold prose-headings:text-accent-2 sm:prose-th:before:content-none tracking-[0.02em] leading-[1.85] text-[1.05rem] sm:text-[1.1rem] font-hiragino max-w-[68ch] lg:max-w-[72ch] mx-auto"
+				class="prose prose-sm prose-headings:font-semibold prose-headings:text-accent-2 sm:prose-th:before:content-none tracking-[0.02em] leading-[1.85] text-[0.8rem] sm:text-[1.1rem] font-hiragino max-w-[68ch] lg:max-w-[72ch] mx-auto"
 			>
 				<slot />
 				<WebMentions />
