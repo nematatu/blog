@@ -1,7 +1,8 @@
 import { Resvg } from "@resvg/resvg-js";
 import type { APIContext, InferGetStaticPropsType } from "astro";
 import satori, { type SatoriOptions } from "satori";
-import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site.config";
@@ -17,6 +18,25 @@ function loadImageData(filePath: string, mimeType: string) {
 }
 
 const logoUrl = loadImageData("public/ogp/hanabi.png", "image/png");
+
+const ogCachePath = path.resolve(process.cwd(), ".cache/og-image.json");
+
+function loadOgCache(): Record<string, string> {
+	try {
+		return JSON.parse(readFileSync(ogCachePath, "utf-8")) as Record<string, string>;
+	} catch {
+		return {};
+	}
+}
+
+function saveOgCache(cache: Record<string, string>) {
+	mkdirSync(path.dirname(ogCachePath), { recursive: true });
+	writeFileSync(ogCachePath, JSON.stringify(cache, null, 2));
+}
+
+function ogHash(input: unknown) {
+	return createHash("sha256").update(JSON.stringify(input)).digest("hex");
+}
 
 const ogOptions: SatoriOptions = {
 	// debug: true,
@@ -171,12 +191,19 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 export async function GET(context: APIContext) {
 	const { pubDate, title, coverUrl } = context.props as Props;
 	const absoluteCoverUrl = coverUrl ? new URL(coverUrl, context.url).href : undefined;
+	const slugParam = context.params.slug;
+	const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam;
 
 	const safePubDate = pubDate instanceof Date ? pubDate : new Date(pubDate);
   const ymdDate = ymd(safePubDate);
 	const svg = await satori(markup(title, ymdDate, absoluteCoverUrl, logoUrl), ogOptions);
 	const pngBuffer = new Resvg(svg).render().asPng();
 	const png = new Uint8Array(pngBuffer);
+	if (slug) {
+		const outputPath = path.resolve(process.cwd(), "public/og-image", `${slug}.png`);
+		mkdirSync(path.dirname(outputPath), { recursive: true });
+		writeFileSync(outputPath, png);
+	}
 	return new Response(png, {
 		headers: {
 			"Cache-Control": "public, max-age=31536000, immutable",
@@ -187,17 +214,42 @@ export async function GET(context: APIContext) {
 
 export async function getStaticPaths() {
 	const posts = await getAllPosts();
-	return posts
+	const cache = loadOgCache();
+	const nextCache: Record<string, string> = { ...cache };
+	const paths = posts
 		.filter(({ data }) => !data.ogImage)
-		.map((post) => ({
-			params: { slug: post.id },
-			props: {
-				pubDate: post.data.updatedDate ?? post.data.publishDate,
+		.flatMap((post) => {
+			const coverUrl =
+				typeof post.data.coverImage?.src === "string"
+					? post.data.coverImage.src
+					: post.data.coverImage?.src?.src;
+			const payload = {
 				title: post.data.title,
-				coverUrl:
-					typeof post.data.coverImage?.src === "string"
-						? post.data.coverImage.src
-						: post.data.coverImage?.src?.src,
-			},
-		}));
+				coverUrl,
+				publishDate: post.data.publishDate,
+				updatedDate: post.data.updatedDate,
+			};
+			const hash = ogHash(payload);
+			nextCache[post.id] = hash;
+
+			const outputPath = path.resolve(process.cwd(), "public/og-image", `${post.id}.png`);
+			const needsUpdate = !existsSync(outputPath) || cache[post.id] !== hash;
+			if (!needsUpdate) {
+				return [];
+			}
+
+			return [
+				{
+					params: { slug: post.id },
+					props: {
+						pubDate: post.data.updatedDate ?? post.data.publishDate,
+						title: post.data.title,
+						coverUrl,
+					},
+				},
+			];
+		});
+
+	saveOgCache(nextCache);
+	return paths;
 }
