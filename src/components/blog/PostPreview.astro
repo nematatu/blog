@@ -18,20 +18,6 @@ const { as: Tag = "div", post, withDesc = false } = Astro.props;
   format="ymd"
 />
 <div class="flex items-end gap-4">
-	{
-		post.data.coverImage && (
-			<a class="shrink-0" href={`/posts/${post.id}/`} aria-hidden="true" tabIndex={-1}>
-				<Image
-					alt={post.data.coverImage.alt}
-					class="h-13 rounded-md object-contain"
-					height={80}
-					loading="lazy"
-					src={post.data.coverImage.src}
-					width={80}
-				/>
-			</a>
-		)
-	}
 	<div class="min-w-0">
 		<Tag>
 			{post.data.draft && <span class="text-red-500">(Draft) </span>}
