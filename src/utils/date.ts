@@ -15,9 +15,16 @@ export function getFormattedDate(
 	}).format(date);
 }
 
+function coerceDate(value: Date | string | number | undefined) {
+	if (value instanceof Date) return value;
+	return new Date(value ?? "");
+}
+
 export function collectionDateSort(
 	a: CollectionEntry<"post" | "note">,
 	b: CollectionEntry<"post" | "note">,
 ) {
-	return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+	const dateA = coerceDate(a.data.publishDate);
+	const dateB = coerceDate(b.data.publishDate);
+	return dateB.getTime() - dateA.getTime();
 }
