@@ -15,7 +15,7 @@ const socialLinks: {
 	{
 		friendlyName: "Portfolio",
     link: "https://amatatu.com",
-		name: "mdi:minecraft",
+		name: "mdi:external-link",
 	},
 ];
 ---
@@ -32,7 +32,7 @@ const socialLinks: {
 						rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
 						target="_blank"
 					>
-						<Icon aria-hidden="true" class="h-7 w-7" focusable="false" name={name} />
+						<Icon aria-hidden="true" class="h-4 w-4" focusable="false" name={name} />
 						<span class="sr-only">{friendlyName}</span>
 					</a>
 				</li>
