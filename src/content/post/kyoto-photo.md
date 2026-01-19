@@ -3,7 +3,7 @@ title: "京都で撮ってきた"
 description: "京都の写真"
 publishDate: "19 Jan 2026"
 draft: false
-tags: [photo]
+tags: ["写真"]
 coverImage: 
   src: "https://cdn-ak.f.st-hatena.com/images/fotolife/a/amtT/20250725/20250725021454.jpg"
   alt: "京都"

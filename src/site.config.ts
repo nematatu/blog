@@ -6,10 +6,10 @@ export const siteConfig: SiteConfig = {
 	author: "tatu's blog",
 	// Date.prototype.toLocaleDateString() parameters, found in src/utils/date.ts.
 	date: {
-		locale: "ja-JP",
+		locale: "en-GB",
 		options: {
 			year: "numeric",
-			month: "long",
+			month: "numeric",
 			day: "numeric",
 		},
 	},
