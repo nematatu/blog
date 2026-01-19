@@ -1,7 +1,7 @@
 import { Resvg } from "@resvg/resvg-js";
 import type { APIContext, InferGetStaticPropsType } from "astro";
 import satori, { type SatoriOptions } from "satori";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site.config";
@@ -9,19 +9,6 @@ import { getFormattedDate } from "@/utils/date";
 
 function loadFont(filePath: string) {
 	return readFileSync(path.resolve(process.cwd(), filePath));
-}
-
-function getLocalCoverUrl(slug: string | undefined, baseUrl: URL) {
-	if (!slug || slug.includes("..") || slug.startsWith("/")) return undefined;
-	const normalizedSlug = slug.replace(/\.(png|jpe?g|webp)$/i, "");
-	const baseDir = path.resolve(process.cwd(), "public", "ogp");
-	const extensions = ["png", "jpg", "jpeg", "webp"];
-	for (const ext of extensions) {
-		const filePath = path.resolve(baseDir, `${normalizedSlug}.${ext}`);
-		if (!existsSync(filePath)) continue;
-		return new URL(`/ogp/${normalizedSlug}.${ext}`, baseUrl).href;
-	}
-	return undefined;
 }
 
 const ogOptions: SatoriOptions = {
@@ -95,7 +82,7 @@ const markup = (title: string, pubDate: string, coverUrl?: string) =>
 					width: "1200px",
 					height: "630px",
 					objectFit: "cover",
-					opacity: 0.6,
+					opacity: 0.4,
 				},
 			})
 			: null,
@@ -107,7 +94,7 @@ const markup = (title: string, pubDate: string, coverUrl?: string) =>
 					left: 0,
 					width: "1200px",
 					height: "630px",
-					backgroundColor: "rgba(29, 31, 33, 0.45)",
+					backgroundColor: "rgba(29, 31, 33, 0.5)",
 				},
 			})
 			: null,
@@ -184,17 +171,15 @@ const markup = (title: string, pubDate: string, coverUrl?: string) =>
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 export async function GET(context: APIContext) {
-	const { pubDate, title } = context.props as Props;
-	const slugParam = context.params.slug;
-	const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam;
-	const coverUrl = getLocalCoverUrl(slug, context.url);
+	const { pubDate, title, coverUrl } = context.props as Props;
+	const absoluteCoverUrl = coverUrl ? new URL(coverUrl, context.url).href : undefined;
 
 	const safePubDate = pubDate instanceof Date ? pubDate : new Date(pubDate);
 	const postDate = getFormattedDate(safePubDate, {
 		month: "long",
 		weekday: "long",
 	});
-	const svg = await satori(markup(title, postDate, coverUrl), ogOptions);
+	const svg = await satori(markup(title, postDate, absoluteCoverUrl), ogOptions);
 	const pngBuffer = new Resvg(svg).render().asPng();
 	const png = new Uint8Array(pngBuffer);
 	return new Response(png, {
@@ -214,6 +199,10 @@ export async function getStaticPaths() {
 			props: {
 				pubDate: post.data.updatedDate ?? post.data.publishDate,
 				title: post.data.title,
+				coverUrl:
+					typeof post.data.coverImage?.src === "string"
+						? post.data.coverImage.src
+						: post.data.coverImage?.src?.src,
 			},
 		}));
 }
