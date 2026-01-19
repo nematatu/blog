@@ -2,23 +2,39 @@ import { Resvg } from "@resvg/resvg-js";
 import type { APIContext, InferGetStaticPropsType } from "astro";
 import satori, { type SatoriOptions } from "satori";
 import { html } from "satori-html";
-import RobotoMonoBold from "@/assets/roboto-mono-700.ttf";
-import RobotoMono from "@/assets/roboto-mono-regular.ttf";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site.config";
 import { getFormattedDate } from "@/utils/date";
+
+function loadFont(filePath: string) {
+	return readFileSync(path.resolve(process.cwd(), filePath));
+}
 
 const ogOptions: SatoriOptions = {
 	// debug: true,
 	fonts: [
 		{
-			data: Buffer.from(RobotoMono),
+			data: loadFont("src/assets/MOBO-Bold.otf"),
+			name: "Mobo Bold",
+			style: "normal",
+			weight: 700,
+		},
+		{
+			data: loadFont("src/assets/Kuramubon.otf"),
+			name: "Kuramubon",
+			style: "normal",
+			weight: 400,
+		},
+		{
+			data: loadFont("src/assets/roboto-mono-regular.ttf"),
 			name: "Roboto Mono",
 			style: "normal",
 			weight: 400,
 		},
 		{
-			data: Buffer.from(RobotoMonoBold),
+			data: loadFont("src/assets/roboto-mono-700.ttf"),
 			name: "Roboto Mono",
 			style: "normal",
 			weight: 700,
@@ -29,11 +45,19 @@ const ogOptions: SatoriOptions = {
 };
 
 const markup = (title: string, pubDate: string) =>
-	html`<div tw="flex flex-col w-full h-full bg-[#1d1f21] text-[#c9cacc]">
-		<div tw="flex flex-col flex-1 w-full p-10 justify-center">
-			<p tw="text-2xl mb-6">${pubDate}</p>
-			<h1 tw="text-6xl font-bold leading-snug text-white">${title}</h1>
-		</div>
+	html`<div
+		tw="flex flex-col w-full h-full bg-[#1d1f21] text-[#c9cacc]"
+		style="font-family: 'Kuramubon', 'Roboto Mono'"
+	>
+<div tw="flex flex-col flex-1 w-full p-10 justify-center">
+<p tw="text-2xl mb-6">${pubDate}</p>
+<h1
+	tw="text-6xl font-bold leading-snug text-white"
+	style="font-family: 'Mobo Bold'; font-weight: 700"
+>
+	${title}
+</h1>
+</div>
 		<div tw="flex items-center justify-between w-full p-10 border-t border-[#2bbc89] text-xl">
 			<div tw="flex items-center">
 				<svg height="60" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 480">
