@@ -1,5 +1,5 @@
 ---
-import { type CollectionEntry, render } from "astro:content";
+import type { CollectionEntry, RenderedContent } from "astro:content";
 
 import Masthead from "@/components/blog/Masthead.astro";
 import TOC from "@/components/blog/TOC.astro";
@@ -9,9 +9,11 @@ import BaseLayout from "./Base.astro";
 
 interface Props {
 	post: CollectionEntry<"post">;
+	headings: RenderedContent["headings"];
+	readingTime: string;
 }
 
-const { post } = Astro.props;
+const { post, headings, readingTime } = Astro.props;
 const { ogImage, title, description, updatedDate, publishDate } = post.data;
 const safePublishDate = publishDate instanceof Date ? publishDate : new Date(publishDate);
 const safeUpdatedDate = updatedDate
@@ -21,8 +23,6 @@ const safeUpdatedDate = updatedDate
 	: undefined;
 const socialImage = ogImage ?? `/og-image/${post.id}.png`;
 const articleDate = (safeUpdatedDate ?? safePublishDate).toISOString();
-const { headings, remarkPluginFrontmatter } = await render(post);
-const readingTime: string = remarkPluginFrontmatter.readingTime;
 ---
 
 <BaseLayout
