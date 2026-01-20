@@ -13,19 +13,34 @@ const {
 	readingTime,
 } = Astro.props;
 
+const cover = data.coverImage;
+const coverSrc = cover?.src;
+const isRemoteCover = typeof coverSrc === "string";
+
 ---
 
 {
-	data.coverImage && (
+	cover && (
 		<div class="mb-20 aspect-video">
-			<Image
-				alt={data.coverImage.alt}
-				layout="constrained"
-				width={748}
-				height={420}
-				priority
-				src={data.coverImage.src}
-			/>
+			{isRemoteCover ? (
+				<img
+					alt={cover.alt}
+					class="h-full w-full object-cover"
+					decoding="async"
+					loading="lazy"
+					src={coverSrc}
+				/>
+			) : (
+				<Image
+					alt={cover.alt}
+					layout="constrained"
+					width={748}
+					height={420}
+					decoding="async"
+					loading="lazy"
+					src={coverSrc}
+				/>
+			)}
 		</div>
 	)
 }
