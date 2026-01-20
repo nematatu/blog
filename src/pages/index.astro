@@ -23,10 +23,17 @@ const allNotes = await getCollection("note");
 
 <PageLayout meta={{ title: "Home" }}>
 	<section>
-		<p class="mb-4 text-md tracking-widest font-hiragino">
-      バド、プログラミング、写真のこと
+		<p class="mb-4 text-md font-bold tracking-widest font-hiragino">
+      バドミントンやWeb開発のことなど、思ったことを書いてます
 		</p>
-		<SocialList />
+		<!-- <SocialList /> -->
+					<a
+						class="hover:text-link inline-block text-blue-600 dark:text-blue-300 underline underline-offset-2"
+            href="https://amatatu.com"
+						target="_blank"
+					>
+            Portfolio
+					</a>
 	</section>
 	{
 		pinnedPosts.length > 0 && (

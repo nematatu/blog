@@ -24,7 +24,9 @@ import { siteConfig } from "../../site.config";
 			</span>
 		</a>
 		<div class="flex flex-col justify-center text-left sm:space-y-4">
-			<span class="text-lg font-bold sm:text-3xl font-hiragino">{siteConfig.title}</span>
+      <a aria-current={Astro.url.pathname === "/" ? "page" : false} class="inline-block text-right" data-prefetch href="/">
+			  <span class="text-lg font-bold sm:text-2xl tracking-widest font-hiragino">{siteConfig.title}</span>
+      </a>
 			<nav
 				aria-label="Main menu"
 				class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
