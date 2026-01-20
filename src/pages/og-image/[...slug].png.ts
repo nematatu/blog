@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site.config";
-import { getFormattedDate, ymd } from "@/utils/date";
+import { ymd } from "@/utils/date";
 
 export const prerender = true;
 
