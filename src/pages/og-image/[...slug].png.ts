@@ -8,6 +8,8 @@ import { getAllPosts } from "@/data/post";
 import { siteConfig } from "@/site.config";
 import { getFormattedDate, ymd } from "@/utils/date";
 
+export const prerender = true;
+
 function loadFont(filePath: string) {
 	return readFileSync(path.resolve(process.cwd(), filePath));
 }

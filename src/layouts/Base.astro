@@ -99,17 +99,9 @@ const {
 				"prefetch": [
 					{
 						"where": {
-							"href_matches": "/*"
+							"selector_matches": "a[data-prefetch]"
 						},
-						"eagerness": "immediate"
-					}
-				],
-				"prerender": [
-					{
-						"where": {
-							"href_matches": "/*"
-						},
-						"eagerness": "moderate"
+						"eagerness": "conservative"
 					}
 				]
 			}
