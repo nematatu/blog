@@ -69,8 +69,31 @@ const headerProps = {
 				document.body.appendChild(script);
 			};
 
+			const observeTwitterEmbeds = () => {
+				const embeds = Array.from(
+					document.querySelectorAll(
+						"blockquote.twitter-tweet, .twitter-timeline, [data-twitter-embed]",
+					),
+				);
+				if (embeds.length === 0) return;
+				if (!("IntersectionObserver" in window)) {
+					loadTwitterWidgets();
+					return;
+				}
+				const observer = new IntersectionObserver(
+					(entries) => {
+						if (!entries.some((entry) => entry.isIntersecting)) return;
+						observer.disconnect();
+						loadTwitterWidgets();
+					},
+					{ rootMargin: "200px 0px" },
+				);
+				embeds.forEach((embed) => observer.observe(embed));
+			};
+
 			const initImageLightbox = () => {
 				if (document.body.dataset.lightboxBound) return;
+				if (!document.querySelector("article img")) return;
 				document.body.dataset.lightboxBound = "true";
 
 				const overlay = document.createElement("div");
@@ -119,6 +142,8 @@ const headerProps = {
 				pending: null,
 			};
 
+			const PREFETCH_ENABLED = false;
+
 			const canPrefetch = () => {
 				const connection = navigator.connection;
 				if (connection?.saveData) return false;
@@ -148,6 +173,7 @@ const headerProps = {
 			};
 
 			const schedulePrefetch = (url) => {
+				if (!PREFETCH_ENABLED) return;
 				if (!canPrefetch()) return;
 				if (prefetchState.pending === url) return;
 				prefetchState.pending = url;
@@ -163,6 +189,7 @@ const headerProps = {
 			};
 
 			const bindPrefetchListeners = () => {
+				if (!PREFETCH_ENABLED) return;
 				if (document.body.dataset.prefetchBound) return;
 				document.body.dataset.prefetchBound = "true";
 
@@ -182,11 +209,7 @@ const headerProps = {
 			const onPageLoad = () => {
 				initImageLightbox();
 				bindPrefetchListeners();
-				if ("requestIdleCallback" in window) {
-					window.requestIdleCallback(loadTwitterWidgets, { timeout: 2000 });
-				} else {
-					setTimeout(loadTwitterWidgets, 1200);
-				}
+				observeTwitterEmbeds();
 			};
 
 			window.addEventListener("load", onPageLoad);
