@@ -85,7 +85,7 @@ const h = (type: string, props: Record<string, unknown> | null, ...children: unk
 	return { type, props: nextProps };
 };
 
-const markup = (title: string, pubDate: string, coverUrl?: string, logoUrl?: string) =>
+const markup = (title: string, pubDate: string, logo?: string) =>
 	h(
 		"div",
 		{
@@ -100,33 +100,6 @@ const markup = (title: string, pubDate: string, coverUrl?: string, logoUrl?: str
 				fontFamily: "Kuramubon, Roboto Mono",
 			},
 		},
-		coverUrl
-			? h("img", {
-					src: coverUrl,
-					alt: "",
-					style: {
-						position: "absolute",
-						top: 0,
-						left: 0,
-						width: "1200px",
-						height: "630px",
-						objectFit: "cover",
-						opacity: 0.4,
-					},
-				})
-			: null,
-		coverUrl
-			? h("div", {
-					style: {
-						position: "absolute",
-						top: 0,
-						left: 0,
-						width: "1200px",
-						height: "630px",
-						backgroundColor: "rgba(29, 31, 33, 0.5)",
-					},
-				})
-			: null,
 		h(
 			"div",
 			{
@@ -164,7 +137,7 @@ const markup = (title: string, pubDate: string, coverUrl?: string, logoUrl?: str
 					justifyContent: "space-between",
 					padding: "40px",
 					borderTop: "1px solid #2bbc89",
-          backgroundColor: "#1D1F20",
+					backgroundColor: "#1D1F20",
 					fontSize: "20px",
 				},
 			},
@@ -172,10 +145,10 @@ const markup = (title: string, pubDate: string, coverUrl?: string, logoUrl?: str
 				"div",
 				{ style: { display: "flex", alignItems: "center" } },
 				h("img", {
-					src: logoUrl,
+					src: logo,
 					alt: "",
-          width: 40,
-          height: 40,
+					width: 40,
+					height: 40,
 					style: {
 						width: "40px",
 						height: "40px",
@@ -191,14 +164,13 @@ const markup = (title: string, pubDate: string, coverUrl?: string, logoUrl?: str
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 export async function GET(context: APIContext) {
-	const { pubDate, title, coverUrl } = context.props as Props;
-	const absoluteCoverUrl = coverUrl ? new URL(coverUrl, context.url).href : undefined;
+	const { pubDate, title } = context.props as Props;
 	const slugParam = context.params.slug;
 	const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam;
 
 	const safePubDate = pubDate instanceof Date ? pubDate : new Date(pubDate);
-  const ymdDate = ymd(safePubDate);
-	const svg = await satori(markup(title, ymdDate, absoluteCoverUrl, logoUrl), ogOptions);
+	const ymdDate = ymd(safePubDate);
+	const svg = await satori(markup(title, ymdDate, logoUrl), ogOptions);
 	const pngBuffer = new Resvg(svg).render().asPng();
 	const png = new Uint8Array(pngBuffer);
 	if (slug) {
@@ -221,13 +193,8 @@ export async function getStaticPaths() {
 	const paths = posts
 		.filter(({ data }) => !data.ogImage)
 		.flatMap((post) => {
-			const coverUrl =
-				typeof post.data.coverImage?.src === "string"
-					? post.data.coverImage.src
-					: post.data.coverImage?.src?.src;
 			const payload = {
 				title: post.data.title,
-				coverUrl,
 				publishDate: post.data.publishDate,
 				updatedDate: post.data.updatedDate,
 			};
@@ -246,7 +213,6 @@ export async function getStaticPaths() {
 					props: {
 						pubDate: post.data.updatedDate ?? post.data.publishDate,
 						title: post.data.title,
-						coverUrl,
 					},
 				},
 			];
