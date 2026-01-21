@@ -35,6 +35,7 @@ const articleDate = (safeUpdatedDate ?? safePublishDate).toISOString();
 		preloadImage: coverSrc,
 		title,
 	}}
+	showHeaderImage={false}
 >
 	<article class="grow break-words" data-pagefind-body>
 		<div id="blog-hero" class="mb-12"><Masthead content={post} readingTime={readingTime} /></div>

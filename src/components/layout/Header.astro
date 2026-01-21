@@ -2,54 +2,84 @@
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import { menuLinks } from "@/site.config";
 import { siteConfig } from "../../site.config";
+
+interface Props {
+	showImage?: boolean;
+}
+
+const headerImage =
+	"https://assets.blog.amatatu.com/CAAFF0C2-2078-41F0-9511-D6CC62C53EB5_1_105_c.jpeg"
+
+const { showImage = true } = Astro.props;
+
+const headerClass = showImage
+	? "group relative mb-10 pt-24 sm:pt-12 bg-cover bg-center bg-no-repeat rounded-md"
+	: "group relative mb-10";
+const headerStyle = showImage ? `background-image: url(${headerImage});` : undefined;
+const rowClass = showImage
+	? "flex flex-wrap items-center gap-4 sm:gap-6 px-2 py-2 sm:px-3 sm:py-3"
+	: "flex flex-wrap items-center gap-4 sm:gap-6";
+const identityClass = "flex items-center sm:space-x-4";
 ---
 
-<header class="group relative mb-10 flex flex-wrap items-center" id="main-header">
-	<div class="flex items-center sm:space-x-4">
-		<a
-			aria-current={Astro.url.pathname === "/" ? "page" : false}
-			class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none"
-			data-prefetch="page"
-			href="/"
-		>
-			<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[60px] sm:w-[60px]">
-				<img
-					src="/logo.jpeg"
-					alt="Logo"
-					width="80"
-					height="80"
-					class="h-full w-full object-cover object-center"
-				/>
-			</span>
-		</a>
-		<div class="flex flex-col justify-center text-left sm:space-y-2">
-      <a aria-current={Astro.url.pathname === "/" ? "page" : false} class="inline-block text-center" data-prefetch="page" href="/">
-			  <span class="text-lg font-bold sm:text-xl tracking-widest font-hiragino">{siteConfig.title}</span>
-      </a>
-			<nav
-				aria-label="Main menu"
-				class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
-				id="navigation-menu"
-			>
-				{
-					menuLinks.map((link) => (
-						<a
-							aria-current={Astro.url.pathname === link.path ? "page" : false}
-							class="text-accent px-2 py-4 font-semibold sm:py-0 sm:underline-offset-2 sm:hover:underline"
-							data-prefetch="page"
-							href={link.path}
-						>
-							{link.title}
-						</a>
-					))
-				}
-			</nav>
+<header class={headerClass} id="main-header" style={headerStyle}>
+	<div class={rowClass}>
+		<div class={identityClass}>
+			<!-- <a -->
+			<!-- 	aria-current={Astro.url.pathname === "/" ? "page" : false} -->
+			<!-- 	class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none" -->
+			<!-- 	data-prefetch="page" -->
+			<!-- 	href="/" -->
+			<!-- > -->
+			<!-- 	<span class="me-3 inline-flex h-[40px] w-[40px] rounded-md bg-global-bg sm:h-[60px] sm:w-[60px]"> -->
+			<!-- 		<span class="inline-block h-full w-full overflow-hidden rounded-md"> -->
+			<!-- 			<img -->
+			<!-- 				src="/logo.jpeg" -->
+			<!-- 				alt="Logo" -->
+			<!-- 				width="80" -->
+			<!-- 				height="80" -->
+			<!-- 				class="h-full w-full object-cover object-center" -->
+			<!-- 			/> -->
+			<!-- 		</span> -->
+			<!-- 	</span> -->
+			<!-- </a> -->
+			<div class="flex flex-col justify-center text-left sm:space-y-2">
+				<a
+					aria-current={Astro.url.pathname === "/" ? "page" : false}
+					class="inline-block text-center"
+					data-prefetch="page"
+					href="/"
+				>
+					<span class="text-lg font-bold sm:text-xl tracking-widest font-hiragino">
+						{siteConfig.title}
+					</span>
+				</a>
+				<nav
+					aria-label="Main menu"
+					class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
+					id="navigation-menu"
+				>
+					{
+						menuLinks.map((link) => (
+							<a
+								aria-current={Astro.url.pathname === link.path ? "page" : false}
+								class="text-accent px-2 py-4 font-semibold sm:py-0 sm:underline-offset-2 sm:hover:underline"
+								data-prefetch="page"
+								href={link.path}
+							>
+								{link.title}
+							</a>
+						))
+					}
+				</nav>
+			</div>
+		</div>
+		<!-- <Search /> -->
+		<div class="ms-auto">
+			<ThemeToggle />
 		</div>
 	</div>
 	<!-- <Search /> -->
-	<div class="absolute right-0 top-1/2 -translate-y-1/2 sm:static sm:ms-auto sm:translate-y-0">
-		<ThemeToggle />
-	</div>
 	<!-- <mobile-button> -->
 	<!-- 	<button -->
 	<!-- 		aria-expanded="false" -->
