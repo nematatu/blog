@@ -5,15 +5,13 @@
 	"scripts": {
 		"postinstall": "npm rebuild sharp --force",
 		"dev": "astro dev",
-		"dev:wrangler": "wrangler dev",
 		"build": "astro build",
 		"postbuild": "pagefind --site dist",
 		"preview": "astro preview",
 		"check": "astro check && biome check",
 		"lint": "biome check --write",
 		"format": "prettier -w . --cache",
-		"deploy": "astro build && wrangler deploy", 
-    "new:post": "node scripts/new-post.mjs"
+		"new:post": "node scripts/new-post.mjs"
 	},
 	"dependencies": {
 		"@astrojs/markdown-remark": "^6.3.10",
@@ -57,8 +55,7 @@
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"reading-time": "^1.5.0",
 		"tailwindcss": "4.1.17",
-		"typescript": "^5.9.3",
-		"wrangler": "^4.59.2"
+		"typescript": "^5.9.3"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": ["@biomejs/biome", "@tailwindcss/oxide", "esbuild", "sharp"],

@@ -105,8 +105,7 @@ const {
 
 			const prefetchState = {
 				pages: new Set(),
-				images: new Set(),
-				origins: new Set(),
+				pending: null,
 			};
 
 			const canPrefetch = () => {
@@ -114,56 +113,41 @@ const {
 				if (connection?.saveData) return false;
 				if (connection?.effectiveType && /2g/.test(connection.effectiveType)) return false;
 				if (window.matchMedia?.("(prefers-reduced-data: reduce)")?.matches) return false;
+				if (document.visibilityState !== "visible") return false;
 				return true;
 			};
 
-			const ensurePreconnect = (origin) => {
-				if (!origin || origin === window.location.origin) return;
-				if (prefetchState.origins.has(origin)) return;
-				prefetchState.origins.add(origin);
-
-				const preconnect = document.createElement("link");
-				preconnect.rel = "preconnect";
-				preconnect.href = origin;
-				preconnect.crossOrigin = "anonymous";
-				document.head.appendChild(preconnect);
-
-				const dns = document.createElement("link");
-				dns.rel = "dns-prefetch";
-				dns.href = origin;
-				document.head.appendChild(dns);
-			};
-
-			const prefetchImage = (src) => {
-				if (!src || src.startsWith("data:")) return;
-				const url = new URL(src, window.location.href);
-				if (prefetchState.images.has(url.href)) return;
-				prefetchState.images.add(url.href);
-				ensurePreconnect(url.origin);
-				const link = document.createElement("link");
-				link.rel = "prefetch";
-				link.as = "image";
-				link.href = url.href;
-				document.head.appendChild(link);
-			};
-
-			const prefetchPage = async (url, { images = false } = {}) => {
-				if (!url || prefetchState.pages.has(url)) return;
-				prefetchState.pages.add(url);
+			const prefetchPage = async (url) => {
+				if (!url) return;
+				if (prefetchState.pages.size >= 6) return;
+				let resolved;
 				try {
-					const res = await fetch(url, { credentials: "same-origin", cache: "force-cache" });
-					if (!res.ok) return;
-					if (!images) return;
-					const html = await res.text();
-					const doc = new DOMParser().parseFromString(html, "text/html");
-					const imgNodes = Array.from(doc.querySelectorAll("article img"));
-					const srcs = imgNodes
-						.map((img) => img.getAttribute("src") || "")
-						.filter(Boolean);
-					const unique = [...new Set(srcs)].slice(0, 12);
-					unique.forEach((src) => prefetchImage(new URL(src, url).href));
+					resolved = new URL(url, window.location.href);
+				} catch {
+					return;
+				}
+				if (resolved.origin !== window.location.origin) return;
+				if (prefetchState.pages.has(resolved.href)) return;
+				prefetchState.pages.add(resolved.href);
+				try {
+					await fetch(resolved.href, { credentials: "same-origin", cache: "force-cache" });
 				} catch {
 					// ignore
+				}
+			};
+
+			const schedulePrefetch = (url) => {
+				if (!canPrefetch()) return;
+				if (prefetchState.pending === url) return;
+				prefetchState.pending = url;
+				const run = () => {
+					prefetchState.pending = null;
+					prefetchPage(url);
+				};
+				if ("requestIdleCallback" in window) {
+					window.requestIdleCallback(run, { timeout: 1500 });
+				} else {
+					setTimeout(run, 200);
 				}
 			};
 
@@ -172,13 +156,11 @@ const {
 				document.body.dataset.prefetchBound = "true";
 
 				const handler = (event) => {
-					if (!canPrefetch()) return;
 					const target = event.target;
 					if (!(target instanceof HTMLElement)) return;
 					const link = target.closest("a[data-prefetch]");
 					if (!(link instanceof HTMLAnchorElement)) return;
-					const mode = link.dataset.prefetch ?? "";
-					prefetchPage(link.href, { images: mode === "post" });
+					schedulePrefetch(link.href);
 				};
 
 				document.addEventListener("pointerover", handler, { passive: true, capture: true });
@@ -186,44 +168,9 @@ const {
 				document.addEventListener("focusin", handler);
 			};
 
-			const prefetchInitialPosts = () => {
-				if (!canPrefetch()) return;
-				const links = Array.from(document.querySelectorAll("a[data-prefetch='post']")).slice(0, 8);
-				const run = () => links.forEach((link) => prefetchPage(link.href, { images: true }));
-				if ("requestIdleCallback" in window) {
-					window.requestIdleCallback(run, { timeout: 2000 });
-				} else {
-					setTimeout(run, 1000);
-				}
-			};
-
-			const prefetchVisiblePosts = () => {
-				if (!canPrefetch()) return;
-				if (!("IntersectionObserver" in window)) return;
-				const links = Array.from(document.querySelectorAll("a[data-prefetch='post']"));
-				if (links.length === 0) return;
-
-				const observer = new IntersectionObserver(
-					(entries) => {
-						entries.forEach((entry) => {
-							if (!entry.isIntersecting) return;
-							const link = entry.target;
-							if (!(link instanceof HTMLAnchorElement)) return;
-							observer.unobserve(link);
-							prefetchPage(link.href, { images: true });
-						});
-					},
-					{ rootMargin: "200px 0px" },
-				);
-
-				links.forEach((link) => observer.observe(link));
-			};
-
 			const onPageLoad = () => {
 				initImageLightbox();
 				bindPrefetchListeners();
-				prefetchInitialPosts();
-				prefetchVisiblePosts();
 				if ("requestIdleCallback" in window) {
 					window.requestIdleCallback(loadTwitterWidgets, { timeout: 2000 });
 				} else {
@@ -233,26 +180,6 @@ const {
 
 			window.addEventListener("load", onPageLoad);
 			document.addEventListener("astro:page-load", onPageLoad);
-		</script>
-		<script is:inline type="speculationrules">
-			{
-				"prefetch": [
-					{
-						"where": {
-							"selector_matches": "a[data-prefetch='page']"
-						},
-						"eagerness": "conservative"
-					}
-				],
-				"prerender": [
-					{
-						"where": {
-							"selector_matches": "a[data-prerender='true']"
-						},
-						"eagerness": "moderate"
-					}
-				]
-			}
 		</script>
 	</body>
 </html>
