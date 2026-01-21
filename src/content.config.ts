@@ -19,7 +19,7 @@ const post = defineCollection({
 			coverImage: z
 				.object({
 					alt: z.string(),
-					src: z.union([image(), z.string().url()]),
+					src: z.union([z.string().url(), image()]),
 				})
 				.optional(),
 			draft: z.boolean().default(false),

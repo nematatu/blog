@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import type { WebmentionsChildren } from "@/types";
 
 interface Props {
@@ -13,6 +12,13 @@ const likes = mentions.filter((mention) => mention["wm-property"] === "like-of")
 const likesToShow = likes
 	.filter((like) => like.author?.photo && like.author.photo !== "")
 	.slice(0, MAX_LIKES);
+
+const resolvePhotoUrl = (url?: string | null) => {
+	if (!url) return null;
+	if (url.startsWith("http://") || url.startsWith("https://")) return url;
+	if (url.startsWith("//")) return `https:${url}`;
+	return null;
+};
 ---
 
 {
@@ -34,11 +40,13 @@ const likesToShow = likes
 								title={like.author?.name}
 							>
 								<span class="p-author h-card">
-									<Image
+									<img
 										alt={like.author!.name}
 										class="u-photo my-0 inline-block h-12 w-12"
+										decoding="async"
 										height={48}
-										src={like.author!.photo}
+										loading="lazy"
+										src={resolvePhotoUrl(like.author?.photo) ?? ""}
 										width={48}
 									/>
 								</span>

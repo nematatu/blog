@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import type { WebmentionsChildren } from "@/types";
 
@@ -14,6 +13,13 @@ const validComments = ["mention-of", "in-reply-to"];
 const comments = mentions.filter(
 	(mention) => validComments.includes(mention["wm-property"]) && mention.content?.text,
 );
+
+const resolvePhotoUrl = (url?: string | null) => {
+	if (!url) return null;
+	if (url.startsWith("http://") || url.startsWith("https://")) return url;
+	if (url.startsWith("//")) return `https:${url}`;
+	return null;
+};
 ---
 
 {
@@ -25,7 +31,7 @@ const comments = mentions.filter(
 			<ul class="divide-global-text/20 mt-0 divide-y ps-0" role="list">
 				{comments.map((mention) => (
 					<li class="p-comment h-cite my-0 flex items-start gap-x-5 py-5">
-						{mention.author?.photo && mention.author.photo !== "" ? (
+						{resolvePhotoUrl(mention.author?.photo) ? (
 							mention.author.url && mention.author.url !== "" ? (
 								<a
 									class="u-author not-prose ring-global-text hover:ring-link focus-visible:ring-link shrink-0 overflow-hidden rounded-full ring-2 hover:ring-4 focus-visible:ring-4"
@@ -34,20 +40,24 @@ const comments = mentions.filter(
 									target="_blank"
 									title={mention.author.name}
 								>
-									<Image
+									<img
 										alt={mention.author?.name}
 										class="u-photo my-0 h-12 w-12"
+										decoding="async"
 										height={48}
-										src={mention.author?.photo}
+										loading="lazy"
+										src={resolvePhotoUrl(mention.author?.photo) ?? ""}
 										width={48}
 									/>
 								</a>
 							) : (
-								<Image
+								<img
 									alt={mention.author?.name}
 									class="u-photo my-0 h-12 w-12 rounded-full"
+									decoding="async"
 									height={48}
-									src={mention.author?.photo}
+									loading="lazy"
+									src={resolvePhotoUrl(mention.author?.photo) ?? ""}
 									width={48}
 								/>
 							)
