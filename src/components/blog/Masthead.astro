@@ -10,7 +10,6 @@ interface Props {
 
 const {
 	content: { data },
-	readingTime,
 } = Astro.props;
 
 // const cover = data.coverImage;
@@ -46,13 +45,12 @@ const {
 <!-- 	) -->
 <!-- } -->
 {data.draft ? <span class="text-base text-red-500">(Draft)</span> : null}
-<h1 class="title text-4xl my-6">
+<h1 class="title text-2xl sm:text-4xl sm:mt-4 mb-2">
 	{data.title}
 </h1>
-<div class="flex flex-wrap items-center gap-x-3 gap-y-2 mb-3">
-	<p class="font-semibold">
-		<FormattedDate date={data.publishDate} format="ymd" /> /{" "}
-		{readingTime}
+<div class="flex flex-wrap items-center gap-x-3 gap-y-2 sm:mt-3 mb-3 text-sm">
+	<p>
+		<FormattedDate date={data.publishDate} format="ymd"/>
 	</p>
 	{
 		data.updatedDate && (
@@ -65,10 +63,10 @@ const {
 </div>
 {
 	!!data.tags?.length && (
-		<div class="mt-2">
+		<div class="mt-1">
 			<svg
 				aria-hidden="true"
-				class="inline-block h-6 w-6"
+				class="inline-block h-4 w-4 sm:h-5 sm:w-5"
 				fill="none"
 				focusable="false"
 				stroke="currentColor"
@@ -86,7 +84,7 @@ const {
 			{data.tags.map((tag, i) => (
 				<>
 					{/* prettier-ignore */}
-					<span class="contents">
+					<span class="contents text-xs sm:text-sm">
 						<a class="cactus-link inline-block before:content-['#']" data-pagefind-filter={`tag:${tag}`} href={`/tags/${tag}/`}><span class="sr-only">View more blogs with the tag&nbsp;</span>{tag}
 						</a>{i < data.tags.length - 1 && ", "}
 					</span>
