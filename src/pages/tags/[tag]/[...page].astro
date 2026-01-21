@@ -5,6 +5,7 @@ import { Icon } from "astro-icon/components";
 import PostPreview from "@/components/blog/PostPreview.astro";
 import Pagination from "@/components/Paginator.astro";
 import { getAllPosts, getTagMeta, getUniqueTags } from "@/data/post";
+import { getTagEmoji } from "@/config/tag-emoji";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 
@@ -27,6 +28,7 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { page } = Astro.props as Props;
 const { tag } = Astro.params;
 const tagMeta = await getTagMeta(tag);
+const tagEmoji = getTagEmoji(tag);
 
 const TagContent = tagMeta ? (await render(tagMeta)).Content : null;
 
@@ -65,7 +67,11 @@ const usePrerender = () => {
 				<a class="text-accent" href="/tags/">Tags</a>
 				<Icon aria-hidden="true" name="mdi:chevron-right" class="mx-1.5" />
 			</li>
-			<li aria-current="page" class=""><span aria-hidden="true">#</span>{tag}</li>
+			<li aria-current="page" class="">
+				<span aria-hidden="true">#</span>
+				{tagEmoji && <span aria-hidden="true" class="ms-1">{tagEmoji}</span>}
+				<span class="ms-1">{tag}</span>
+			</li>
 		</ul>
 	</nav>
 	<h1 class="title capitalize">{tagMeta?.data.title ?? `Posts about ${tag}`}</h1>

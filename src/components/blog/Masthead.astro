@@ -1,7 +1,7 @@
 ---
-// import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "@/components/FormattedDate.astro";
+import { getTagEmoji } from "@/config/tag-emoji";
 
 interface Props {
 	content: CollectionEntry<"post">;
@@ -15,42 +15,17 @@ const {
 // const cover = data.coverImage;
 // const coverSrc = cover?.src;
 // const isRemoteCover = (value: unknown): value is string => typeof value === "string";
-
 ---
 
-<!-- { -->
-<!-- 	coverSrc && ( -->
-<!-- 		<div class="mb-10 aspect-video mx-auto w-full max-w-3xl"> -->
-<!-- 			{isRemoteCover(coverSrc) ? ( -->
-<!-- 				<img -->
-<!-- 					alt={cover.alt} -->
-<!-- 					class="h-full w-full object-cover" -->
-<!-- 					decoding="sync" -->
-<!-- 					fetchpriority="high" -->
-<!-- 					loading="eager" -->
-<!-- 					src={coverSrc} -->
-<!-- 				/> -->
-<!-- 			) : ( -->
-<!-- 				<Image -->
-<!-- 					alt={cover.alt} -->
-<!-- 					layout="constrained" -->
-<!-- 					width={748} -->
-<!-- 					height={420} -->
-<!-- 					decoding="sync" -->
-<!-- 					loading="eager" -->
-<!-- 					src={coverSrc} -->
-<!-- 				/> -->
-<!-- 			)} -->
-<!-- 		</div> -->
-<!-- 	) -->
-<!-- } -->
-{data.draft ? <span class="text-base text-red-500">(Draft)</span> : null}
-<h1 class="title text-2xl sm:text-4xl sm:mt-4 mb-2">
+<!-- { --><!-- 	coverSrc && ( --><!-- 		<div class="mb-10 aspect-video mx-auto w-full max-w-3xl"> --><!-- 			{isRemoteCover(coverSrc) ? ( --><!-- 				<img --><!-- 					alt={cover.alt} --><!-- 					class="h-full w-full object-cover" --><!-- 					decoding="sync" --><!-- 					fetchpriority="high" --><!-- 					loading="eager" --><!-- 					src={coverSrc} --><!-- 				/> --><!-- 			) : ( --><!-- 				<Image --><!-- 					alt={cover.alt} --><!-- 					layout="constrained" --><!-- 					width={748} --><!-- 					height={420} --><!-- 					decoding="sync" --><!-- 					loading="eager" --><!-- 					src={coverSrc} --><!-- 				/> --><!-- 			)} --><!-- 		</div> --><!-- 	) --><!-- } -->{
+	data.draft ? <span class="text-base text-red-500">(Draft)</span> : null
+}
+<h1 class="title mb-2 text-2xl sm:mt-4 sm:text-4xl">
 	{data.title}
 </h1>
-<div class="flex flex-wrap items-center gap-x-3 gap-y-2 sm:mt-3 mb-3 text-sm">
+<div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm sm:mt-3">
 	<p>
-		<FormattedDate date={data.publishDate} format="ymd"/>
+		<FormattedDate date={data.publishDate} format="ymd" />
 	</p>
 	{
 		data.updatedDate && (
@@ -62,34 +37,25 @@ const {
 	}
 </div>
 {
-	!!data.tags?.length && (
+	data.tags?.length && (
 		<div class="mt-1">
-			<svg
-				aria-hidden="true"
-				class="inline-block h-4 w-4 sm:h-5 sm:w-5"
-				fill="none"
-				focusable="false"
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="1.5"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path d="M0 0h24v24H0z" fill="none" stroke="none" />
-				<path d="M7.859 6h-2.834a2.025 2.025 0 0 0 -2.025 2.025v2.834c0 .537 .213 1.052 .593 1.432l6.116 6.116a2.025 2.025 0 0 0 2.864 0l2.834 -2.834a2.025 2.025 0 0 0 0 -2.864l-6.117 -6.116a2.025 2.025 0 0 0 -1.431 -.593z" />
-				<path d="M17.573 18.407l2.834 -2.834a2.025 2.025 0 0 0 0 -2.864l-7.117 -7.116" />
-				<path d="M6 9h-.01" />
-			</svg>
-			{data.tags.map((tag, i) => (
-				<>
-					{/* prettier-ignore */}
-					<span class="contents text-xs sm:text-sm">
-						<a class="cactus-link inline-block before:content-['#']" data-pagefind-filter={`tag:${tag}`} href={`/tags/${tag}/`}><span class="sr-only">View more blogs with the tag&nbsp;</span>{tag}
-						</a>{i < data.tags.length - 1 && ", "}
-					</span>
-				</>
-			))}
+			{data.tags.map((tag) => {
+				const emoji = getTagEmoji(tag);
+				return (
+					<>
+						<span class="contents text-xs sm:text-sm">
+							<a
+								class="cactus-link inline-flex items-center gap-1"
+								data-pagefind-filter={`tag:${tag}`}
+								href={`/tags/${tag}/`}
+							>
+								<span class="sr-only">View more blogs with the tag&nbsp;</span>
+								{emoji ? <span aria-hidden="true">{emoji}</span> : <span>{tag}</span>}
+							</a>
+						</span>
+					</>
+				);
+			})}
 		</div>
 	)
 }
