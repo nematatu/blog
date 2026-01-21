@@ -1,5 +1,5 @@
 {
-  "name": "amatatu-blog",
+  "name": "blog",
   "compatibility_date": "2026-1-18", // Update to the day you deploy
   "assets": {
     "directory": "./dist",
