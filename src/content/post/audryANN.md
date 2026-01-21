@@ -1,6 +1,6 @@
 ---
 title: "オードリーのオールナイトニッポン"
 description: "クミさん回"
-publishDate: "19 Jan 2026"
+publishDate: "2026-01-19"
 tags: ["radio", "audry"]
 ---

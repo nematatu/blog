@@ -1,7 +1,7 @@
 ---
 title: "A post of Markdown elements"
 description: "This post is for testing and listing a number of different markdown elements"
-publishDate: "22 Feb 2020"
+publishDate: "2020-02-22"
 updatedDate: 22 Jan 2024
 tags: ["markdown-guide"]
 draft: true

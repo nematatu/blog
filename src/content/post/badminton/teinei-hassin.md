@@ -1,7 +1,7 @@
 ---
 title: "丁寧に情報発信したら人の目に留まるかもしれない"
 description: "This post is an example of how to add a cover/hero image"
-publishDate: "26 Oct 2025"
+publishDate: "2025-10-26"
 tags: ["バドミントン"]
 ---
 https://x.com/ilovebadm/status/1981732140803899821

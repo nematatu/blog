@@ -1,7 +1,7 @@
 ---
 title: "京都で撮ってきた"
 description: "京都の写真"
-publishDate: "19 Jan 2026"
+publishDate: "2026-01-19"
 draft: false
 tags: ["写真"]
 coverImage: 
