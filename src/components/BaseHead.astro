@@ -35,6 +35,10 @@ const socialImageURL = new URL(ogImage ? ogImage : "/ogp.png", Astro.url).href;
 {/* Canonical URL */}
 <link href={canonicalURL} rel="canonical" />
 
+{/* Preconnect for external image hosts */}
+<link href="https://assets.blog.amatatu.com" rel="preconnect" crossorigin />
+<link href="https://assets.blog.amatatu.com" rel="dns-prefetch" />
+
 {/* Primary Meta Tags */}
 <meta content={siteTitle} name="title" />
 <meta content={description} name="description" />

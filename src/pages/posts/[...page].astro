@@ -53,7 +53,7 @@ const paginationProps = {
 const groupedByYear = groupPostsByYear(page.data);
 const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 
-let prerenderBudget = 2;
+let prerenderBudget = 5;
 const usePrerender = () => {
 	if (prerenderBudget <= 0) return false;
 	prerenderBudget -= 1;

@@ -148,7 +148,7 @@ const {
 					const srcs = imgNodes
 						.map((img) => img.getAttribute("src") || "")
 						.filter(Boolean);
-					const unique = [...new Set(srcs)].slice(0, 8);
+					const unique = [...new Set(srcs)].slice(0, 12);
 					unique.forEach((src) => prefetchImage(new URL(src, url).href));
 				} catch {
 					// ignore
@@ -176,7 +176,7 @@ const {
 
 			const prefetchInitialPosts = () => {
 				if (!canPrefetch()) return;
-				const links = Array.from(document.querySelectorAll("a[data-prefetch='post']")).slice(0, 5);
+				const links = Array.from(document.querySelectorAll("a[data-prefetch='post']")).slice(0, 8);
 				const run = () => links.forEach((link) => prefetchPage(link.href, { images: true }));
 				if ("requestIdleCallback" in window) {
 					window.requestIdleCallback(run, { timeout: 2000 });
