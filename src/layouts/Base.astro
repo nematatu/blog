@@ -37,7 +37,13 @@ const {
 		</main>
 		<Footer />
 		<script is:inline>
+			const hasTwitterEmbeds = () =>
+				!!document.querySelector(
+					"blockquote.twitter-tweet, .twitter-timeline, [data-twitter-embed]",
+				);
+
 			const loadTwitterWidgets = () => {
+				if (!hasTwitterEmbeds()) return;
 				if (window.twttr?.widgets) {
 					window.twttr.widgets.load();
 					return;
@@ -214,11 +220,15 @@ const {
 			};
 
 			const onPageLoad = () => {
-				loadTwitterWidgets();
 				initImageLightbox();
 				bindPrefetchListeners();
 				prefetchInitialPosts();
 				prefetchVisiblePosts();
+				if ("requestIdleCallback" in window) {
+					window.requestIdleCallback(loadTwitterWidgets, { timeout: 2000 });
+				} else {
+					setTimeout(loadTwitterWidgets, 1200);
+				}
 			};
 
 			window.addEventListener("load", onPageLoad);
