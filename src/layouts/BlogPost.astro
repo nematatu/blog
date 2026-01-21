@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { post, headings, readingTime } = Astro.props;
-const { ogImage, title, description, updatedDate, publishDate } = post.data;
+const { ogImage, title, description, updatedDate, publishDate, coverImage } = post.data;
 const safePublishDate = publishDate instanceof Date ? publishDate : new Date(publishDate);
 const safeUpdatedDate = updatedDate
 	? updatedDate instanceof Date
@@ -22,6 +22,8 @@ const safeUpdatedDate = updatedDate
 		: new Date(updatedDate)
 	: undefined;
 const socialImage = ogImage ?? `/og-image/${post.id}.png`;
+const coverSrc =
+	typeof coverImage?.src === "string" ? coverImage.src : coverImage?.src?.src;
 const articleDate = (safeUpdatedDate ?? safePublishDate).toISOString();
 ---
 
@@ -30,6 +32,7 @@ const articleDate = (safeUpdatedDate ?? safePublishDate).toISOString();
 		articleDate,
 		description,
 		ogImage: socialImage,
+		preloadImage: coverSrc,
 		title,
 	}}
 >
