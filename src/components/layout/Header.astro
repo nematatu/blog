@@ -1,5 +1,4 @@
 ---
-import Search from "@/components/Search.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import { menuLinks } from "@/site.config";
 import { siteConfig } from "../../site.config";
@@ -13,7 +12,7 @@ import { siteConfig } from "../../site.config";
 			data-prefetch="page"
 			href="/"
 		>
-			<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[80px] sm:w-[80px]">
+			<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[60px] sm:w-[60px]">
 				<img
 					src="/logo.jpeg"
 					alt="Logo"
@@ -23,9 +22,9 @@ import { siteConfig } from "../../site.config";
 				/>
 			</span>
 		</a>
-		<div class="flex flex-col justify-center text-left sm:space-y-4">
-      <a aria-current={Astro.url.pathname === "/" ? "page" : false} class="inline-block text-right" data-prefetch="page" href="/">
-			  <span class="text-lg font-bold sm:text-2xl tracking-widest font-hiragino">{siteConfig.title}</span>
+		<div class="flex flex-col justify-center text-left sm:space-y-2">
+      <a aria-current={Astro.url.pathname === "/" ? "page" : false} class="inline-block text-center" data-prefetch="page" href="/">
+			  <span class="text-lg font-bold sm:text-xl tracking-widest font-hiragino">{siteConfig.title}</span>
       </a>
 			<nav
 				aria-label="Main menu"

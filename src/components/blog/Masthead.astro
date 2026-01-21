@@ -15,14 +15,14 @@ const {
 
 const cover = data.coverImage;
 const coverSrc = cover?.src;
-const isRemoteCover = typeof coverSrc === "string";
+const isRemoteCover = (value: unknown): value is string => typeof value === "string";
 
 ---
 
 {
-	cover && (
-		<div class="mb-20 aspect-video">
-			{isRemoteCover ? (
+	coverSrc && (
+		<div class="mb-20 aspect-video mx-auto w-full max-w-3xl">
+			{isRemoteCover(coverSrc) ? (
 				<img
 					alt={cover.alt}
 					class="h-full w-full object-cover"
