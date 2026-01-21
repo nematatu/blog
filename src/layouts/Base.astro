@@ -10,14 +10,21 @@ import type { SiteMeta } from "@/types";
 interface Props {
 	meta: SiteMeta;
 	showHeader?: boolean;
-	showHeaderImage?: boolean;
+	headerImage?: string | undefined;
+	headerOverlay?: boolean | undefined;
 }
 
 const {
 	meta: { articleDate, description = siteConfig.description, ogImage, preloadImage, title },
 	showHeader = true,
-	showHeaderImage = true,
+	headerImage,
+	headerOverlay = false,
 } = Astro.props;
+
+const headerProps = {
+	...(headerImage ? { imageUrl: headerImage } : {}),
+	...(headerOverlay ? { overlay: true } : {}),
+};
 ---
 
 <html class="scroll-smooth" lang={siteConfig.lang}>
@@ -35,7 +42,7 @@ const {
 	>
 		<ThemeProvider />
 		<SkipLink />
-		{showHeader && <Header showImage={showHeaderImage} />}
+		{showHeader && <Header {...headerProps} />}
 		<main id="main">
 			<slot />
 		</main>

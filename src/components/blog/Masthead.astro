@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+// import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "@/components/FormattedDate.astro";
 
@@ -13,38 +13,38 @@ const {
 	readingTime,
 } = Astro.props;
 
-const cover = data.coverImage;
-const coverSrc = cover?.src;
-const isRemoteCover = (value: unknown): value is string => typeof value === "string";
+// const cover = data.coverImage;
+// const coverSrc = cover?.src;
+// const isRemoteCover = (value: unknown): value is string => typeof value === "string";
 
 ---
 
-{
-	coverSrc && (
-		<div class="mb-10 aspect-video mx-auto w-full max-w-3xl">
-			{isRemoteCover(coverSrc) ? (
-				<img
-					alt={cover.alt}
-					class="h-full w-full object-cover"
-					decoding="sync"
-					fetchpriority="high"
-					loading="eager"
-					src={coverSrc}
-				/>
-			) : (
-				<Image
-					alt={cover.alt}
-					layout="constrained"
-					width={748}
-					height={420}
-					decoding="sync"
-					loading="eager"
-					src={coverSrc}
-				/>
-			)}
-		</div>
-	)
-}
+<!-- { -->
+<!-- 	coverSrc && ( -->
+<!-- 		<div class="mb-10 aspect-video mx-auto w-full max-w-3xl"> -->
+<!-- 			{isRemoteCover(coverSrc) ? ( -->
+<!-- 				<img -->
+<!-- 					alt={cover.alt} -->
+<!-- 					class="h-full w-full object-cover" -->
+<!-- 					decoding="sync" -->
+<!-- 					fetchpriority="high" -->
+<!-- 					loading="eager" -->
+<!-- 					src={coverSrc} -->
+<!-- 				/> -->
+<!-- 			) : ( -->
+<!-- 				<Image -->
+<!-- 					alt={cover.alt} -->
+<!-- 					layout="constrained" -->
+<!-- 					width={748} -->
+<!-- 					height={420} -->
+<!-- 					decoding="sync" -->
+<!-- 					loading="eager" -->
+<!-- 					src={coverSrc} -->
+<!-- 				/> -->
+<!-- 			)} -->
+<!-- 		</div> -->
+<!-- 	) -->
+<!-- } -->
 {data.draft ? <span class="text-base text-red-500">(Draft)</span> : null}
 <h1 class="title text-4xl my-6">
 	{data.title}

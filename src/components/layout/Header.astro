@@ -4,25 +4,36 @@ import { menuLinks } from "@/site.config";
 import { siteConfig } from "../../site.config";
 
 interface Props {
-	showImage?: boolean;
+	imageUrl?: string | undefined;
+	overlay?: boolean | undefined;
 }
 
-const headerImage =
-	"https://assets.blog.amatatu.com/CAAFF0C2-2078-41F0-9511-D6CC62C53EB5_1_105_c.jpeg"
+const defaultHeaderImage =
+	"https://assets.blog.amatatu.com/CAAFF0C2-2078-41F0-9511-D6CC62C53EB5_1_105_c.jpeg";
 
-const { showImage = true } = Astro.props;
+const { imageUrl, overlay = false } = Astro.props;
+const headerImage = imageUrl ?? defaultHeaderImage;
 
-const headerClass = showImage
-	? "group relative mb-10 pt-24 sm:pt-12 bg-cover bg-center bg-no-repeat rounded-md"
-	: "group relative mb-10";
-const headerStyle = showImage ? `background-image: url(${headerImage});` : undefined;
-const rowClass = showImage
-	? "flex flex-wrap items-center gap-4 sm:gap-6 px-2 py-2 sm:px-3 sm:py-3"
-	: "flex flex-wrap items-center gap-4 sm:gap-6";
+const headerTextColor = "oklch(83.54% 0 264)";
+const headerAccentColor = "oklch(70.91% 0.1415 163.7)";
+
+const headerClass =
+	"group relative mb-5 pt-10 sm:pt-12 bg-cover bg-center bg-no-repeat rounded-md";
+const headerStyle = `background-image: url(${headerImage}); color: ${headerTextColor};`;
+const rowClass =
+	"relative z-10 flex flex-wrap items-center gap-4 sm:gap-6 px-2 py-2 sm:px-3 sm:py-3";
 const identityClass = "flex items-center sm:space-x-4";
 ---
 
 <header class={headerClass} id="main-header" style={headerStyle}>
+	{
+		overlay && (
+			<div
+				aria-hidden="true"
+				class="pointer-events-none absolute inset-0 rounded-md bg-black/40"
+			></div>
+		)
+	}
 	<div class={rowClass}>
 		<div class={identityClass}>
 			<!-- <a -->
@@ -58,12 +69,13 @@ const identityClass = "flex items-center sm:space-x-4";
 					aria-label="Main menu"
 					class="bg-global-bg absolute -inset-x-4 top-full mt-2 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
 					id="navigation-menu"
+					style={`color: ${headerAccentColor};`}
 				>
 					{
 						menuLinks.map((link) => (
 							<a
 								aria-current={Astro.url.pathname === link.path ? "page" : false}
-								class="text-accent px-2 py-4 font-semibold sm:py-0 sm:underline-offset-2 sm:hover:underline"
+								class="px-2 py-4 font-semibold sm:py-0 sm:underline-offset-2 sm:hover:underline"
 								data-prefetch="page"
 								href={link.path}
 							>
