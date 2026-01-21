@@ -12,12 +12,10 @@ const postsDir = path.join(rootDir, "src", "content", "post");
 const rl = readline.createInterface({ input, output });
 
 function formatDate(date = new Date()) {
-	const fmt = new Intl.DateTimeFormat("en-GB", {
-		day: "2-digit",
-		month: "short",
-		year: "numeric",
-	});
-	return fmt.format(date);
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	return `${year}-${month}-${day}`;
 }
 
 async function ask(question, { required = false, defaultValue = "" } = {}) {
@@ -49,7 +47,7 @@ async function main() {
 	}
 
 	const title = await ask("title", { required: true });
-	const description = await ask("description", { required: true });
+	const description = await ask("description");
 	const publishDate = formatDate();
 	const tagInput = await ask("tags（comma separated）");
 
@@ -64,7 +62,7 @@ async function main() {
 	const lines = [
 		"---",
 		`title: "${title}"`,
-		`description: "${description}"`,
+		...(description ? [`description: "${description}"`] : []),
 		`publishDate: "${publishDate}"`,
     `draft: true`,
 	];

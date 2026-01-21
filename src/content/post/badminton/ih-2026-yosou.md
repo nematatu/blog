@@ -1,6 +1,5 @@
 ---
 title: "インハイ2026団体予想"
-description: "優勝予想"
 publishDate: "2025-08-05"
 tags: ["バドミントン"]
 ---
