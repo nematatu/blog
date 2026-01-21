@@ -52,6 +52,13 @@ const paginationProps = {
 
 const groupedByYear = groupPostsByYear(page.data);
 const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
+
+let prerenderBudget = 2;
+const usePrerender = () => {
+	if (prerenderBudget <= 0) return false;
+	prerenderBudget -= 1;
+	return true;
+};
 ---
 
 <PageLayout meta={meta}>
@@ -71,7 +78,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 						<ul class="space-y-4" role="list">
 							{pinnedPosts.map((p) => (
 								<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
-									<PostPreview post={p} />
+									<PostPreview post={p} prerender={usePrerender()} />
 								</li>
 							))}
 						</ul>
@@ -88,7 +95,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 						<ul class="mt-5 space-y-4 text-start">
 							{groupedByYear[yearKey]?.map((p) => (
 								<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
-									<PostPreview post={p} />
+									<PostPreview post={p} prerender={usePrerender()} />
 								</li>
 							))}
 						</ul>

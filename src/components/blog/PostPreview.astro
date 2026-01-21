@@ -7,9 +7,17 @@ import FormattedDate from "@/components/FormattedDate.astro";
 type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & {
 	post: CollectionEntry<"post">;
 	withDesc?: boolean;
+	prefetch?: "post" | "page";
+	prerender?: boolean;
 };
 
-const { as: Tag = "div", post, withDesc = false } = Astro.props;
+const {
+	as: Tag = "div",
+	post,
+	withDesc = false,
+	prefetch = "post",
+	prerender = false,
+} = Astro.props;
 ---
 
 <FormattedDate
@@ -21,7 +29,12 @@ const { as: Tag = "div", post, withDesc = false } = Astro.props;
 	<div class="min-w-0">
 		<Tag>
 			{post.data.draft && <span class="text-red-500">(Draft) </span>}
-			<a class="cactus-link" href={`/posts/${post.id}/`}>
+			<a
+				class="cactus-link"
+				data-prefetch={prefetch}
+				data-prerender={prerender ? "true" : undefined}
+				href={`/posts/${post.id}/`}
+			>
 				{post.data.title}
 			</a>
 		</Tag>

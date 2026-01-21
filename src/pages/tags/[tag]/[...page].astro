@@ -49,6 +49,13 @@ const paginationProps = {
 		},
 	}),
 };
+
+let prerenderBudget = 2;
+const usePrerender = () => {
+	if (prerenderBudget <= 0) return false;
+	prerenderBudget -= 1;
+	return true;
+};
 ---
 
 <PageLayout meta={meta}>
@@ -70,7 +77,7 @@ const paginationProps = {
 		{
 			page.data.map((p) => (
 				<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
-					<PostPreview as="h2" post={p} />
+					<PostPreview as="h2" post={p} prerender={usePrerender()} />
 				</li>
 			))
 		}

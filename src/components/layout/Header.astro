@@ -10,7 +10,7 @@ import { siteConfig } from "../../site.config";
 		<a
 			aria-current={Astro.url.pathname === "/" ? "page" : false}
 			class="inline-flex items-center sm:inline-block sm:grayscale sm:hover:filter-none"
-			data-prefetch
+			data-prefetch="page"
 			href="/"
 		>
 			<span class="me-3 inline-block h-[40px] w-[40px] overflow-hidden rounded-lg sm:h-[80px] sm:w-[80px]">
@@ -24,7 +24,7 @@ import { siteConfig } from "../../site.config";
 			</span>
 		</a>
 		<div class="flex flex-col justify-center text-left sm:space-y-4">
-      <a aria-current={Astro.url.pathname === "/" ? "page" : false} class="inline-block text-right" data-prefetch href="/">
+      <a aria-current={Astro.url.pathname === "/" ? "page" : false} class="inline-block text-right" data-prefetch="page" href="/">
 			  <span class="text-lg font-bold sm:text-2xl tracking-widest font-hiragino">{siteConfig.title}</span>
       </a>
 			<nav
@@ -37,7 +37,7 @@ import { siteConfig } from "../../site.config";
 						<a
 							aria-current={Astro.url.pathname === link.path ? "page" : false}
 							class="text-accent px-2 py-4 font-semibold sm:py-0 sm:underline-offset-2 sm:hover:underline"
-							data-prefetch
+							data-prefetch="page"
 							href={link.path}
 						>
 							{link.title}
