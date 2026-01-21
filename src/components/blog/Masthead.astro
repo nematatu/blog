@@ -26,8 +26,9 @@ const isRemoteCover = typeof coverSrc === "string";
 				<img
 					alt={cover.alt}
 					class="h-full w-full object-cover"
-					decoding="async"
-					loading="lazy"
+					decoding="sync"
+					fetchpriority="high"
+					loading="eager"
 					src={coverSrc}
 				/>
 			) : (
@@ -36,8 +37,8 @@ const isRemoteCover = typeof coverSrc === "string";
 					layout="constrained"
 					width={748}
 					height={420}
-					decoding="async"
-					loading="lazy"
+					decoding="sync"
+					loading="eager"
 					src={coverSrc}
 				/>
 			)}
