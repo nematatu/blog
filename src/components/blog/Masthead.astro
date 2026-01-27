@@ -11,13 +11,9 @@ interface Props {
 const {
 	content: { data },
 } = Astro.props;
-
-// const cover = data.coverImage;
-// const coverSrc = cover?.src;
-// const isRemoteCover = (value: unknown): value is string => typeof value === "string";
 ---
 
-<!-- { --><!-- 	coverSrc && ( --><!-- 		<div class="mb-10 aspect-video mx-auto w-full max-w-3xl"> --><!-- 			{isRemoteCover(coverSrc) ? ( --><!-- 				<img --><!-- 					alt={cover.alt} --><!-- 					class="h-full w-full object-cover" --><!-- 					decoding="sync" --><!-- 					fetchpriority="high" --><!-- 					loading="eager" --><!-- 					src={coverSrc} --><!-- 				/> --><!-- 			) : ( --><!-- 				<Image --><!-- 					alt={cover.alt} --><!-- 					layout="constrained" --><!-- 					width={748} --><!-- 					height={420} --><!-- 					decoding="sync" --><!-- 					loading="eager" --><!-- 					src={coverSrc} --><!-- 				/> --><!-- 			)} --><!-- 		</div> --><!-- 	) --><!-- } -->{
+{
 	data.draft ? <span class="text-base text-red-500">(Draft)</span> : null
 }
 <h1 class="title mb-2 text-2xl sm:mt-4 sm:text-4xl">
