@@ -3,7 +3,6 @@ import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/layout/Footer.astro";
 import Header from "@/components/layout/Header.astro";
 import SkipLink from "@/components/SkipLink.astro";
-import ThemeProvider from "@/components/ThemeProvider.astro";
 import { siteConfig } from "@/site.config";
 import type { SiteMeta } from "@/types";
 
@@ -40,7 +39,6 @@ const headerProps = {
 	<body
 		class="bg-global-bg text-global-text mx-auto flex min-h-screen max-w-4xl flex-col px-4 pt-8 font-mono text-sm font-normal antialiased sm:px-8"
 	>
-		<ThemeProvider />
 		<SkipLink />
 		{showHeader && <Header {...headerProps} />}
 		<main id="main">
@@ -53,167 +51,19 @@ const headerProps = {
 					"blockquote.twitter-tweet, .twitter-timeline, [data-twitter-embed]",
 				);
 
-			const loadTwitterWidgets = () => {
-				if (!hasTwitterEmbeds()) return;
+			if (hasTwitterEmbeds()) {
 				if (window.twttr?.widgets) {
 					window.twttr.widgets.load();
-					return;
+				} else if (!document.querySelector("script[data-twitter-wjs]")) {
+					const script = document.createElement("script");
+					script.src = "https://platform.twitter.com/widgets.js";
+					script.async = true;
+					script.charset = "utf-8";
+					script.dataset.twitterWjs = "true";
+					script.onload = () => window.twttr?.widgets?.load();
+					document.body.appendChild(script);
 				}
-				if (document.querySelector("script[data-twitter-wjs]")) return;
-				const script = document.createElement("script");
-				script.src = "https://platform.twitter.com/widgets.js";
-				script.async = true;
-				script.charset = "utf-8";
-				script.dataset.twitterWjs = "true";
-				script.onload = () => window.twttr?.widgets?.load();
-				document.body.appendChild(script);
-			};
-
-			const observeTwitterEmbeds = () => {
-				const embeds = Array.from(
-					document.querySelectorAll(
-						"blockquote.twitter-tweet, .twitter-timeline, [data-twitter-embed]",
-					),
-				);
-				if (embeds.length === 0) return;
-				if (!("IntersectionObserver" in window)) {
-					loadTwitterWidgets();
-					return;
-				}
-				const observer = new IntersectionObserver(
-					(entries) => {
-						if (!entries.some((entry) => entry.isIntersecting)) return;
-						observer.disconnect();
-						loadTwitterWidgets();
-					},
-					{ rootMargin: "200px 0px" },
-				);
-				embeds.forEach((embed) => observer.observe(embed));
-			};
-
-			const initImageLightbox = () => {
-				if (document.body.dataset.lightboxBound) return;
-				if (!document.querySelector("article img")) return;
-				document.body.dataset.lightboxBound = "true";
-
-				const overlay = document.createElement("div");
-				overlay.className = "image-lightbox";
-				overlay.dataset.open = "false";
-				const overlayImg = document.createElement("img");
-				overlayImg.alt = "";
-				overlay.appendChild(overlayImg);
-				document.body.appendChild(overlay);
-
-				const close = () => {
-					overlay.dataset.open = "false";
-					document.body.classList.remove("image-lightbox-open");
-				};
-
-				overlay.addEventListener("click", (event) => {
-					event.preventDefault();
-					close();
-				});
-
-				document.addEventListener("keydown", (event) => {
-					if (event.key === "Escape" && overlay.dataset.open === "true") close();
-				});
-
-				document.addEventListener(
-					"click",
-					(event) => {
-						const target = event.target;
-						if (!(target instanceof HTMLElement)) return;
-						const img = target.closest("img");
-						if (!img) return;
-						if (!img.closest("article")) return;
-
-						event.preventDefault();
-						overlayImg.src = img.currentSrc || img.src;
-						overlayImg.alt = img.getAttribute("alt") ?? "";
-						overlay.dataset.open = "true";
-						document.body.classList.add("image-lightbox-open");
-					},
-					{ capture: true },
-				);
-			};
-
-			const prefetchState = {
-				pages: new Set(),
-				pending: null,
-			};
-
-			const PREFETCH_ENABLED = false;
-
-			const canPrefetch = () => {
-				const connection = navigator.connection;
-				if (connection?.saveData) return false;
-				if (connection?.effectiveType && /2g/.test(connection.effectiveType)) return false;
-				if (window.matchMedia?.("(prefers-reduced-data: reduce)")?.matches) return false;
-				if (document.visibilityState !== "visible") return false;
-				return true;
-			};
-
-			const prefetchPage = async (url) => {
-				if (!url) return;
-				if (prefetchState.pages.size >= 6) return;
-				let resolved;
-				try {
-					resolved = new URL(url, window.location.href);
-				} catch {
-					return;
-				}
-				if (resolved.origin !== window.location.origin) return;
-				if (prefetchState.pages.has(resolved.href)) return;
-				prefetchState.pages.add(resolved.href);
-				try {
-					await fetch(resolved.href, { credentials: "same-origin", cache: "force-cache" });
-				} catch {
-					// ignore
-				}
-			};
-
-			const schedulePrefetch = (url) => {
-				if (!PREFETCH_ENABLED) return;
-				if (!canPrefetch()) return;
-				if (prefetchState.pending === url) return;
-				prefetchState.pending = url;
-				const run = () => {
-					prefetchState.pending = null;
-					prefetchPage(url);
-				};
-				if ("requestIdleCallback" in window) {
-					window.requestIdleCallback(run, { timeout: 1500 });
-				} else {
-					setTimeout(run, 200);
-				}
-			};
-
-			const bindPrefetchListeners = () => {
-				if (!PREFETCH_ENABLED) return;
-				if (document.body.dataset.prefetchBound) return;
-				document.body.dataset.prefetchBound = "true";
-
-				const handler = (event) => {
-					const target = event.target;
-					if (!(target instanceof HTMLElement)) return;
-					const link = target.closest("a[data-prefetch]");
-					if (!(link instanceof HTMLAnchorElement)) return;
-					schedulePrefetch(link.href);
-				};
-
-				document.addEventListener("pointerover", handler, { passive: true, capture: true });
-				document.addEventListener("touchstart", handler, { passive: true, capture: true });
-				document.addEventListener("focusin", handler);
-			};
-
-			const onPageLoad = () => {
-				initImageLightbox();
-				bindPrefetchListeners();
-				observeTwitterEmbeds();
-			};
-
-			window.addEventListener("load", onPageLoad);
-			document.addEventListener("astro:page-load", onPageLoad);
+			}
 		</script>
 	</body>
 </html>
