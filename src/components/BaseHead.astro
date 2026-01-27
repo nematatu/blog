@@ -19,6 +19,19 @@ const socialImageURL = new URL(ogImage ? ogImage : "/ogp.png", siteURL).href;
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <title>{siteTitle}</title>
 
+{/* Speculation Rules for near-instant navigations (supported browsers only) */}
+<script type="speculationrules">
+	{
+		"prerender": [
+			{
+				"source": "document",
+				"where": { "selector_matches": "a[data-prerender]" },
+				"eagerness": "moderate"
+			}
+		]
+	}
+</script>
+
 {/* Icons */}
 <link href="/logo.jpeg" rel="icon" type="image/svg+xml" />
 {
