@@ -65,5 +65,59 @@ const headerProps = {
 				}
 			}
 		</script>
+		<script is:inline>
+			const prefetched = new Set();
+			const MAX_PREFETCH = 8;
+
+			const prefetchPage = (url) => {
+				if (!url || prefetched.size >= MAX_PREFETCH) return;
+				let resolved;
+				try {
+					resolved = new URL(url, window.location.href);
+				} catch {
+					return;
+				}
+				if (resolved.origin !== window.location.origin) return;
+				if (prefetched.has(resolved.href)) return;
+				prefetched.add(resolved.href);
+				fetch(resolved.href, { credentials: "same-origin", cache: "force-cache" }).catch(
+					() => {},
+				);
+			};
+
+			const schedulePrefetch = (url) => {
+				if (!url) return;
+				if ("requestIdleCallback" in window) {
+					window.requestIdleCallback(() => prefetchPage(url), { timeout: 1200 });
+				} else {
+					setTimeout(() => prefetchPage(url), 150);
+				}
+			};
+
+			const onHint = (event) => {
+				const target = event.target;
+				if (!(target instanceof HTMLElement)) return;
+				const link = target.closest("a[data-prefetch]");
+				if (!(link instanceof HTMLAnchorElement)) return;
+				schedulePrefetch(link.href);
+			};
+
+			const warmStart = () => {
+				const links = Array.from(document.querySelectorAll("a[data-prefetch]")).slice(0, 3);
+				for (const link of links) {
+					if (!(link instanceof HTMLAnchorElement)) continue;
+					schedulePrefetch(link.href);
+				}
+			};
+
+			document.addEventListener("pointerover", onHint, { passive: true, capture: true });
+			document.addEventListener("touchstart", onHint, { passive: true, capture: true });
+			document.addEventListener("focusin", onHint);
+			if (document.readyState === "complete") {
+				warmStart();
+			} else {
+				window.addEventListener("load", warmStart, { once: true });
+			}
+		</script>
 	</body>
 </html>

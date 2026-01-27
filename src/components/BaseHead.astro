@@ -6,14 +6,13 @@ import "@/styles/global.css";
 
 type Props = SiteMeta;
 
-const { articleDate, description, ogImage, preloadImage, title } = Astro.props;
+const { articleDate, description, ogImage, title } = Astro.props;
 
 const titleSeparator = "•";
 const siteTitle = `${title} ${titleSeparator} ${siteConfig.title}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const siteURL = Astro.site ?? Astro.url;
 const socialImageURL = new URL(ogImage ? ogImage : "/ogp.png", siteURL).href;
-const preloadImageURL = preloadImage ? new URL(preloadImage, siteURL).href : null;
 ---
 
 <meta charset="utf-8" />
@@ -36,13 +35,6 @@ const preloadImageURL = preloadImage ? new URL(preloadImage, siteURL).href : nul
 
 {/* Canonical URL */}
 <link href={canonicalURL} rel="canonical" />
-
-{/* Preload key image */}
-{preloadImageURL && <link rel="preload" as="image" href={preloadImageURL} />}
-
-{/* Preconnect for external image hosts */}
-<link href="https://assets.blog.amatatu.com" rel="preconnect" crossorigin />
-<link href="https://assets.blog.amatatu.com" rel="dns-prefetch" />
 
 {/* Primary Meta Tags */}
 <meta content={siteTitle} name="title" />

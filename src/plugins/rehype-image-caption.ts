@@ -5,6 +5,14 @@ function isElement(node: unknown): node is Element {
 	return !!node && typeof node === "object" && (node as Element).type === "element";
 }
 
+function applyLazyImageAttrs(node: Element) {
+	if (node.tagName !== "img") return;
+	if (!node.properties) node.properties = {};
+	if (!("loading" in node.properties)) node.properties.loading = "lazy";
+	if (!("decoding" in node.properties)) node.properties.decoding = "async";
+	if (!("fetchpriority" in node.properties)) node.properties.fetchpriority = "low";
+}
+
 function isWhitespaceText(node: unknown): boolean {
 	return !!node && typeof node === "object" && (node as { type?: string; value?: string }).type === "text" && ((node as { value?: string }).value ?? "").trim().length === 0;
 }
@@ -118,6 +126,13 @@ function wrapImageWithCaption(parent: Parent) {
 		if (node.tagName === "p") {
 			const split = splitParagraphWithInlineCaption(node);
 			if (split) {
+				for (const item of split) {
+					if (!isElement(item)) continue;
+					if (item.tagName === "figure") {
+						const img = item.children?.[0];
+						if (img && isElement(img)) applyLazyImageAttrs(img);
+					}
+				}
 				parent.children.splice(i, 1, ...split);
 				i += split.length - 1;
 				continue;
@@ -125,6 +140,7 @@ function wrapImageWithCaption(parent: Parent) {
 		}
 
 		if (node.tagName === "img" && isElement(next) && isCaptionParagraph(next)) {
+			applyLazyImageAttrs(node);
 			const figure: Element = {
 				type: "element",
 				tagName: "figure",
@@ -142,6 +158,10 @@ function wrapImageWithCaption(parent: Parent) {
 
 			parent.children.splice(i, 2, figure);
 			continue;
+		}
+
+		if (node.tagName === "img") {
+			applyLazyImageAttrs(node);
 		}
 
 		if ("children" in node && Array.isArray(node.children)) {
