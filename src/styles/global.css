@@ -144,6 +144,37 @@
 	}
 }
 
+@layer utilities {
+	.prose table {
+		width: 100%;
+		border-collapse: collapse;
+		margin-block: 1.25rem;
+		font-size: 0.95em;
+	}
+	.prose table th,
+	.prose table td {
+		border: 1px solid #d1d5db;
+		padding: 0.35rem 0.6rem;
+		text-align: left;
+		vertical-align: top;
+	}
+	.prose table th:first-child,
+	.prose table td:first-child {
+		padding-left: 0.8rem;
+	}
+	.prose table thead th {
+		background: #f3f4f6;
+		font-weight: 600;
+	}
+	[data-theme="dark"] .prose table th,
+	[data-theme="dark"] .prose table td {
+		border-color: #3f3f46;
+	}
+	[data-theme="dark"] .prose table thead th {
+		background: #27272a;
+	}
+}
+
 @utility prose {
 	--tw-prose-body: var(--color-global-text);
 	--tw-prose-bold: var(--color-global-text);
