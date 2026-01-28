@@ -26,7 +26,7 @@ export default defineConfig({
 	site: siteConfig.url,
 
 	image: {
-		domains: ["webmention.io"],
+		domains: ["webmention.io, assets.blog.amatatu.com"],
 	},
 
 	integrations: [
