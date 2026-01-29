@@ -78,6 +78,7 @@ const { title, description, image = "/astro-micro.jpg" } = Astro.props;
     updateThemeButtons();
     addCopyCodeButtons();
     setGiscusTheme();
+    loadTwitterWidgets();
 
     const backToTop = document.getElementById("back-to-top");
     backToTop?.addEventListener("click", (event) => scrollToTop(event));
@@ -260,6 +261,28 @@ const { title, description, image = "/astro-micro.jpg" } = Astro.props;
       url.searchParams.set("theme", isDark ? "dark" : "light");
       giscus.src = url.toString();
     }
+  };
+
+  const loadTwitterWidgets = () => {
+    if (!document.querySelector(".twitter-tweet")) return;
+
+    if (window.twttr?.widgets) {
+      window.twttr.widgets.load();
+      return;
+    }
+
+    if (window.__twitterWidgetsLoading) return;
+    window.__twitterWidgetsLoading = true;
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://platform.twitter.com/widgets.js";
+    script.charset = "utf-8";
+    script.onload = () => {
+      window.__twitterWidgetsLoading = false;
+      window.twttr?.widgets?.load();
+    };
+    document.head.appendChild(script);
   };
 
   document.addEventListener("DOMContentLoaded", () => init());

@@ -80,7 +80,7 @@ export default function remarkTwitterCard() {
       if (!tweetUrl) return;
 
       const safeUrl = escapeHtml(tweetUrl);
-      const html = `<div class="twitter-card not-prose"><blockquote class="twitter-tweet"><a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a></blockquote></div><script>(function(){if(window.twttr&&window.twttr.widgets){window.twttr.widgets.load();return;}if(window.__twitterWidgetsLoading){return;}window.__twitterWidgetsLoading=true;var s=document.createElement('script');s.async=true;s.src='https://platform.twitter.com/widgets.js';s.charset='utf-8';s.onload=function(){window.__twitterWidgetsLoading=false;if(window.twttr&&window.twttr.widgets){window.twttr.widgets.load();}};document.head.appendChild(s);}());</script>`;
+      const html = `<div class="twitter-card not-prose"><blockquote class="twitter-tweet"><a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a></blockquote></div>`;
 
       parent.children[index] = { type: "html", value: html };
     });
