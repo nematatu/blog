@@ -2,321 +2,135 @@ import { Resvg } from "@resvg/resvg-js";
 import type { APIContext, InferGetStaticPropsType } from "astro";
 import { getCollection } from "astro:content";
 import satori, { type SatoriOptions } from "satori";
-import { createHash } from "node:crypto";
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { SITE } from "@consts";
 
 export const prerender = true;
 
-const ogCachePath = path.resolve(process.cwd(), ".cache/og-image.json");
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
 
-function loadOgCache(): Record<string, string> {
-  try {
-    return JSON.parse(readFileSync(ogCachePath, "utf-8")) as Record<
-      string,
-      string
-    >;
-  } catch {
-    return {};
-  }
-}
+const fontPath = (fileName: string) =>
+  path.resolve(process.cwd(), "src/assets", fileName);
 
-function saveOgCache(cache: Record<string, string>) {
-  mkdirSync(path.dirname(ogCachePath), { recursive: true });
-  writeFileSync(ogCachePath, JSON.stringify(cache, null, 2));
-}
+const sansRegularPath = fontPath("Kuramubon.otf");
+const sansBoldPath = fontPath("MOBO-Bold.otf");
 
-function ogHash(input: unknown) {
-  return createHash("sha256").update(JSON.stringify(input)).digest("hex");
-}
-
-function loadFontFromDir(
-  dirPath: string,
-  matcher: (fileName: string) => boolean,
-) {
-  if (!existsSync(dirPath)) return null;
-  const fileName = readdirSync(dirPath).find(matcher);
-  if (!fileName) return null;
-  return readFileSync(path.join(dirPath, fileName));
-}
-
-function loadFonts() {
-  const notoDir = path.resolve(
-    process.cwd(),
-    "node_modules/@fontsource/noto-sans-jp/files",
+if (!existsSync(sansRegularPath) || !existsSync(sansBoldPath)) {
+  throw new Error(
+    "OG font not found. Ensure src/assets/Kuramubon.otf and src/assets/MOBO-Bold.otf exist.",
   );
-  const geistSansDir = path.resolve(
-    process.cwd(),
-    "node_modules/@fontsource/geist-sans/files",
-  );
-  const geistMonoDir = path.resolve(
-    process.cwd(),
-    "node_modules/@fontsource/geist-mono/files",
-  );
-
-  const notoRegular =
-    loadFontFromDir(
-      notoDir,
-      (file) =>
-        file.includes("japanese") &&
-        file.includes("-400-") &&
-        file.endsWith(".woff"),
-    ) ??
-    loadFontFromDir(
-      notoDir,
-      (file) => file.includes("-400-") && file.endsWith(".woff"),
-    );
-
-  const notoBold =
-    loadFontFromDir(
-      notoDir,
-      (file) =>
-        file.includes("japanese") &&
-        file.includes("-700-") &&
-        file.endsWith(".woff"),
-    ) ??
-    loadFontFromDir(
-      notoDir,
-      (file) => file.includes("-700-") && file.endsWith(".woff"),
-    );
-
-  const geistRegular =
-    loadFontFromDir(
-      geistSansDir,
-      (file) =>
-        file.includes("latin") &&
-        file.includes("-400-") &&
-        file.endsWith(".woff"),
-    ) ??
-    loadFontFromDir(
-      geistSansDir,
-      (file) => file.includes("-400-") && file.endsWith(".woff"),
-    );
-
-  const geistBold =
-    loadFontFromDir(
-      geistSansDir,
-      (file) =>
-        file.includes("latin") &&
-        file.includes("-700-") &&
-        file.endsWith(".woff"),
-    ) ??
-    loadFontFromDir(
-      geistSansDir,
-      (file) => file.includes("-700-") && file.endsWith(".woff"),
-    );
-
-  const monoRegular =
-    loadFontFromDir(
-      geistMonoDir,
-      (file) =>
-        file.includes("latin") &&
-        file.includes("-400-") &&
-        file.endsWith(".woff"),
-    ) ??
-    loadFontFromDir(
-      geistMonoDir,
-      (file) => file.includes("-400-") && file.endsWith(".woff"),
-    );
-
-  const monoBold =
-    loadFontFromDir(
-      geistMonoDir,
-      (file) =>
-        file.includes("latin") &&
-        file.includes("-700-") &&
-        file.endsWith(".woff"),
-    ) ??
-    loadFontFromDir(
-      geistMonoDir,
-      (file) => file.includes("-700-") && file.endsWith(".woff"),
-    );
-
-  const sansName = notoRegular ? "Noto Sans JP" : "Geist Sans";
-  const sansRegular = notoRegular ?? geistRegular;
-  const sansBold = notoBold ?? geistBold ?? sansRegular;
-
-  if (!sansRegular) {
-    throw new Error("OG image font not found. Run npm install first.");
-  }
-
-  return {
-    sansName,
-    sansRegular,
-    sansBold: sansBold ?? sansRegular,
-    monoName: "Geist Mono",
-    monoRegular,
-    monoBold,
-  };
 }
 
-const fonts = loadFonts();
+const sansRegular = readFileSync(sansRegularPath);
+const sansBold = readFileSync(sansBoldPath);
 
-const ogOptions = {
-  height: 630,
-  width: 1200,
+const ogOptions: SatoriOptions = {
+  width: OG_WIDTH,
+  height: OG_HEIGHT,
   fonts: [
     {
-      data: fonts.sansRegular,
-      name: fonts.sansName,
+      data: sansRegular,
+      name: "OgJP",
       style: "normal" as const,
       weight: 400 as const,
     },
     {
-      data: fonts.sansBold,
-      name: fonts.sansName,
+      data: sansBold,
+      name: "OgJP",
       style: "normal" as const,
       weight: 700 as const,
     },
-    ...(fonts.monoRegular
-      ? [
-          {
-            data: fonts.monoRegular,
-            name: fonts.monoName,
-            style: "normal" as const,
-            weight: 400 as const,
-          },
-        ]
-      : []),
-    ...(fonts.monoBold
-      ? [
-          {
-            data: fonts.monoBold,
-            name: fonts.monoName,
-            style: "normal" as const,
-            weight: 700 as const,
-          },
-        ]
-      : []),
   ],
-} satisfies SatoriOptions;
+};
+
+type Child = string | number | boolean | null | undefined | Child[] | object;
 
 const h = (
   type: string,
   props: Record<string, unknown> | null,
-  ...children: unknown[]
+  ...children: Child[]
 ) => {
   const filteredChildren = children
     .flat()
     .filter((child) => child !== null && child !== false);
   const nextProps = { ...(props ?? {}) } as Record<string, unknown>;
+
   if (type === "div") {
-    const style = (nextProps.style ?? {}) as Record<string, unknown>;
-    if (!("display" in style)) {
-      nextProps.style = { ...style, display: "flex" };
+    const style = { ...(nextProps.style ?? {}) } as Record<string, unknown>;
+    if (style.display === undefined) {
+      style.display = "flex";
     }
+    nextProps.style = style;
   }
-  nextProps.children = filteredChildren;
-  return { type, props: nextProps };
+
+  return {
+    type,
+    props: {
+      ...nextProps,
+      children: filteredChildren,
+    },
+  };
 };
 
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("ja-JP", {
+const formatDate = (value: Date) =>
+  new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  })
-    .format(date)
-    .replaceAll("/", ".");
-}
+  }).format(value);
 
-const markup = (title: string, description: string, pubDate: string) =>
+const markup = (title: string, description: string, dateLabel: string) =>
   h(
     "div",
     {
       style: {
-        position: "relative",
-        width: "1200px",
-        height: "630px",
+        width: "100%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#0b0c0e",
-        color: "#e8eaed",
-        fontFamily: `${fonts.sansName}, ${fonts.monoName}`,
+        justifyContent: "space-between",
+        padding: "80px",
+        fontFamily: "OgJP",
+        backgroundColor: "#0b0f14",
+        color: "#f8fafc",
+        position: "relative",
+        overflow: "hidden",
+        border: "1px solid rgba(255,255,255,0.08)",
       },
     },
     h("div", {
       style: {
         position: "absolute",
-        inset: "0px",
-        backgroundImage:
-          "radial-gradient(600px 600px at 95% 0%, rgba(43, 188, 137, 0.25), rgba(11, 12, 14, 0) 70%)",
+        top: "-180px",
+        right: "-140px",
+        width: "520px",
+        height: "520px",
+        borderRadius: "9999px",
+        backgroundColor: "rgba(56,189,248,0.15)",
+      },
+    }),
+    h("div", {
+      style: {
+        position: "absolute",
+        bottom: "-140px",
+        left: "-120px",
+        width: "420px",
+        height: "420px",
+        borderRadius: "9999px",
+        backgroundColor: "rgba(99,102,241,0.12)",
       },
     }),
     h(
       "div",
       {
         style: {
-          position: "relative",
           display: "flex",
           flexDirection: "column",
-          flex: 1,
-          padding: "56px 64px",
-          justifyContent: "center",
-          gap: "20px",
-        },
-      },
-      h(
-        "div",
-        {
-          style: {
-            fontSize: "20px",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "#9aa0a6",
-            fontFamily: fonts.monoRegular ? fonts.monoName : fonts.sansName,
-          },
-        },
-        pubDate,
-      ),
-      h(
-        "div",
-        {
-          style: {
-            fontSize: "64px",
-            fontWeight: 700,
-            lineHeight: 1.15,
-            color: "#ffffff",
-            maxWidth: "980px",
-          },
-        },
-        title,
-      ),
-      description
-        ? h(
-            "div",
-            {
-              style: {
-                fontSize: "28px",
-                lineHeight: 1.4,
-                color: "#c9cacc",
-                maxWidth: "980px",
-              },
-            },
-            description,
-          )
-        : null,
-    ),
-    h(
-      "div",
-      {
-        style: {
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "28px 64px",
-          borderTop: "1px solid #1c2b2d",
-          backgroundColor: "#0f1113",
-          fontSize: "20px",
-          color: "#c9cacc",
+          gap: "22px",
+          maxWidth: "900px",
+          zIndex: 1,
         },
       },
       h(
@@ -326,8 +140,71 @@ const markup = (title: string, description: string, pubDate: string) =>
             display: "flex",
             alignItems: "center",
             gap: "12px",
-            fontWeight: 600,
-            color: "#e8eaed",
+            fontSize: "18px",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "#94a3b8",
+            fontFamily: "OgJP",
+          },
+        },
+        h("div", {
+          style: {
+            width: "44px",
+            height: "3px",
+            borderRadius: "9999px",
+            backgroundColor: "#38bdf8",
+          },
+        }),
+        "Article",
+      ),
+      h(
+        "div",
+        {
+          style: {
+            fontSize: "68px",
+            fontWeight: 700,
+            lineHeight: 1.05,
+            letterSpacing: "-0.02em",
+          },
+        },
+        title,
+      ),
+      h(
+        "div",
+        {
+          style: {
+            fontSize: "32px",
+            color: "#cbd5e1",
+            lineHeight: 1.5,
+            fontFamily: "OgJP",
+          },
+        },
+        description,
+      ),
+    ),
+    h(
+      "div",
+      {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "24px",
+          fontSize: "20px",
+          color: "#94a3b8",
+          zIndex: 1,
+        },
+      },
+      h(
+        "div",
+        {
+          style: {
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "24px",
+            color: "#e2e8f0",
+            fontFamily: "OgJP",
           },
         },
         SITE.TITLE,
@@ -336,11 +213,17 @@ const markup = (title: string, description: string, pubDate: string) =>
         "div",
         {
           style: {
-            fontSize: "18px",
-            color: "#9aa0a6",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "24px",
+            fontWeight: 500,
+            color: "#f1f5f9",
+            letterSpacing: "0.02em",
+            fontFamily: "OgJP",
           },
         },
-        SITE.DESCRIPTION,
+        dateLabel,
       ),
     ),
   );
@@ -349,24 +232,21 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 export async function GET(context: APIContext) {
   const { title, description, date } = context.props as Props;
-  const slugParam = context.params.slug;
-  const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam;
-
-  const safeDate = date instanceof Date ? date : new Date(date);
-  const pubDate = formatDate(safeDate);
-  const svg = await satori(markup(title, description, pubDate), ogOptions);
-  const pngBuffer = new Resvg(svg).render().asPng();
+  const resolvedDate = date ? new Date(date) : new Date();
+  const dateLabel = formatDate(resolvedDate);
+  const svg = await satori(
+    markup(title, description || SITE.DESCRIPTION, dateLabel),
+    ogOptions,
+  );
+  const pngBuffer = new Resvg(svg, {
+    textRendering: 1,
+    shapeRendering: 2,
+    imageRendering: 0,
+    dpi: 192,
+  })
+    .render()
+    .asPng();
   const png = new Uint8Array(pngBuffer);
-
-  if (slug) {
-    const outputPath = path.resolve(
-      process.cwd(),
-      "public/og-image",
-      `${slug}.png`,
-    );
-    mkdirSync(path.dirname(outputPath), { recursive: true });
-    writeFileSync(outputPath, png);
-  }
 
   return new Response(png, {
     headers: {
@@ -385,47 +265,19 @@ export async function getStaticPaths() {
     (project) => showDrafts || !project.data.draft,
   );
 
-  const cache = loadOgCache();
-  const nextCache: Record<string, string> = { ...cache };
-
   const entries = [
     ...blog.map((entry) => ({ entry, prefix: "blog" })),
     ...projects.map((entry) => ({ entry, prefix: "projects" })),
   ];
 
-  const paths = entries
+  return entries
     .filter(({ entry }) => !entry.data.ogImage)
-    .flatMap(({ entry, prefix }) => {
-      const payload = {
+    .map(({ entry, prefix }) => ({
+      params: { slug: `${prefix}/${entry.id}` },
+      props: {
         title: entry.data.title,
-        description: entry.data.description,
-        date: entry.data.date?.toISOString?.() ?? entry.data.date,
-      };
-      const hash = ogHash(payload);
-      const key = `${prefix}/${entry.id}`;
-
-      nextCache[key] = hash;
-
-      const outputPath = path.resolve(
-        process.cwd(),
-        "public/og-image",
-        `${key}.png`,
-      );
-      const needsUpdate = !existsSync(outputPath) || cache[key] !== hash;
-      if (!needsUpdate) return [];
-
-      return [
-        {
-          params: { slug: `${prefix}/${entry.id}` },
-          props: {
-            title: entry.data.title,
-            description: entry.data.description,
-            date: entry.data.date,
-          },
-        },
-      ];
-    });
-
-  saveOgCache(nextCache);
-  return paths;
+        description: entry.data.description ?? SITE.DESCRIPTION,
+        date: entry.data.date?.toISOString?.() ?? entry.data.date ?? null,
+      },
+    }));
 }
