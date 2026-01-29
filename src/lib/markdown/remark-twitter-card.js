@@ -56,6 +56,22 @@ function normalizeUrl(rawUrl) {
   return normalized;
 }
 
+function getTweetMeta(tweetUrl) {
+  try {
+    const url = new URL(tweetUrl);
+    const parts = url.pathname.split("/").filter(Boolean);
+    if (parts.length >= 3 && parts[1] === "status") {
+      return { user: parts[0], id: parts[2] };
+    }
+    if (parts.length >= 4 && parts[0] === "i" && parts[1] === "web" && parts[2] === "status") {
+      return { user: null, id: parts[3] };
+    }
+  } catch {
+    return { user: null, id: null };
+  }
+  return { user: null, id: null };
+}
+
 function getTweetUrl(node) {
   if (!node || node.type !== "paragraph") return null;
   if (!Array.isArray(node.children) || node.children.length !== 1) return null;
@@ -80,7 +96,10 @@ export default function remarkTwitterCard() {
       if (!tweetUrl) return;
 
       const safeUrl = escapeHtml(tweetUrl);
-      const html = `<div class="twitter-card not-prose"><blockquote class="twitter-tweet"><a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a></blockquote></div>`;
+      const { user } = getTweetMeta(tweetUrl);
+      const label = user ? `@${user}` : "X";
+      const safeLabel = escapeHtml(label);
+      const html = `<div class="twitter-card not-prose"><a class="twitter-card__link" href="${safeUrl}" rel="noopener noreferrer"><span class="twitter-card__label">Tweet</span><span class="twitter-card__meta">${safeLabel}</span><span class="twitter-card__cta">Xで見る</span></a></div>`;
 
       parent.children[index] = { type: "html", value: html };
     });

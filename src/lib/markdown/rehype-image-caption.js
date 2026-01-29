@@ -60,7 +60,6 @@ function applyLazyImageAttrs(node) {
   if (!node.properties) node.properties = {};
   if (!("loading" in node.properties)) node.properties.loading = "lazy";
   if (!("decoding" in node.properties)) node.properties.decoding = "async";
-  if (!("fetchpriority" in node.properties)) node.properties.fetchpriority = "low";
 }
 
 function splitParagraphWithInlineCaption(node) {
