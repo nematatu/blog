@@ -150,7 +150,6 @@ tags: ["バドミントン", "日常"]
 
 
 去年同様、神社にお参り。完走梅干しゲット。
-![](https://assets.blog.amatatu.com/posts/kisei-marathon/umeboshi.webp)
 
 母親とはブロックが違うのでここでお別れ。
 
