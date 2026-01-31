@@ -96,10 +96,8 @@ export default function remarkTwitterCard() {
       if (!tweetUrl) return;
 
       const safeUrl = escapeHtml(tweetUrl);
-      const { user } = getTweetMeta(tweetUrl);
-      const label = user ? `@${user}` : "X";
-      const safeLabel = escapeHtml(label);
-      const html = `<div class="twitter-card not-prose"><a class="twitter-card__link" href="${safeUrl}" rel="noopener noreferrer"><span class="twitter-card__label">Tweet</span><span class="twitter-card__meta">${safeLabel}</span><span class="twitter-card__cta">Xで見る</span></a></div>`;
+      // Use Twitter's official embed markup so widgets.js can render it.
+      const html = `<blockquote class="twitter-tweet"><a href="${safeUrl}"></a></blockquote>`;
 
       parent.children[index] = { type: "html", value: html };
     });
