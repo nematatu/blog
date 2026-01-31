@@ -2,7 +2,7 @@
 title: "『これが良い。』っていい言葉だよね〜"
 description: "『これが良い。』っていい言葉だよね〜"
 date: "2026-01-14"
-draft: true
+draft: false
 tags: ["日常"]
 ---
 

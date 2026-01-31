@@ -2,7 +2,7 @@
 title: "インハイ2026団体予想"
 description: "インハイ2026団体予想"
 date: "2025-08-05"
-draft: true
+draft: false
 tags: ["バドミントン"]
 ---
 
