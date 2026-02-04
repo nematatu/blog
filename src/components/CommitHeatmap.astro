@@ -1,76 +1,74 @@
 ---
 type Day = {
-  date: string;
-  count: number;
-  className: string;
+    date: string;
+    count: number;
+    className: string;
 };
 
 type Props = {
-  weeks: Day[][];
-  monthLabels: string[];
-  startYear?: number;
-  endYear?: number;
-  cellSize?: number;
-  gap?: number;
+    weeks: Day[][];
+    monthLabels: string[];
+    cellSize?: number;
+    gap?: number;
 };
 
-const { weeks, monthLabels, startYear, endYear, cellSize, gap = 2 } = Astro.props;
+const { weeks, monthLabels, cellSize, gap = 2 } = Astro.props;
 const weekCount = weeks.length;
-const labelHeight = cellSize ? `${Math.max(8, Math.round(cellSize * 0.9))}px` : "calc(var(--cell-size) + 4px)";
-const labelOffset = cellSize ? `${Math.max(8, Math.round(cellSize * 0.9)) + 4}px` : "calc(var(--cell-size) + 8px)";
+const labelHeight = cellSize
+    ? `${Math.max(8, Math.round(cellSize * 0.9))}px`
+    : "calc(var(--cell-size) + 4px)";
+const labelOffset = cellSize
+    ? `${Math.max(8, Math.round(cellSize * 0.9)) + 4}px`
+    : "calc(var(--cell-size) + 8px)";
 const columnsStyle = `grid-template-columns: repeat(${weekCount}, var(--cell-size)); gap: var(--cell-gap);`;
 const weeksStyle = "grid-auto-columns: var(--cell-size); gap: var(--cell-gap);";
-const dayStyle = "width: var(--cell-size); height: var(--cell-size); border-radius: 2px;";
+const dayStyle =
+    "width: var(--cell-size); height: var(--cell-size); border-radius: 2px;";
 const rootStyle = cellSize
-  ? `--cell-size: ${cellSize}px; --cell-gap: ${gap}px;`
-  : `--cell-size: clamp(4px, 0.85vw, 10px); --cell-gap: clamp(1px, 0.3vw, 2px);`;
+    ? `--cell-size: ${cellSize}px; --cell-gap: ${gap}px;`
+    : `--cell-size: clamp(4px, 0.85vw, 10px); --cell-gap: clamp(1px, 0.3vw, 2px);`;
 ---
 
-<div class="mt-4">
-  <div class="grid grid-cols-[auto_1fr] items-start gap-3">
-    <div class="pt-[14px] text-[10px] text-black/40 dark:text-white/35">
-      {startYear ? `${startYear}年` : ""}
-    </div>
+<div class="">
     <div class="min-w-0">
-      <div class="relative">
-        <div
-          class="grid text-[9px] text-black/35 dark:text-white/35 absolute left-0 top-0 right-0"
-          style={`${columnsStyle} height: ${labelHeight}; ${rootStyle}`}
-        >
-          {monthLabels.map((label) => (
-            <span
-              class="whitespace-nowrap"
-              style={`height: ${labelHeight}; line-height: ${labelHeight};`}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
-        <div
-          class="grid grid-flow-col"
-          style={`padding-top: ${labelOffset}; ${weeksStyle} ${rootStyle}`}
-        >
-          {weeks.map((week) => (
+        <div class="relative">
             <div
-              class="grid grid-rows-7"
-              style={`gap: var(--cell-gap); ${rootStyle}`}
+                class="absolute top-0 right-0 left-0 grid text-[9px] text-black/35 dark:text-white/35"
+                style={`${columnsStyle} height: ${labelHeight}; ${rootStyle}`}
             >
-              {week.map((day) => (
-                <span
-                  class={day.className}
-                  style={dayStyle}
-                  title={`${day.date}：${day.count}件`}
-                  aria-label={`${day.date}：${day.count}件`}
-                />
-              ))}
+                {
+                    monthLabels.map((label) => (
+                        <span
+                            class="whitespace-nowrap"
+                            style={`height: ${labelHeight}; line-height: ${labelHeight};`}
+                        >
+                            {label}
+                        </span>
+                    ))
+                }
             </div>
-        ))}
+            <div
+                class="grid grid-flow-col"
+                style={`padding-top: ${labelOffset}; ${weeksStyle} ${rootStyle}`}
+            >
+                {
+                    weeks.map((week) => (
+                        <div
+                            class="grid grid-rows-7"
+                            style={`gap: var(--cell-gap); ${rootStyle}`}
+                        >
+                            {week.map((day) => (
+                                <span
+                                    class={day.className}
+                                    style={dayStyle}
+                                    title={`${day.date}：${day.count}件`}
+                                    aria-label={`${day.date}：${day.count}件`}
+                                />
+                            ))}
+                        </div>
+                    ))
+                }
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="mt-2 flex items-center justify-between text-[10px] text-black/40 dark:text-white/40">
-    <span></span>
-    <span>{endYear ? `${endYear}年` : ""}</span>
-  </div>
 </div>

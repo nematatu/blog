@@ -1,4 +1,5 @@
-import type { Metadata, Site, Socials } from "@types";
+import type { Metadata, Site, Socials } from "./types";
+import socials from "./data/socials.json";
 
 export const SITE: Site = {
   TITLE: "Blog",
@@ -24,21 +25,4 @@ export const PROJECTS: Metadata = {
     "A collection of my projects with links to repositories and live demos.",
 };
 
-export const SOCIALS: Socials = [
-  {
-    NAME: "X for 🏸",
-    HREF: "https://x.com/tatuminton",
-  },
-  {
-    NAME: "X for 💻",
-    HREF: "https://x.com/tatudeve",
-  },
-  {
-    NAME: "GitHub",
-    HREF: "https://github.com/nematatu",
-  },
-  {
-    NAME: "Website",
-    HREF: "https://amatatu.com",
-  },
-];
+export const SOCIALS = socials as Socials;

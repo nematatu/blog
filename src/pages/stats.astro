@@ -6,32 +6,37 @@ import CommitHeatmap from "@components/CommitHeatmap.astro";
 import { BLOG } from "@consts";
 import { getCollection } from "astro:content";
 import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
+import Link from "@components/Link.astro";
 
 const showDrafts = import.meta.env.DEV;
+const monthsToShow = 6;
+const now = new Date();
+const rangeStart = new Date(
+  now.getFullYear(),
+  now.getMonth() - (monthsToShow - 1),
+  1,
+);
+
 const entries = (await getCollection("blog"))
   .filter((post) => showDrafts || !post.data.draft)
+  .filter((post) => post.data.date >= rangeStart && post.data.date <= now)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const now = new Date();
 const dayCounts = new Map<string, number>();
-
 for (const entry of entries) {
   const dayKey = dateKey(entry.data.date);
   dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
 }
 
-const yearStart = new Date(now);
-yearStart.setDate(yearStart.getDate() - 364);
-const yearCharTotal = entries
-  .filter((entry) => entry.data.date >= yearStart)
-  .reduce((acc, entry) => acc + getTextStats(entry.body ?? "").charCount, 0);
+const periodCharTotal = entries.reduce(
+  (acc, entry) => acc + getTextStats(entry.body ?? "").charCount,
+  0,
+);
 
-const monthsToShow = 6;
-const monthStart = new Date(now.getFullYear(), now.getMonth() - (monthsToShow - 1), 1);
 const months = Array.from({ length: monthsToShow }, (_, index) => {
   const date = new Date(
-    monthStart.getFullYear(),
-    monthStart.getMonth() + index,
+    rangeStart.getFullYear(),
+    rangeStart.getMonth() + index,
     1,
   );
   const key = dateKey(date).slice(0, 7);
@@ -47,7 +52,10 @@ const tagTotals = new Map<string, number>();
 for (const entry of entries) {
   const monthKey = dateKey(entry.data.date).slice(0, 7);
   if (!monthIndex.has(monthKey)) continue;
-  const tags = entry.data.tags && entry.data.tags.length > 0 ? entry.data.tags : ["未分類"];
+  const tags =
+    entry.data.tags && entry.data.tags.length > 0
+      ? entry.data.tags
+      : ["未分類"];
 
   for (const tag of tags) {
     tagTotals.set(tag, (tagTotals.get(tag) ?? 0) + 1);
@@ -90,10 +98,8 @@ const monthlyTagSeries = months.map((month) => {
 const hasOther = monthlyTagSeries.some((row) => Number(row["その他"] ?? 0) > 0);
 const stackedTags = hasOther ? [...topTags, "その他"] : topTags;
 
-const weeksToShow = 52;
 const graphEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const graphStart = new Date(graphEnd);
-graphStart.setDate(graphStart.getDate() - (weeksToShow * 7 - 1));
+const graphStart = new Date(rangeStart);
 const startOffset = graphStart.getDay();
 graphStart.setDate(graphStart.getDate() - startOffset);
 
@@ -128,10 +134,7 @@ const monthLabels = weeks.map((week) => {
   }
   return "";
 });
-const startYear = graphStart.getFullYear();
-const endYear = graphEnd.getFullYear();
 
-const formatNumber = (value: number) => value.toLocaleString("ja-JP");
 const maxDaily = Math.max(1, ...dayCounts.values());
 const activityLevel = (count: number) => {
   if (count === 0) return 0;
@@ -163,22 +166,22 @@ const heatmapWeeks = weeks.map((week) =>
 );
 const topPosts = entries
   .map((entry) => ({
+    id: entry.id,
     title: entry.data.title,
     date: formatDateJP(entry.data.date),
     charCount: getTextStats(entry.body ?? "").charCount,
   }))
   .sort((a, b) => b.charCount - a.charCount)
   .slice(0, 8);
+
+const formatNumber = (value: number) => value.toLocaleString("ja-JP");
 ---
 
 <Layout title="Stats" description={BLOG.DESCRIPTION}>
   <Container>
     <div class="space-y-6 min-w-0">
         <section class="space-y-1 text-center sm:text-left">
-          <h1 class="text-2xl font-semibold text-black dark:text-white">統計ダッシュボード</h1>
-          <p class="text-xs text-black/50 dark:text-white/50">
-            データはビルド時点の投稿を集計しています。
-          </p>
+          <h1 class="text-2xl font-semibold text-black dark:text-white">統計</h1>
         </section>
 
         <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
@@ -188,11 +191,11 @@ const topPosts = entries
                 執筆文字数
               </div>
               <div class="mt-1 text-xs text-black/40 dark:text-white/40">
-                直近1年の集計結果
+                直近6か月の集計結果
               </div>
             </div>
             <div class="text-2xl font-semibold text-black dark:text-white sm:text-right">
-              {formatNumber(yearCharTotal)} 字
+              {formatNumber(periodCharTotal)} 字
             </div>
           </div>
 
@@ -200,8 +203,6 @@ const topPosts = entries
             <CommitHeatmap
               weeks={heatmapWeeks}
               monthLabels={monthLabels}
-              startYear={startYear}
-              endYear={endYear}
             />
           </div>
         </section>
@@ -235,14 +236,11 @@ const topPosts = entries
             <div class="text-sm font-semibold text-black/70 dark:text-white/70">
               投稿ごとの執筆文字数
             </div>
-            <div class="mt-1 text-xs text-black/40 dark:text-white/40">
-              合計文字数の上位を表示
-            </div>
           </div>
 
           <div class="mt-4 divide-y divide-black/5 text-sm dark:divide-white/10">
             {topPosts.map((post) => (
-              <div class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <a href={`/blog/${post.id}`} class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
                   <div class="truncate font-semibold text-black dark:text-white">
                     {post.title}
@@ -254,7 +252,7 @@ const topPosts = entries
                 <div class="text-left text-sm font-semibold text-black dark:text-white sm:text-right">
                   {formatNumber(post.charCount)} 字
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </section>

@@ -1,0 +1,20 @@
+[
+  {
+    "NAME": "X",
+    "HREF": "https://x.com/tatudeve",
+    "ICON": "simple-icons:x",
+    "EXTERNAL": true
+  },
+  {
+    "NAME": "GitHub",
+    "HREF": "https://github.com/nematatu",
+    "ICON": "simple-icons:github",
+    "EXTERNAL": true
+  },
+  {
+    "NAME": "Website",
+    "HREF": "https://amatatu.com",
+    "ICON": "mdi:web",
+    "EXTERNAL": true
+  }
+]

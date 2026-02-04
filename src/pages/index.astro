@@ -3,7 +3,8 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import CommitHeatmap from "@components/CommitHeatmap.astro";
-import { SITE, HOME } from "@consts";
+import SocialLinks from "@components/SocialLinks.astro";
+import { SITE, HOME, SOCIALS } from "@consts";
 import { getCollection } from "astro:content";
 import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
 
@@ -18,7 +19,6 @@ const posts = entries.map((entry) => ({
 }));
 
 const latestPosts = posts.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
-const latestPost = posts[0]?.entry;
 
 const dayCounts = new Map<string, number>();
 for (const entry of entries) {
@@ -98,7 +98,6 @@ const heatmapWeeks = weeks.map((week) =>
   }),
 );
 
-const formatDate = (date?: Date) => (date ? formatDateJP(date) : "-");
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
@@ -108,19 +107,14 @@ const formatDate = (date?: Date) => (date ? formatDateJP(date) : "-");
         <h1 class="text-xl font-semibold text-black dark:text-white">
           バドとか、開発とか。
         </h1>
+        <SocialLinks socials={SOCIALS} class="justify-center sm:justify-start" />
       </section>
 
       <section class="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70 w-full lg:w-1/2 lg:mr-auto">
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-black/50 dark:text-white/50">
-          <span class="font-semibold">投稿カレンダー</span>
-          <span>最新 {formatDate(latestPost?.data.date)}</span>
-        </div>
         <CommitHeatmap
           weeks={heatmapWeeks}
           monthLabels={monthLabels}
-          startYear={startYear}
-          endYear={endYear}
-          cellSize={14}
+          cellSize={18}
           gap={2}
         />
       </section>
