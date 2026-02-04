@@ -120,6 +120,28 @@ pre {
   --astro-code-token-string-expression: #ae42a0;
   --astro-code-token-punctuation: #8996a3;
   --astro-code-token-link: #8d85ff;
+  --chart-background: #ffffff;
+  --chart-foreground: #0f172a;
+  --chart-foreground-muted: rgba(15, 23, 42, 0.55);
+  --chart-line-primary: #0ea5e9;
+  --chart-line-secondary: #94a3b8;
+  --chart-crosshair: rgba(14, 165, 233, 0.6);
+  --chart-grid: rgba(15, 23, 42, 0.08);
+  --chart-marker-background: #f8fafc;
+  --chart-marker-border: rgba(15, 23, 42, 0.12);
+  --chart-marker-foreground: #0f172a;
+  --chart-1: oklch(0.32 0 none);
+  --chart-2: oklch(0.41 0 none);
+  --chart-3: oklch(0.54 0 none);
+  --chart-4: oklch(0.71 0 none);
+  --chart-5: oklch(0.89 0 none);
+  --chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
+  --chart-tooltip-foreground: oklch(0.985 0 0);
+  --chart-tooltip-muted: oklch(0.65 0.01 260);
+  --chart-ring-background: oklch(0.9 0.005 260 / 0.25);
+  --chart-label: oklch(0.45 0.01 260);
+  --foreground: #0f172a;
+  --background: #ffffff;
 }
 
 .dark {
@@ -134,6 +156,25 @@ pre {
   --astro-code-token-string-expression: #bf7db6;
   --astro-code-token-punctuation: #8996a3;
   --astro-code-token-link: #8d85ff;
+  --chart-background: #0b0f14;
+  --chart-foreground: #f8fafc;
+  --chart-foreground-muted: rgba(248, 250, 252, 0.55);
+  --chart-line-primary: #38bdf8;
+  --chart-line-secondary: #64748b;
+  --chart-crosshair: rgba(56, 189, 248, 0.6);
+  --chart-grid: rgba(248, 250, 252, 0.12);
+  --chart-marker-background: #0f172a;
+  --chart-marker-border: rgba(248, 250, 252, 0.2);
+  --chart-marker-foreground: #e2e8f0;
+  --chart-1: oklch(1 0 none);
+  --chart-2: oklch(0.73 0 none);
+  --chart-3: oklch(0.51 0 none);
+  --chart-4: oklch(0.39 0 none);
+  --chart-5: oklch(0.32 0 none);
+  --chart-ring-background: oklch(0.35 0.01 260 / 0.25);
+  --chart-label: oklch(0.75 0.01 260);
+  --foreground: #f8fafc;
+  --background: #0b0f14;
 }
 
 /* copy code button on codeblocks */

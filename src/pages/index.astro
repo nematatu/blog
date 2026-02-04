@@ -1,113 +1,149 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
-import { SITE, HOME, SOCIALS } from "@consts";
-import ArrowCard from "@components/ArrowCard.astro";
-import Link from "@components/Link.astro";
+import PostCard from "@components/PostCard.astro";
+import CommitHeatmap from "@components/CommitHeatmap.astro";
+import { SITE, HOME } from "@consts";
 import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
 
 const showDrafts = import.meta.env.DEV;
-const blog = (await getCollection("blog"))
+const entries = (await getCollection("blog"))
   .filter((post) => showDrafts || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const projects: CollectionEntry<"projects">[] = (
-  await getCollection("projects")
-)
-  .filter((project) => showDrafts || !project.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
+const posts = entries.map((entry) => ({
+  entry,
+  stats: getTextStats(entry.body ?? ""),
+}));
+
+const latestPosts = posts.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
+const latestPost = posts[0]?.entry;
+
+const dayCounts = new Map<string, number>();
+for (const entry of entries) {
+  const dayKey = dateKey(entry.data.date);
+  dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
+}
+
+const now = new Date();
+const weeksToShow = 13;
+const graphEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const graphStart = new Date(graphEnd);
+graphStart.setDate(graphStart.getDate() - (weeksToShow * 7 - 1));
+const startOffset = graphStart.getDay();
+graphStart.setDate(graphStart.getDate() - startOffset);
+
+const days: Array<{ date: Date; key: string; count: number }> = [];
+for (
+  let cursor = new Date(graphStart);
+  cursor <= graphEnd;
+  cursor.setDate(cursor.getDate() + 1)
+) {
+  const date = new Date(cursor);
+  const key = dateKey(date);
+  const count = dayCounts.get(key) ?? 0;
+  days.push({ date, key, count });
+}
+
+const weeks: Array<Array<{ date: Date; key: string; count: number }>> = [];
+days.forEach((day, index) => {
+  const weekIndex = Math.floor(index / 7);
+  if (!weeks[weekIndex]) {
+    weeks[weekIndex] = [];
+  }
+  weeks[weekIndex].push(day);
+});
+
+const maxDaily = Math.max(1, ...dayCounts.values());
+const activityLevel = (count: number) => {
+  if (count === 0) return 0;
+  const ratio = count / maxDaily;
+  if (ratio >= 0.8) return 4;
+  if (ratio >= 0.6) return 3;
+  if (ratio >= 0.3) return 2;
+  return 1;
+};
+
+const monthLabels = weeks.map((week) => {
+  const firstDay = week[0]?.date;
+  if (!firstDay) return "";
+  if (firstDay.getDate() <= 7) {
+    return new Intl.DateTimeFormat("ja-JP", { month: "numeric" }).format(
+      firstDay,
+    );
+  }
+  return "";
+});
+const startYear = graphStart.getFullYear();
+const endYear = graphEnd.getFullYear();
+const heatmapWeeks = weeks.map((week) =>
+  week.map((day) => {
+    const level = activityLevel(day.count);
+    const className =
+      level === 0
+        ? "bg-black/5 dark:bg-white/5"
+        : level === 1
+          ? "bg-sky-100 dark:bg-sky-500/20"
+          : level === 2
+            ? "bg-sky-200 dark:bg-sky-500/35"
+            : level === 3
+              ? "bg-sky-300 dark:bg-sky-500/55"
+              : "bg-sky-400 dark:bg-sky-500/80";
+    return {
+      date: formatDateJP(day.date),
+      count: day.count,
+      className,
+    };
+  }),
+);
+
+const formatDate = (date?: Date) => (date ? formatDateJP(date) : "-");
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
   <Container>
-    <aside data-pagefind-ignore>
-      <h1 class="font-semibold text-black dark:text-white">
-        バドとか、開発とか。
-      </h1>
-      <div class="space-y-16">
-        <section>
-          <article class="space-y-4">
-            <span>
-              <p>
-              </p>
-            </span>
-          </article>
-        </section>
+    <div class="space-y-12">
+      <section class="space-y-2 text-center sm:text-left">
+        <h1 class="text-xl font-semibold text-black dark:text-white">
+          バドとか、開発とか。
+        </h1>
+      </section>
 
-        <section class="animate space-y-6">
-          <div class="flex flex-wrap items-center justify-between gap-y-2">
-            <h2 class="font-semibold text-black dark:text-white">
-              Latest posts
-            </h2>
-            <Link href="/blog"> See all posts </Link>
-          </div>
-          <ul class="not-prose flex flex-col gap-4">
-            {
-              blog.map((post) => (
-                <li>
-                  <ArrowCard entry={post} />
-                </li>
-              ))
-            }
-          </ul>
-        </section>
+      <section class="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70 w-full lg:w-1/2 lg:mr-auto">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-black/50 dark:text-white/50">
+          <span class="font-semibold">投稿カレンダー</span>
+          <span>最新 {formatDate(latestPost?.data.date)}</span>
+        </div>
+        <CommitHeatmap
+          weeks={heatmapWeeks}
+          monthLabels={monthLabels}
+          startYear={startYear}
+          endYear={endYear}
+          cellSize={14}
+          gap={2}
+        />
+      </section>
 
-        <!-- <section class="animate space-y-6"> -->
-        <!--   <div class="flex flex-wrap items-center justify-between gap-y-2"> -->
-        <!--     <h2 class="font-semibold text-black dark:text-white"> -->
-        <!--       Recent projects -->
-        <!--     </h2> -->
-        <!--     <Link href="/projects"> See all projects </Link> -->
-        <!--   </div> -->
-        <!--   <ul class="not-prose flex flex-col gap-4"> -->
-        <!--     { -->
-        <!--       projects.map((project) => ( -->
-        <!--         <li> -->
-        <!--           <ArrowCard entry={project} /> -->
-        <!--         </li> -->
-        <!--       )) -->
-        <!--     } -->
-        <!--   </ul> -->
-        <!-- </section> -->
-
-        <section class="animate space-y-4">
-          <h2 class="font-semibold text-black dark:text-white">
-            Connect
-          </h2>
-          <article>
-            <p>
-              Just to say hi, reach out on these sns.
-            </p>
-          </article>
-          <ul class="not-prose flex flex-wrap gap-2">
-            {
-              SOCIALS.map((SOCIAL) => (
-                <li class="flex gap-x-2 text-nowrap">
-                  <Link
-                    href={SOCIAL.HREF}
-                    external
-                    aria-label={`${SITE.TITLE} on ${SOCIAL.NAME}`}
-                  >
-                    {SOCIAL.NAME}
-                  </Link>
-                  {"/"}
-                </li>
-              ))
-            }
-            <li class="line-clamp-1">
-              <Link
-                href={`mailto:${SITE.EMAIL}`}
-                aria-label={`Email ${SITE.TITLE}`}
-              >
-                {SITE.EMAIL}
-              </Link>
+      <section class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-lg font-semibold text-black dark:text-white">最新の記事</h2>
+          <a
+            href="/blog"
+            class="text-sm text-black/60 underline underline-offset-4 hover:text-black dark:text-white/60 dark:hover:text-white"
+          >
+            すべて見る
+          </a>
+        </div>
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {latestPosts.map((post, index) => (
+            <li class={index === 0 ? "md:col-span-2 md:aspect-square" : "md:aspect-square"}>
+              <PostCard entry={post.entry} stats={post.stats} />
             </li>
-          </ul>
-        </section>
-      </div>
-    </aside>
+          ))}
+        </ul>
+      </section>
+    </div>
   </Container>
+
 </Layout>

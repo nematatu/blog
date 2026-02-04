@@ -3,15 +3,6 @@ interface Props {
   type?: "default" | "info" | "warning" | "error";
 }
 const { type = "default" } = Astro.props;
-let emoji = "💡";
-if (type === "info") {
-  emoji = "ℹ️";
-} else if (type === "warning") {
-  emoji = "⚠️";
-} else if (type === "error") {
-  emoji = "🚨";
-}
-
 const baseClasses = "relative my-4 flex rounded border p-3";
 const typeClasses = {
   default:
@@ -25,6 +16,5 @@ const typeClasses = {
 ---
 
 <div class:list={["not-prose", baseClasses, typeClasses[type]]}>
-  <span class="pointer-events-none pr-3 text-xl select-none">{emoji}</span>
   <slot />
 </div>

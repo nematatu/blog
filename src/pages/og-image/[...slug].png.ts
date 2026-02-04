@@ -5,6 +5,7 @@ import satori, { type SatoriOptions } from "satori";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { SITE } from "@consts";
+import type { ReactNode } from "react";
 
 export const prerender = true;
 
@@ -81,7 +82,11 @@ const formatDate = (value: Date) =>
     day: "2-digit",
   }).format(value);
 
-const markup = (title: string, description: string, dateLabel: string) =>
+const markup = (
+  title: string,
+  description: string,
+  dateLabel: string,
+): ReactNode =>
   h(
     "div",
     {
@@ -270,14 +275,12 @@ export async function getStaticPaths() {
     ...projects.map((entry) => ({ entry, prefix: "projects" })),
   ];
 
-  return entries
-    .filter(({ entry }) => !entry.data.ogImage)
-    .map(({ entry, prefix }) => ({
-      params: { slug: `${prefix}/${entry.id}` },
-      props: {
-        title: entry.data.title,
-        description: entry.data.description ?? SITE.DESCRIPTION,
-        date: entry.data.date?.toISOString?.() ?? entry.data.date ?? null,
-      },
-    }));
+  return entries.map(({ entry, prefix }) => ({
+    params: { slug: `${prefix}/${entry.id}` },
+    props: {
+      title: entry.data.title,
+      description: entry.data.description ?? SITE.DESCRIPTION,
+      date: entry.data.date?.toISOString?.() ?? entry.data.date ?? null,
+    },
+  }));
 }

@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { cn } from "@lib/utils";
+import { formatDateJP, type TextStats } from "@lib/post-metrics";
+
+type Props = {
+  entry: CollectionEntry<"blog">;
+  stats?: TextStats;
+  class?: string;
+};
+
+const { entry, class: className } = Astro.props as Props;
+const ogFallback = `/og-image/blog/${entry.id}.png`;
+const ogImageRaw = entry.data.ogImage;
+const ogImage = ogImageRaw
+  ? ogImageRaw.startsWith("http") || ogImageRaw.startsWith("/")
+    ? ogImageRaw
+    : `/${ogImageRaw}`
+  : ogFallback;
+const ogError =
+  ogImageRaw ? `this.onerror=null;this.src='${ogFallback}';` : undefined;
+const dateLabel = formatDateJP(entry.data.date);
+---
+
+<a
+  href={`/blog/${entry.id}`}
+  class={cn(
+    "group flex  flex-col overflow-hidden rounded-lg border border-black/10 bg-white/80 transition hover:border-black/20 hover:bg-white dark:border-white/10 dark:bg-neutral-900/70 dark:hover:border-white/30 dark:hover:bg-neutral-900",
+    className
+  )}
+>
+  <div class="relative shrink-0 aspect-[1200/630] overflow-hidden bg-black/5 dark:bg-white/10">
+    <img
+      src={ogImage}
+      alt={`${entry.data.title} のOGP`}
+      loading="lazy"
+      decoding="async"
+      width="1200"
+      height="630"
+      onerror={ogError}
+      class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+    />
+  </div>
+  <div class="flex flex-1 flex-col gap-2 px-4 py-4 md:px-3">
+    <div class="text-xs text-black/60 dark:text-white/60">
+      {dateLabel}
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-base font-semibold text-black dark:text-white line-clamp-1">
+        {entry.data.title}
+        {entry.data.draft && (
+          <span class="ml-2 text-xs font-semibold text-red-600 dark:text-red-400">(draft)</span>
+        )}
+      </h3>
+      <p class="text-sm text-black/70 dark:text-white/70 line-clamp-2">
+        {entry.data.description}
+      </p>
+    </div>
+  </div>
+</a>

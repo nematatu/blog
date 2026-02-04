@@ -202,7 +202,7 @@ const { title, description, image } = Astro.props;
   }
 
   function addCopyCodeButtons() {
-    let copyButtonLabel = "📋";
+    let copyButtonLabel = "Copy";
     let codeBlocks = Array.from(document.querySelectorAll("pre"));
 
     async function copyCode(codeBlock, copyButton) {
@@ -211,7 +211,7 @@ const { title, description, image } = Astro.props;
       const textToCopy = codeText.replace(buttonText, "");
 
       await navigator.clipboard.writeText(textToCopy);
-      copyButton.innerText = "✅";
+      copyButton.innerText = "Copied";
 
       setTimeout(() => {
         copyButton.innerText = copyButtonLabel;

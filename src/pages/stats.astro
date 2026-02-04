@@ -1,0 +1,263 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import MonthlyTagBarChart from "@components/charts/MonthlyTagBarChart";
+import CommitHeatmap from "@components/CommitHeatmap.astro";
+import { BLOG } from "@consts";
+import { getCollection } from "astro:content";
+import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
+
+const showDrafts = import.meta.env.DEV;
+const entries = (await getCollection("blog"))
+  .filter((post) => showDrafts || !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const now = new Date();
+const dayCounts = new Map<string, number>();
+
+for (const entry of entries) {
+  const dayKey = dateKey(entry.data.date);
+  dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
+}
+
+const yearStart = new Date(now);
+yearStart.setDate(yearStart.getDate() - 364);
+const yearCharTotal = entries
+  .filter((entry) => entry.data.date >= yearStart)
+  .reduce((acc, entry) => acc + getTextStats(entry.body ?? "").charCount, 0);
+
+const monthsToShow = 6;
+const monthStart = new Date(now.getFullYear(), now.getMonth() - (monthsToShow - 1), 1);
+const months = Array.from({ length: monthsToShow }, (_, index) => {
+  const date = new Date(
+    monthStart.getFullYear(),
+    monthStart.getMonth() + index,
+    1,
+  );
+  const key = dateKey(date).slice(0, 7);
+  const label = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
+    date,
+  );
+  return { key, label };
+});
+const monthIndex = new Map(months.map((month, index) => [month.key, index]));
+const monthTagCounts = new Map<string, Map<string, number>>();
+const tagTotals = new Map<string, number>();
+
+for (const entry of entries) {
+  const monthKey = dateKey(entry.data.date).slice(0, 7);
+  if (!monthIndex.has(monthKey)) continue;
+  const tags = entry.data.tags && entry.data.tags.length > 0 ? entry.data.tags : ["未分類"];
+
+  for (const tag of tags) {
+    tagTotals.set(tag, (tagTotals.get(tag) ?? 0) + 1);
+    if (!monthTagCounts.has(monthKey)) {
+      monthTagCounts.set(monthKey, new Map<string, number>());
+    }
+    const monthMap = monthTagCounts.get(monthKey)!;
+    monthMap.set(tag, (monthMap.get(tag) ?? 0) + 1);
+  }
+}
+
+const topTags = Array.from(tagTotals.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 4)
+  .map(([tag]) => tag);
+
+const monthlyTagSeries = months.map((month) => {
+  const row: Record<string, number | string> = {
+    monthLabel: month.label,
+  };
+  const monthMap = monthTagCounts.get(month.key);
+  let otherCount = 0;
+  if (monthMap) {
+    for (const [tag, count] of monthMap) {
+      if (topTags.includes(tag)) {
+        row[tag] = count;
+      } else {
+        otherCount += count;
+      }
+    }
+  }
+  for (const tag of topTags) {
+    if (row[tag] === undefined) {
+      row[tag] = 0;
+    }
+  }
+  row["その他"] = otherCount;
+  return row;
+});
+const hasOther = monthlyTagSeries.some((row) => Number(row["その他"] ?? 0) > 0);
+const stackedTags = hasOther ? [...topTags, "その他"] : topTags;
+
+const weeksToShow = 52;
+const graphEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const graphStart = new Date(graphEnd);
+graphStart.setDate(graphStart.getDate() - (weeksToShow * 7 - 1));
+const startOffset = graphStart.getDay();
+graphStart.setDate(graphStart.getDate() - startOffset);
+
+const days: Array<{ date: Date; key: string; count: number }> = [];
+for (
+  let cursor = new Date(graphStart);
+  cursor <= graphEnd;
+  cursor.setDate(cursor.getDate() + 1)
+) {
+  const date = new Date(cursor);
+  const key = dateKey(date);
+  const count = dayCounts.get(key) ?? 0;
+  days.push({ date, key, count });
+}
+
+const weeks: Array<Array<{ date: Date; key: string; count: number }>> = [];
+days.forEach((day, index) => {
+  const weekIndex = Math.floor(index / 7);
+  if (!weeks[weekIndex]) {
+    weeks[weekIndex] = [];
+  }
+  weeks[weekIndex].push(day);
+});
+
+const monthLabels = weeks.map((week) => {
+  const firstDay = week[0]?.date;
+  if (!firstDay) return "";
+  if (firstDay.getDate() <= 7) {
+    return new Intl.DateTimeFormat("ja-JP", {
+      month: "numeric",
+    }).format(firstDay);
+  }
+  return "";
+});
+const startYear = graphStart.getFullYear();
+const endYear = graphEnd.getFullYear();
+
+const formatNumber = (value: number) => value.toLocaleString("ja-JP");
+const maxDaily = Math.max(1, ...dayCounts.values());
+const activityLevel = (count: number) => {
+  if (count === 0) return 0;
+  const ratio = count / maxDaily;
+  if (ratio >= 0.8) return 4;
+  if (ratio >= 0.6) return 3;
+  if (ratio >= 0.3) return 2;
+  return 1;
+};
+const heatmapWeeks = weeks.map((week) =>
+  week.map((day) => {
+    const level = activityLevel(day.count);
+    const className =
+      level === 0
+        ? "bg-black/5 dark:bg-white/5"
+        : level === 1
+          ? "bg-sky-100 dark:bg-sky-500/20"
+          : level === 2
+            ? "bg-sky-200 dark:bg-sky-500/35"
+            : level === 3
+              ? "bg-sky-300 dark:bg-sky-500/55"
+              : "bg-sky-400 dark:bg-sky-500/80";
+    return {
+      date: formatDateJP(day.date),
+      count: day.count,
+      className,
+    };
+  }),
+);
+const topPosts = entries
+  .map((entry) => ({
+    title: entry.data.title,
+    date: formatDateJP(entry.data.date),
+    charCount: getTextStats(entry.body ?? "").charCount,
+  }))
+  .sort((a, b) => b.charCount - a.charCount)
+  .slice(0, 8);
+---
+
+<Layout title="Stats" description={BLOG.DESCRIPTION}>
+  <Container>
+    <div class="space-y-6 min-w-0">
+        <section class="space-y-1 text-center sm:text-left">
+          <h1 class="text-2xl font-semibold text-black dark:text-white">統計ダッシュボード</h1>
+          <p class="text-xs text-black/50 dark:text-white/50">
+            データはビルド時点の投稿を集計しています。
+          </p>
+        </section>
+
+        <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
+          <div class="flex flex-col gap-2 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
+            <div>
+              <div class="text-sm font-semibold text-black/70 dark:text-white/70">
+                執筆文字数
+              </div>
+              <div class="mt-1 text-xs text-black/40 dark:text-white/40">
+                直近1年の集計結果
+              </div>
+            </div>
+            <div class="text-2xl font-semibold text-black dark:text-white sm:text-right">
+              {formatNumber(yearCharTotal)} 字
+            </div>
+          </div>
+
+          <div class="mt-4 overflow-x-auto">
+            <CommitHeatmap
+              weeks={heatmapWeeks}
+              monthLabels={monthLabels}
+              startYear={startYear}
+              endYear={endYear}
+            />
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
+          <div class="text-center sm:text-left">
+            <div class="text-sm font-semibold text-black/70 dark:text-white/70">
+              月別投稿数（タグ別）
+            </div>
+            <div class="mt-1 text-xs text-black/40 dark:text-white/40">
+              直近{monthsToShow}か月の集計結果
+            </div>
+          </div>
+          <div class="mt-4 min-w-0">
+            {stackedTags.length === 0 ? (
+              <div class="text-sm text-black/50 dark:text-white/50">
+                タグがまだありません。
+              </div>
+            ) : (
+              <MonthlyTagBarChart
+                client:only="react"
+                data={monthlyTagSeries}
+                tags={stackedTags}
+              />
+            )}
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
+          <div class="text-center sm:text-left">
+            <div class="text-sm font-semibold text-black/70 dark:text-white/70">
+              投稿ごとの執筆文字数
+            </div>
+            <div class="mt-1 text-xs text-black/40 dark:text-white/40">
+              合計文字数の上位を表示
+            </div>
+          </div>
+
+          <div class="mt-4 divide-y divide-black/5 text-sm dark:divide-white/10">
+            {topPosts.map((post) => (
+              <div class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="min-w-0">
+                  <div class="truncate font-semibold text-black dark:text-white">
+                    {post.title}
+                  </div>
+                  <div class="mt-1 text-xs text-black/40 dark:text-white/40">
+                    {post.date}に公開
+                  </div>
+                </div>
+                <div class="text-left text-sm font-semibold text-black dark:text-white sm:text-right">
+                  {formatNumber(post.charCount)} 字
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+    </div>
+  </Container>
+</Layout>

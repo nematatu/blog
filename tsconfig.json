@@ -5,6 +5,11 @@
   "compilerOptions": {
     "strictNullChecks": true,
     "baseUrl": ".",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["astro/client"],
     "paths": {
       "@*": ["./src/*"]
     }
