@@ -110,7 +110,7 @@ const heatmapWeeks = weeks.map((week) =>
         <SocialLinks socials={SOCIALS} class="justify-center sm:justify-start" />
       </section>
 
-      <section class="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70 w-full lg:w-1/2 lg:mr-auto">
+      <section class="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70 w-full lg:w-1/2 lg:mr-auto overflow-x-auto overflow-y-visible">
         <CommitHeatmap
           weeks={heatmapWeeks}
           monthLabels={monthLabels}

@@ -29,7 +29,7 @@ const rootStyle = cellSize
     : `--cell-size: clamp(4px, 0.85vw, 10px); --cell-gap: clamp(1px, 0.3vw, 2px);`;
 ---
 
-<div class="">
+<div class="relative" data-heatmap>
     <div class="min-w-0">
         <div class="relative">
             <div
@@ -61,8 +61,10 @@ const rootStyle = cellSize
                                 <span
                                     class={day.className}
                                     style={dayStyle}
+                                    data-heatmap-day
+                                    data-date={day.date}
+                                    data-count={day.count}
                                     title={`${day.date}：${day.count}件`}
-                                    aria-label={`${day.date}：${day.count}件`}
                                 />
                             ))}
                         </div>
@@ -71,4 +73,44 @@ const rootStyle = cellSize
             </div>
         </div>
     </div>
+    <div
+        class="pointer-events-none fixed left-0 top-0 z-50 hidden rounded-md border border-black/10 bg-white px-2 py-1 text-[10px] text-black shadow-sm dark:border-white/10 dark:bg-neutral-900 dark:text-white"
+        data-heatmap-tooltip
+    ></div>
 </div>
+
+<script is:inline>
+    const attachHeatmapTooltips = () => {
+        document.querySelectorAll("[data-heatmap]").forEach((root) => {
+            if (root.dataset.tooltipReady === "true") return;
+            root.dataset.tooltipReady = "true";
+
+            const tooltip = root.querySelector("[data-heatmap-tooltip]");
+            if (!tooltip) return;
+
+            root.addEventListener("mousemove", (event) => {
+                const target = event.target.closest("[data-heatmap-day]");
+                if (!(target instanceof HTMLElement)) {
+                    tooltip.classList.add("hidden");
+                    return;
+                }
+                const date = target.dataset.date ?? "";
+                const count = target.dataset.count ?? "0";
+                tooltip.textContent = `${date}：${count}件`;
+                const targetRect = target.getBoundingClientRect();
+                const x = targetRect.left + targetRect.width / 2;
+                const y = targetRect.top - 8;
+                tooltip.style.transform = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
+                tooltip.classList.remove("hidden");
+            });
+
+            root.addEventListener("mouseleave", () => {
+                tooltip.classList.add("hidden");
+            });
+        });
+    };
+
+    const run = () => attachHeatmapTooltips();
+    run();
+    document.addEventListener("astro:page-load", run);
+</script>
