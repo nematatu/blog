@@ -35,7 +35,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-use-measure": "latest",
-    "remark-directive": "^3.0.1",
+    "remark-directive": "^4.0.0",
     "satori": "^0.15.2",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.4",
