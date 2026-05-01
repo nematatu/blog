@@ -46,8 +46,8 @@
     "@tailwindcss/typography": "^0.5.19",
     "inquirer": "^13.0.0",
     "pagefind": "^1.5.2",
-    "prettier": "^3.8.3",
-    "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.8.0"
+    "prettier": "3.8.3",
+    "prettier-plugin-astro": "0.14.1",
+    "prettier-plugin-tailwindcss": "0.8.0"
   }
 }
