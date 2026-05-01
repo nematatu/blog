@@ -6,7 +6,7 @@
   ],
   "timezone": "Asia/Tokyo",
   "schedule": [
-    "* * * * 0,6"
+    "* * * * 3,4"
   ],
   "labels": [
     "dependencies",
@@ -120,6 +120,15 @@
       ],
       "groupName": "Core utilities",
       "groupSlug": "core-utils"
+    },
+    {
+      "description": "patch と minor は必須チェック通過後に自動マージします。",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "automerge": true,
+      "automergeType": "pr"
     }
   ]
 }
