@@ -1,6 +1,125 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:best-practices",
+    ":approveMajorUpdates"
+  ],
+  "timezone": "Asia/Tokyo",
+  "schedule": [
+    "* * * * 0,6"
+  ],
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "prConcurrentLimit": 2,
+  "branchConcurrentLimit": 2,
+  "prHourlyLimit": 1,
+  "rebaseWhen": "conflicted",
+  "packageRules": [
+    {
+      "description": "npm 由来の依存関係更新は公開直後を避けるため 3 日待機します。",
+      "matchDatasources": [
+        "npm"
+      ],
+      "minimumReleaseAge": "3 days",
+      "internalChecksFilter": "strict"
+    },
+    {
+      "description": "Astro 本体と公式統合はまとめて更新します。",
+      "matchPackageNames": [
+        "astro",
+        "@astrojs/**"
+      ],
+      "groupName": "Astro ecosystem",
+      "groupSlug": "astro"
+    },
+    {
+      "description": "React 関連はまとめて更新します。",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "groupName": "React ecosystem",
+      "groupSlug": "react"
+    },
+    {
+      "description": "React ベースの UI/アニメーション補助はまとめて更新します。",
+      "matchPackageNames": [
+        "@number-flow/react",
+        "motion",
+        "react-use-measure"
+      ],
+      "groupName": "React UI tooling",
+      "groupSlug": "react-ui"
+    },
+    {
+      "description": "整形ツール群は一緒に更新します。",
+      "matchPackageNames": [
+        "prettier",
+        "prettier-plugin-astro",
+        "prettier-plugin-tailwindcss"
+      ],
+      "groupName": "Formatting tooling",
+      "groupSlug": "formatting"
+    },
+    {
+      "description": "Tailwind とその周辺ツールはまとめて更新します。",
+      "matchPackageNames": [
+        "tailwindcss",
+        "@tailwindcss/vite",
+        "@tailwindcss/typography",
+        "tailwind-merge"
+      ],
+      "groupName": "Tailwind ecosystem",
+      "groupSlug": "tailwind"
+    },
+    {
+      "description": "検索インデックス関連はまとめて更新します。",
+      "matchPackageNames": [
+        "pagefind",
+        "astro-pagefind"
+      ],
+      "groupName": "Search tooling",
+      "groupSlug": "search"
+    },
+    {
+      "description": "visx 系パッケージはまとめて更新します。",
+      "matchPackageNames": [
+        "@visx/**"
+      ],
+      "groupName": "visx ecosystem",
+      "groupSlug": "visx"
+    },
+    {
+      "description": "Markdown と AST 変換の補助はまとめて更新します。",
+      "matchPackageNames": [
+        "remark-directive",
+        "unist-util-visit"
+      ],
+      "groupName": "Markdown tooling",
+      "groupSlug": "markdown"
+    },
+    {
+      "description": "画像生成関連はまとめて更新します。",
+      "matchPackageNames": [
+        "@resvg/resvg-js",
+        "satori"
+      ],
+      "groupName": "OG image tooling",
+      "groupSlug": "og-image"
+    },
+    {
+      "description": "CLI と基盤ユーティリティはまとめて更新します。",
+      "matchPackageNames": [
+        "inquirer",
+        "typescript",
+        "clsx"
+      ],
+      "groupName": "Core utilities",
+      "groupSlug": "core-utils"
+    }
   ]
 }
