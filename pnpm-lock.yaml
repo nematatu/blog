@@ -106,7 +106,7 @@ importers:
         specifier: ^13.0.0
         version: 13.4.2(@types/node@24.12.2)
       pagefind:
-        specifier: ^1.5.2
+        specifier: 1.5.2
         version: 1.5.2
       prettier:
         specifier: ^3.8.3
