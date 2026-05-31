@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @plugin '@tailwindcss/typography';
 
@@ -21,206 +21,220 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
+
+	*,
+	::after,
+	::before {
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		animation: none !important;
+		transition: none !important;
+		scroll-behavior: auto !important;
+	}
 }
 
 @layer utilities {
-  html {
-    overflow-y: auto;
-    color-scheme: light;
-    scroll-padding-top: 100px;
-  }
+	html {
+		overflow-y: auto;
+		color-scheme: light;
+		scroll-padding-top: 100px;
+	}
 
-  html.dark {
-    color-scheme: dark;
-  }
+	html.dark {
+		color-scheme: dark;
+	}
 
-  html,
-  body {
-    @apply size-full;
-  }
+	html,
+	body {
+		@apply size-full;
+	}
 
-  body {
-    @apply font-sans antialiased;
-    @apply flex flex-col;
-    @apply bg-neutral-100 dark:bg-neutral-900;
-    @apply text-black/75 dark:text-white/75;
-  }
+	body {
+		@apply font-sans antialiased;
+		@apply flex flex-col;
+		@apply bg-neutral-100 dark:bg-neutral-900;
+		@apply text-black/75 dark:text-white/75;
+	}
 
-  header {
-    @apply fixed left-0 right-0 top-0 z-50 py-6;
-    @apply bg-neutral-100/75 dark:bg-neutral-900/75;
-    @apply saturate-200 backdrop-blur-xs;
-  }
+	header {
+		@apply fixed left-0 right-0 top-0 z-50 py-6;
+		@apply bg-neutral-100/75 dark:bg-neutral-900/75;
+		@apply saturate-200 backdrop-blur-xs;
+	}
 
-  main {
-    @apply flex-1 py-32;
-  }
+	main {
+		@apply flex-1 py-32;
+	}
 
-  footer {
-    @apply py-6 text-sm;
-  }
+	footer {
+		@apply py-6 text-sm;
+	}
 
-  article {
-    @apply prose prose-neutral max-w-full dark:prose-invert prose-img:mx-auto prose-img:my-6;
-    @apply prose-headings:font-semibold;
-    @apply prose-headings:text-black dark:prose-headings:text-white;
-  }
+	article {
+		@apply prose prose-neutral max-w-full dark:prose-invert prose-img:mx-auto prose-img:my-6;
+		@apply prose-headings:font-semibold;
+		@apply prose-headings:text-black dark:prose-headings:text-white;
+	}
+
+	article img {
+		max-height: min(58vh, 520px);
+		width: auto;
+		object-fit: contain;
+	}
 }
 
 @layer utilities {
-  article a {
-    @apply font-sans text-current underline underline-offset-[3px];
-    @apply decoration-black/30 dark:decoration-white/30;
-    @apply transition-colors duration-300 ease-in-out;
-  }
-  article a:hover {
-    @apply text-black dark:text-white;
-    @apply decoration-black/50 dark:decoration-white/50;
-  }
+	article a {
+		@apply font-sans text-current underline underline-offset-[3px];
+		@apply decoration-black/30 dark:decoration-white/30;
+	}
+	article a:hover {
+		@apply text-black dark:text-white;
+		@apply decoration-black/50 dark:decoration-white/50;
+	}
 }
 
 .animate {
-  @apply -translate-y-3 opacity-0;
-  @apply transition-all duration-300 ease-out;
+	opacity: 1;
+	transform: none;
+	translate: none;
 }
 
 .animate.show {
-  @apply translate-y-0 opacity-100;
+	opacity: 1;
+	transform: none;
+	translate: none;
 }
 
 html #back-to-top {
-  @apply pointer-events-none opacity-0;
+	@apply pointer-events-none opacity-0;
 }
 
 html.scrolled #back-to-top {
-  @apply pointer-events-auto opacity-100;
+	@apply pointer-events-auto opacity-100;
 }
 
 /* shiki config */
 pre {
-  @apply border border-black/15 py-5 dark:border-white/20;
+	@apply border border-black/15 py-5 dark:border-white/20;
 }
 
 :root {
-  --astro-code-foreground: #09090b;
-  --astro-code-background: #fafafa;
-  --astro-code-token-comment: #a19595;
-  --astro-code-token-keyword: #f47067;
-  --astro-code-token-string: #00a99a;
-  --astro-code-token-function: #429996;
-  --astro-code-token-constant: #2b70c5;
-  --astro-code-token-parameter: #4e8fdf;
-  --astro-code-token-string-expression: #ae42a0;
-  --astro-code-token-punctuation: #8996a3;
-  --astro-code-token-link: #8d85ff;
-  --chart-background: #ffffff;
-  --chart-foreground: #0f172a;
-  --chart-foreground-muted: rgba(15, 23, 42, 0.55);
-  --chart-line-primary: #0ea5e9;
-  --chart-line-secondary: #94a3b8;
-  --chart-crosshair: rgba(14, 165, 233, 0.6);
-  --chart-grid: rgba(15, 23, 42, 0.08);
-  --chart-marker-background: #f8fafc;
-  --chart-marker-border: rgba(15, 23, 42, 0.12);
-  --chart-marker-foreground: #0f172a;
-  --chart-1: oklch(0.32 0 none);
-  --chart-2: oklch(0.41 0 none);
-  --chart-3: oklch(0.54 0 none);
-  --chart-4: oklch(0.71 0 none);
-  --chart-5: oklch(0.89 0 none);
-  --chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
-  --chart-tooltip-foreground: oklch(0.985 0 0);
-  --chart-tooltip-muted: oklch(0.65 0.01 260);
-  --chart-ring-background: oklch(0.9 0.005 260 / 0.25);
-  --chart-label: oklch(0.45 0.01 260);
-  --foreground: #0f172a;
-  --background: #ffffff;
+	--astro-code-foreground: #09090b;
+	--astro-code-background: #fafafa;
+	--astro-code-token-comment: #a19595;
+	--astro-code-token-keyword: #f47067;
+	--astro-code-token-string: #00a99a;
+	--astro-code-token-function: #429996;
+	--astro-code-token-constant: #2b70c5;
+	--astro-code-token-parameter: #4e8fdf;
+	--astro-code-token-string-expression: #ae42a0;
+	--astro-code-token-punctuation: #8996a3;
+	--astro-code-token-link: #8d85ff;
+	--chart-background: #ffffff;
+	--chart-foreground: #0f172a;
+	--chart-foreground-muted: rgba(15, 23, 42, 0.55);
+	--chart-line-primary: #0ea5e9;
+	--chart-line-secondary: #94a3b8;
+	--chart-crosshair: rgba(14, 165, 233, 0.6);
+	--chart-grid: rgba(15, 23, 42, 0.08);
+	--chart-marker-background: #f8fafc;
+	--chart-marker-border: rgba(15, 23, 42, 0.12);
+	--chart-marker-foreground: #0f172a;
+	--chart-1: oklch(0.32 0 none);
+	--chart-2: oklch(0.41 0 none);
+	--chart-3: oklch(0.54 0 none);
+	--chart-4: oklch(0.71 0 none);
+	--chart-5: oklch(0.89 0 none);
+	--chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
+	--chart-tooltip-foreground: oklch(0.985 0 0);
+	--chart-tooltip-muted: oklch(0.65 0.01 260);
+	--chart-ring-background: oklch(0.9 0.005 260 / 0.25);
+	--chart-label: oklch(0.45 0.01 260);
+	--foreground: #0f172a;
+	--background: #ffffff;
 }
 
 .dark {
-  --astro-code-foreground: #fafafa;
-  --astro-code-background: #09090b;
-  --astro-code-token-comment: #a19595;
-  --astro-code-token-keyword: #f47067;
-  --astro-code-token-string: #00a99a;
-  --astro-code-token-function: #6eafad;
-  --astro-code-token-constant: #b3cceb;
-  --astro-code-token-parameter: #4e8fdf;
-  --astro-code-token-string-expression: #bf7db6;
-  --astro-code-token-punctuation: #8996a3;
-  --astro-code-token-link: #8d85ff;
-  --chart-background: #0b0f14;
-  --chart-foreground: #f8fafc;
-  --chart-foreground-muted: rgba(248, 250, 252, 0.55);
-  --chart-line-primary: #38bdf8;
-  --chart-line-secondary: #64748b;
-  --chart-crosshair: rgba(56, 189, 248, 0.6);
-  --chart-grid: rgba(248, 250, 252, 0.12);
-  --chart-marker-background: #0f172a;
-  --chart-marker-border: rgba(248, 250, 252, 0.2);
-  --chart-marker-foreground: #e2e8f0;
-  --chart-1: oklch(1 0 none);
-  --chart-2: oklch(0.73 0 none);
-  --chart-3: oklch(0.51 0 none);
-  --chart-4: oklch(0.39 0 none);
-  --chart-5: oklch(0.32 0 none);
-  --chart-ring-background: oklch(0.35 0.01 260 / 0.25);
-  --chart-label: oklch(0.75 0.01 260);
-  --foreground: #f8fafc;
-  --background: #0b0f14;
+	--astro-code-foreground: #fafafa;
+	--astro-code-background: #09090b;
+	--astro-code-token-comment: #a19595;
+	--astro-code-token-keyword: #f47067;
+	--astro-code-token-string: #00a99a;
+	--astro-code-token-function: #6eafad;
+	--astro-code-token-constant: #b3cceb;
+	--astro-code-token-parameter: #4e8fdf;
+	--astro-code-token-string-expression: #bf7db6;
+	--astro-code-token-punctuation: #8996a3;
+	--astro-code-token-link: #8d85ff;
+	--chart-background: #0b0f14;
+	--chart-foreground: #f8fafc;
+	--chart-foreground-muted: rgba(248, 250, 252, 0.55);
+	--chart-line-primary: #38bdf8;
+	--chart-line-secondary: #64748b;
+	--chart-crosshair: rgba(56, 189, 248, 0.6);
+	--chart-grid: rgba(248, 250, 252, 0.12);
+	--chart-marker-background: #0f172a;
+	--chart-marker-border: rgba(248, 250, 252, 0.2);
+	--chart-marker-foreground: #e2e8f0;
+	--chart-1: oklch(1 0 none);
+	--chart-2: oklch(0.73 0 none);
+	--chart-3: oklch(0.51 0 none);
+	--chart-4: oklch(0.39 0 none);
+	--chart-5: oklch(0.32 0 none);
+	--chart-ring-background: oklch(0.35 0.01 260 / 0.25);
+	--chart-label: oklch(0.75 0.01 260);
+	--foreground: #f8fafc;
+	--background: #0b0f14;
 }
 
 /* copy code button on codeblocks */
 .copy-code {
-  @apply absolute right-3 top-3 grid size-9 place-content-center rounded-sm border border-black/15 bg-neutral-100 text-center duration-300 ease-in-out dark:border-white/20 dark:bg-neutral-900;
+	@apply absolute right-3 top-3 grid size-9 place-content-center border border-black/15 bg-neutral-100 text-center dark:border-white/20 dark:bg-neutral-900;
 }
 
 .copy-code:hover {
-  @apply bg-[#E9E9E9] transition-colors dark:bg-[#232323];
-}
-
-.copy-code:active {
-  @apply scale-90 transition-transform;
+	@apply bg-[#E9E9E9] dark:bg-[#232323];
 }
 
 @layer components {
-  .image-caption {
-    @apply my-6 flex flex-col items-center gap-2;
-  }
+	.image-caption {
+		@apply my-6 flex flex-col items-center gap-2;
+	}
 
-  .image-caption img {
-    @apply rounded;
-  }
+	.image-caption img {
+		@apply block;
+	}
 
-  .image-caption figcaption {
-    @apply text-sm text-black/60 dark:text-white/60;
-  }
+	.image-caption figcaption {
+		@apply text-sm text-black/60 dark:text-white/60;
+	}
 
-  .twitter-card {
-    @apply my-6 flex justify-center;
-  }
+	.twitter-card {
+		@apply my-6 flex justify-center;
+	}
 
-  .twitter-card__link {
-    @apply w-full rounded border border-black/15 bg-white/70 px-4 py-3 text-sm text-black/80 shadow-sm;
-    @apply flex items-center justify-between gap-3 dark:border-white/20 dark:bg-neutral-900/70 dark:text-white/80;
-  }
+	.twitter-card__link {
+		@apply w-full border border-black/15 bg-white/70 px-4 py-3 text-sm text-black/80;
+		@apply flex items-center justify-between gap-3 dark:border-white/20 dark:bg-neutral-900/70 dark:text-white/80;
+	}
 
-  .twitter-card__label {
-    @apply font-semibold;
-  }
+	.twitter-card__label {
+		@apply font-semibold;
+	}
 
-  .twitter-card__meta {
-    @apply text-black/70 dark:text-white/70;
-  }
+	.twitter-card__meta {
+		@apply text-black/70 dark:text-white/70;
+	}
 
-  .twitter-card__cta {
-    @apply text-black/70 underline decoration-black/30 dark:text-white/70 dark:decoration-white/30;
-  }
+	.twitter-card__cta {
+		@apply text-black/70 underline decoration-black/30 dark:text-white/70 dark:decoration-white/30;
+	}
 }

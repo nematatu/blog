@@ -1,30 +1,24 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import { BLOG } from "@consts";
-import { getTextStats } from "@lib/post-metrics";
+import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const entries = (await getCollection("blog"))
-  .filter((post) => showDrafts || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	.filter((post) => showDrafts || !post.data.draft)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const posts = entries.map((entry) => ({
-  entry,
-  stats: getTextStats(entry.body ?? ""),
-}));
-
-type PostsByYear = Record<string, typeof posts>;
+type PostsByYear = Record<string, typeof entries>;
 const byYear: PostsByYear = {};
 
-for (const post of posts) {
-  const year = post.entry.data.date.getFullYear().toString();
-  if (!byYear[year]) {
-    byYear[year] = [];
-  }
-  byYear[year].push(post);
+for (const entry of entries) {
+	const year = entry.data.date.getFullYear().toString();
+	if (!byYear[year]) {
+		byYear[year] = [];
+	}
+	byYear[year].push(entry);
 }
 
 const years = Object.keys(byYear).sort((a, b) => parseInt(b) - parseInt(a));
@@ -35,8 +29,6 @@ const years = Object.keys(byYear).sort((a, b) => parseInt(b) - parseInt(a));
     <div class="space-y-10">
       <section class="space-y-2 text-center sm:text-left">
         <h1 class="text-xl font-semibold text-black dark:text-white">記事一覧</h1>
-        <p class="text-sm text-black/70 dark:text-white/70">
-        </p>
       </section>
 
       {years.length === 0 && (
@@ -49,10 +41,10 @@ const years = Object.keys(byYear).sort((a, b) => parseInt(b) - parseInt(a));
             <h2 class="text-lg font-semibold text-black dark:text-white">{year}</h2>
             <span class="text-sm text-black/50 dark:text-white/50">({byYear[year].length}件)</span>
           </div>
-          <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {byYear[year].map((post, index) => (
-              <li class={index === 0 ? "md:col-span-2 md:aspect-square" : "md:aspect-square"}>
-                <PostCard entry={post.entry} stats={post.stats}/>
+          <ul class="divide-y divide-black/10 dark:divide-white/10">
+            {byYear[year].map((entry) => (
+              <li>
+                <PostCard entry={entry}/>
               </li>
             ))}
           </ul>

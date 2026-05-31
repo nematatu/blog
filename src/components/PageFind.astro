@@ -4,13 +4,12 @@ import Search from "astro-pagefind/components/Search";
 
 <aside data-pagefind-ignore>
   <div
-    transition:persist
     id="backdrop"
     class="bg-[rgba(0, 0, 0, 0.5] invisible fixed left-0 top-0 z-50 flex h-screen w-full justify-center p-6 backdrop-blur-xs"
   >
     <div
       id="pagefind-container"
-      class="m-0 flex h-fit max-h-[80%] w-full max-w-(--breakpoint-sm) flex-col overflow-auto rounded-sm border border-black/15 bg-neutral-100 p-2 px-4 py-3 shadow-lg dark:border-white/20 dark:bg-neutral-900"
+      class="m-0 flex h-fit max-h-[80%] w-full max-w-4xl flex-col overflow-auto border border-black/15 bg-neutral-100 p-2 px-4 py-3 dark:border-white/20 dark:bg-neutral-900"
     >
       <Search
         id="search"
@@ -97,7 +96,7 @@ import Search from "astro-pagefind/components/Search";
   :root {
     --pagefind-ui-scale: 0.75;
     --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 3px;
+    --pagefind-ui-border-radius: 0;
     --pagefind-ui-font: "Geist", sans-serif;
     --pagefind-ui-primary: #3d3d3d;
     --pagefind-ui-text: #3d3d3d;

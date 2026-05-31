@@ -1,99 +1,99 @@
 ---
-import Layout from "@layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import CommitHeatmap from "@components/CommitHeatmap.astro";
 import Container from "@components/Container.astro";
 import MonthlyTagBarChart from "@components/charts/MonthlyTagBarChart";
-import CommitHeatmap from "@components/CommitHeatmap.astro";
-import { BLOG } from "@consts";
-import { getCollection } from "astro:content";
-import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
 import Link from "@components/Link.astro";
+import { BLOG } from "@consts";
+import Layout from "@layouts/Layout.astro";
+import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
 
 const showDrafts = import.meta.env.DEV;
 const monthsToShow = 6;
 const now = new Date();
 const rangeStart = new Date(
-  now.getFullYear(),
-  now.getMonth() - (monthsToShow - 1),
-  1,
+	now.getFullYear(),
+	now.getMonth() - (monthsToShow - 1),
+	1,
 );
 
 const entries = (await getCollection("blog"))
-  .filter((post) => showDrafts || !post.data.draft)
-  .filter((post) => post.data.date >= rangeStart && post.data.date <= now)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	.filter((post) => showDrafts || !post.data.draft)
+	.filter((post) => post.data.date >= rangeStart && post.data.date <= now)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const dayCounts = new Map<string, number>();
 for (const entry of entries) {
-  const dayKey = dateKey(entry.data.date);
-  dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
+	const dayKey = dateKey(entry.data.date);
+	dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
 }
 
 const periodCharTotal = entries.reduce(
-  (acc, entry) => acc + getTextStats(entry.body ?? "").charCount,
-  0,
+	(acc, entry) => acc + getTextStats(entry.body ?? "").charCount,
+	0,
 );
 
 const months = Array.from({ length: monthsToShow }, (_, index) => {
-  const date = new Date(
-    rangeStart.getFullYear(),
-    rangeStart.getMonth() + index,
-    1,
-  );
-  const key = dateKey(date).slice(0, 7);
-  const label = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
-    date,
-  );
-  return { key, label };
+	const date = new Date(
+		rangeStart.getFullYear(),
+		rangeStart.getMonth() + index,
+		1,
+	);
+	const key = dateKey(date).slice(0, 7);
+	const label = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
+		date,
+	);
+	return { key, label };
 });
 const monthIndex = new Map(months.map((month, index) => [month.key, index]));
 const monthTagCounts = new Map<string, Map<string, number>>();
 const tagTotals = new Map<string, number>();
 
 for (const entry of entries) {
-  const monthKey = dateKey(entry.data.date).slice(0, 7);
-  if (!monthIndex.has(monthKey)) continue;
-  const tags =
-    entry.data.tags && entry.data.tags.length > 0
-      ? entry.data.tags
-      : ["未分類"];
+	const monthKey = dateKey(entry.data.date).slice(0, 7);
+	if (!monthIndex.has(monthKey)) continue;
+	const tags =
+		entry.data.tags && entry.data.tags.length > 0
+			? entry.data.tags
+			: ["未分類"];
 
-  for (const tag of tags) {
-    tagTotals.set(tag, (tagTotals.get(tag) ?? 0) + 1);
-    if (!monthTagCounts.has(monthKey)) {
-      monthTagCounts.set(monthKey, new Map<string, number>());
-    }
-    const monthMap = monthTagCounts.get(monthKey)!;
-    monthMap.set(tag, (monthMap.get(tag) ?? 0) + 1);
-  }
+	for (const tag of tags) {
+		tagTotals.set(tag, (tagTotals.get(tag) ?? 0) + 1);
+		if (!monthTagCounts.has(monthKey)) {
+			monthTagCounts.set(monthKey, new Map<string, number>());
+		}
+		const monthMap = monthTagCounts.get(monthKey)!;
+		monthMap.set(tag, (monthMap.get(tag) ?? 0) + 1);
+	}
 }
 
 const topTags = Array.from(tagTotals.entries())
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, 4)
-  .map(([tag]) => tag);
+	.sort((a, b) => b[1] - a[1])
+	.slice(0, 4)
+	.map(([tag]) => tag);
 
 const monthlyTagSeries = months.map((month) => {
-  const row: Record<string, number | string> = {
-    monthLabel: month.label,
-  };
-  const monthMap = monthTagCounts.get(month.key);
-  let otherCount = 0;
-  if (monthMap) {
-    for (const [tag, count] of monthMap) {
-      if (topTags.includes(tag)) {
-        row[tag] = count;
-      } else {
-        otherCount += count;
-      }
-    }
-  }
-  for (const tag of topTags) {
-    if (row[tag] === undefined) {
-      row[tag] = 0;
-    }
-  }
-  row["その他"] = otherCount;
-  return row;
+	const row: Record<string, number | string> = {
+		monthLabel: month.label,
+	};
+	const monthMap = monthTagCounts.get(month.key);
+	let otherCount = 0;
+	if (monthMap) {
+		for (const [tag, count] of monthMap) {
+			if (topTags.includes(tag)) {
+				row[tag] = count;
+			} else {
+				otherCount += count;
+			}
+		}
+	}
+	for (const tag of topTags) {
+		if (row[tag] === undefined) {
+			row[tag] = 0;
+		}
+	}
+	row["その他"] = otherCount;
+	return row;
 });
 const hasOther = monthlyTagSeries.some((row) => Number(row["その他"] ?? 0) > 0);
 const stackedTags = hasOther ? [...topTags, "その他"] : topTags;
@@ -105,74 +105,74 @@ graphStart.setDate(graphStart.getDate() - startOffset);
 
 const days: Array<{ date: Date; key: string; count: number }> = [];
 for (
-  let cursor = new Date(graphStart);
-  cursor <= graphEnd;
-  cursor.setDate(cursor.getDate() + 1)
+	let cursor = new Date(graphStart);
+	cursor <= graphEnd;
+	cursor.setDate(cursor.getDate() + 1)
 ) {
-  const date = new Date(cursor);
-  const key = dateKey(date);
-  const count = dayCounts.get(key) ?? 0;
-  days.push({ date, key, count });
+	const date = new Date(cursor);
+	const key = dateKey(date);
+	const count = dayCounts.get(key) ?? 0;
+	days.push({ date, key, count });
 }
 
 const weeks: Array<Array<{ date: Date; key: string; count: number }>> = [];
 days.forEach((day, index) => {
-  const weekIndex = Math.floor(index / 7);
-  if (!weeks[weekIndex]) {
-    weeks[weekIndex] = [];
-  }
-  weeks[weekIndex].push(day);
+	const weekIndex = Math.floor(index / 7);
+	if (!weeks[weekIndex]) {
+		weeks[weekIndex] = [];
+	}
+	weeks[weekIndex].push(day);
 });
 
 const monthLabels = weeks.map((week) => {
-  const firstDay = week[0]?.date;
-  if (!firstDay) return "";
-  if (firstDay.getDate() <= 7) {
-    return new Intl.DateTimeFormat("ja-JP", {
-      month: "numeric",
-    }).format(firstDay);
-  }
-  return "";
+	const firstDay = week[0]?.date;
+	if (!firstDay) return "";
+	if (firstDay.getDate() <= 7) {
+		return new Intl.DateTimeFormat("ja-JP", {
+			month: "numeric",
+		}).format(firstDay);
+	}
+	return "";
 });
 
 const maxDaily = Math.max(1, ...dayCounts.values());
 const activityLevel = (count: number) => {
-  if (count === 0) return 0;
-  const ratio = count / maxDaily;
-  if (ratio >= 0.8) return 4;
-  if (ratio >= 0.6) return 3;
-  if (ratio >= 0.3) return 2;
-  return 1;
+	if (count === 0) return 0;
+	const ratio = count / maxDaily;
+	if (ratio >= 0.8) return 4;
+	if (ratio >= 0.6) return 3;
+	if (ratio >= 0.3) return 2;
+	return 1;
 };
 const heatmapWeeks = weeks.map((week) =>
-  week.map((day) => {
-    const level = activityLevel(day.count);
-    const className =
-      level === 0
-        ? "bg-black/5 dark:bg-white/5"
-        : level === 1
-          ? "bg-sky-100 dark:bg-sky-500/20"
-          : level === 2
-            ? "bg-sky-200 dark:bg-sky-500/35"
-            : level === 3
-              ? "bg-sky-300 dark:bg-sky-500/55"
-              : "bg-sky-400 dark:bg-sky-500/80";
-    return {
-      date: formatDateJP(day.date),
-      count: day.count,
-      className,
-    };
-  }),
+	week.map((day) => {
+		const level = activityLevel(day.count);
+		const className =
+			level === 0
+				? "bg-black/5 dark:bg-white/5"
+				: level === 1
+					? "bg-sky-100 dark:bg-sky-500/20"
+					: level === 2
+						? "bg-sky-200 dark:bg-sky-500/35"
+						: level === 3
+							? "bg-sky-300 dark:bg-sky-500/55"
+							: "bg-sky-400 dark:bg-sky-500/80";
+		return {
+			date: formatDateJP(day.date),
+			count: day.count,
+			className,
+		};
+	}),
 );
 const topPosts = entries
-  .map((entry) => ({
-    id: entry.id,
-    title: entry.data.title,
-    date: formatDateJP(entry.data.date),
-    charCount: getTextStats(entry.body ?? "").charCount,
-  }))
-  .sort((a, b) => b.charCount - a.charCount)
-  .slice(0, 8);
+	.map((entry) => ({
+		id: entry.id,
+		title: entry.data.title,
+		date: formatDateJP(entry.data.date),
+		charCount: getTextStats(entry.body ?? "").charCount,
+	}))
+	.sort((a, b) => b.charCount - a.charCount)
+	.slice(0, 8);
 
 const formatNumber = (value: number) => value.toLocaleString("ja-JP");
 ---
@@ -184,7 +184,7 @@ const formatNumber = (value: number) => value.toLocaleString("ja-JP");
           <h1 class="text-2xl font-semibold text-black dark:text-white">統計</h1>
         </section>
 
-        <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
+        <section class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70">
           <div class="flex flex-col gap-2 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
             <div>
               <div class="text-sm font-semibold text-black/70 dark:text-white/70">
@@ -207,7 +207,7 @@ const formatNumber = (value: number) => value.toLocaleString("ja-JP");
           </div>
         </section>
 
-        <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
+        <section class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70">
           <div class="text-center sm:text-left">
             <div class="text-sm font-semibold text-black/70 dark:text-white/70">
               月別投稿数（タグ別）
@@ -231,7 +231,7 @@ const formatNumber = (value: number) => value.toLocaleString("ja-JP");
           </div>
         </section>
 
-        <section class="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
+        <section class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70">
           <div class="text-center sm:text-left">
             <div class="text-sm font-semibold text-black/70 dark:text-white/70">
               投稿ごとの執筆文字数

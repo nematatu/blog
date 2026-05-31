@@ -1,22 +1,22 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
-import Layout from "@layouts/Layout.astro";
+import BackToPrevious from "@components/BackToPrevious.astro";
 import Container from "@components/Container.astro";
 import FormattedDate from "@components/FormattedDate.astro";
-import { readingTime } from "@lib/utils";
-import BackToPrevious from "@components/BackToPrevious.astro";
 import Link from "@components/Link.astro";
 import TableOfContents from "@components/TableOfContents.astro";
+import Layout from "@layouts/Layout.astro";
+import { readingTime } from "@lib/utils";
 
 export async function getStaticPaths() {
-  const showDrafts = import.meta.env.DEV;
-  const projects = (await getCollection("projects"))
-    .filter((post) => showDrafts || !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-  return projects.map((project) => ({
-    params: { id: project.id },
-    props: project,
-  }));
+	const showDrafts = import.meta.env.DEV;
+	const projects = (await getCollection("projects"))
+		.filter((post) => showDrafts || !post.data.draft)
+		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	return projects.map((project) => ({
+		params: { id: project.id },
+		props: project,
+	}));
 }
 type Props = CollectionEntry<"projects">;
 

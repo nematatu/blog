@@ -1,14 +1,14 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "@layouts/Layout.astro";
-import Container from "@components/Container.astro";
 import ArrowCard from "@components/ArrowCard.astro";
+import Container from "@components/Container.astro";
 import { PROJECTS } from "@consts";
+import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const projects = (await getCollection("projects"))
-  .filter((project) => showDrafts || !project.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	.filter((project) => showDrafts || !project.data.draft)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Layout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>

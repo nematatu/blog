@@ -1,103 +1,17 @@
 ---
-import Layout from "@layouts/Layout.astro";
+import { getCollection } from "astro:content";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
-import CommitHeatmap from "@components/CommitHeatmap.astro";
 import SocialLinks from "@components/SocialLinks.astro";
-import { SITE, HOME, SOCIALS } from "@consts";
-import { getCollection } from "astro:content";
-import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
+import { HOME, SITE, SOCIALS } from "@consts";
+import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const entries = (await getCollection("blog"))
-  .filter((post) => showDrafts || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	.filter((post) => showDrafts || !post.data.draft)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const posts = entries.map((entry) => ({
-  entry,
-  stats: getTextStats(entry.body ?? ""),
-}));
-
-const latestPosts = posts.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
-
-const dayCounts = new Map<string, number>();
-for (const entry of entries) {
-  const dayKey = dateKey(entry.data.date);
-  dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
-}
-
-const now = new Date();
-const weeksToShow = 13;
-const graphEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const graphStart = new Date(graphEnd);
-graphStart.setDate(graphStart.getDate() - (weeksToShow * 7 - 1));
-const startOffset = graphStart.getDay();
-graphStart.setDate(graphStart.getDate() - startOffset);
-
-const days: Array<{ date: Date; key: string; count: number }> = [];
-for (
-  let cursor = new Date(graphStart);
-  cursor <= graphEnd;
-  cursor.setDate(cursor.getDate() + 1)
-) {
-  const date = new Date(cursor);
-  const key = dateKey(date);
-  const count = dayCounts.get(key) ?? 0;
-  days.push({ date, key, count });
-}
-
-const weeks: Array<Array<{ date: Date; key: string; count: number }>> = [];
-days.forEach((day, index) => {
-  const weekIndex = Math.floor(index / 7);
-  if (!weeks[weekIndex]) {
-    weeks[weekIndex] = [];
-  }
-  weeks[weekIndex].push(day);
-});
-
-const maxDaily = Math.max(1, ...dayCounts.values());
-const activityLevel = (count: number) => {
-  if (count === 0) return 0;
-  const ratio = count / maxDaily;
-  if (ratio >= 0.8) return 4;
-  if (ratio >= 0.6) return 3;
-  if (ratio >= 0.3) return 2;
-  return 1;
-};
-
-const monthLabels = weeks.map((week) => {
-  const firstDay = week[0]?.date;
-  if (!firstDay) return "";
-  if (firstDay.getDate() <= 7) {
-    return new Intl.DateTimeFormat("ja-JP", { month: "numeric" }).format(
-      firstDay,
-    );
-  }
-  return "";
-});
-const startYear = graphStart.getFullYear();
-const endYear = graphEnd.getFullYear();
-const heatmapWeeks = weeks.map((week) =>
-  week.map((day) => {
-    const level = activityLevel(day.count);
-    const className =
-      level === 0
-        ? "bg-black/5 dark:bg-white/5"
-        : level === 1
-          ? "bg-sky-100 dark:bg-sky-500/20"
-          : level === 2
-            ? "bg-sky-200 dark:bg-sky-500/35"
-            : level === 3
-              ? "bg-sky-300 dark:bg-sky-500/55"
-              : "bg-sky-400 dark:bg-sky-500/80";
-    return {
-      date: formatDateJP(day.date),
-      count: day.count,
-      className,
-    };
-  }),
-);
-
+const latestPosts = entries.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
@@ -110,15 +24,6 @@ const heatmapWeeks = weeks.map((week) =>
         <SocialLinks socials={SOCIALS} class="justify-center sm:justify-start" />
       </section>
 
-      <section class="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70 w-full lg:w-1/2 lg:mr-auto overflow-x-auto overflow-y-visible">
-        <CommitHeatmap
-          weeks={heatmapWeeks}
-          monthLabels={monthLabels}
-          cellSize={18}
-          gap={2}
-        />
-      </section>
-
       <section class="space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-lg font-semibold text-black dark:text-white">最新の記事</h2>
@@ -129,10 +34,10 @@ const heatmapWeeks = weeks.map((week) =>
             すべて見る
           </a>
         </div>
-        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {latestPosts.map((post, index) => (
-            <li class={index === 0 ? "md:col-span-2 md:aspect-square" : "md:aspect-square"}>
-              <PostCard entry={post.entry} stats={post.stats} />
+        <ul class="divide-y divide-black/10 dark:divide-white/10">
+          {latestPosts.map((entry) => (
+            <li>
+              <PostCard entry={entry} />
             </li>
           ))}
         </ul>
