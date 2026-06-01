@@ -48,6 +48,7 @@ const months = Array.from({ length: monthsToShow }, (_, index) => {
 const monthIndex = new Map(months.map((month, index) => [month.key, index]));
 const monthTagCounts = new Map<string, Map<string, number>>();
 const tagTotals = new Map<string, number>();
+const otherTag = "その他";
 
 for (const entry of entries) {
 	const monthKey = dateKey(entry.data.date).slice(0, 7);
@@ -62,7 +63,8 @@ for (const entry of entries) {
 		if (!monthTagCounts.has(monthKey)) {
 			monthTagCounts.set(monthKey, new Map<string, number>());
 		}
-		const monthMap = monthTagCounts.get(monthKey)!;
+		const monthMap = monthTagCounts.get(monthKey);
+		if (!monthMap) continue;
 		monthMap.set(tag, (monthMap.get(tag) ?? 0) + 1);
 	}
 }
@@ -92,11 +94,11 @@ const monthlyTagSeries = months.map((month) => {
 			row[tag] = 0;
 		}
 	}
-	row["その他"] = otherCount;
+	row[otherTag] = otherCount;
 	return row;
 });
-const hasOther = monthlyTagSeries.some((row) => Number(row["その他"] ?? 0) > 0);
-const stackedTags = hasOther ? [...topTags, "その他"] : topTags;
+const hasOther = monthlyTagSeries.some((row) => Number(row[otherTag] ?? 0) > 0);
+const stackedTags = hasOther ? [...topTags, otherTag] : topTags;
 
 const graphEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 const graphStart = new Date(rangeStart);

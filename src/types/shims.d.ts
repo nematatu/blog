@@ -1,3 +1,5 @@
+// biome-ignore-all lint/suspicious/noExplicitAny: compatibility shims intentionally use broad React-like types
+// biome-ignore-all lint/suspicious/noConfusingVoidType: compatibility shims mirror common React effect signatures
 declare module "react" {
 	export type ReactNode = any;
 	export type ReactElement = any;

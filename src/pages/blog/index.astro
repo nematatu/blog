@@ -21,7 +21,9 @@ for (const entry of entries) {
 	byYear[year].push(entry);
 }
 
-const years = Object.keys(byYear).sort((a, b) => parseInt(b) - parseInt(a));
+const years = Object.keys(byYear).sort(
+	(a, b) => parseInt(b, 10) - parseInt(a, 10),
+);
 ---
 
 <Layout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>

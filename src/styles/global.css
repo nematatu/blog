@@ -34,10 +34,15 @@
 	*,
 	::after,
 	::before {
+		/* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
 		border-radius: 0 !important;
+		/* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
 		box-shadow: none !important;
+		/* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
 		animation: none !important;
+		/* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
 		transition: none !important;
+		/* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
 		scroll-behavior: auto !important;
 	}
 }
