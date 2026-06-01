@@ -107,13 +107,10 @@ export function DateTicker({ currentIndex, labels, visible }: DateTickerProps) {
 					<div className="relative h-6 overflow-hidden">
 						<motion.div className="flex flex-col" style={{ y: dayY }}>
 							{parsedLabels.map(
-								(
-									label: { month: string; day: string; full: string },
-									index: number,
-								) => (
+								(label: { month: string; day: string; full: string }) => (
 									<div
 										className="flex h-6 shrink-0 items-center justify-center"
-										key={`${label.day}-${index}`}
+										key={label.full}
 									>
 										<span className="whitespace-nowrap font-medium text-sm">
 											{label.day}

@@ -336,6 +336,7 @@ export function Bar({
 
 				// Static bar after animation completes
 				return (
+					// biome-ignore lint/a11y/noStaticElementInteractions: SVG bar hover drives chart tooltip state.
 					<rect
 						fill={fill}
 						height={barHeight}

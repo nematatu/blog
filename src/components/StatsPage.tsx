@@ -140,9 +140,9 @@ export default function StatsPage({
 										width: "100%",
 									}}
 								>
-									{heatmapLabels.map((label, index) => (
+									{heatmapLabels.map((label) => (
 										<span
-											key={`label-${label}-${index}`}
+											key={label}
 											style={{
 												height: "var(--cell-size)",
 												lineHeight: "var(--cell-size)",
@@ -160,13 +160,13 @@ export default function StatsPage({
 										gridAutoColumns: "var(--cell-size)",
 									}}
 								>
-									{heatmapWeeks.map((week, weekIndex) => (
+									{heatmapWeeks.map((week) => (
 										<div
 											className="grid grid-rows-7"
-											key={`week-${weekIndex}`}
+											key={week[0]?.date ?? "empty-week"}
 											style={{ gap: "var(--cell-gap)" }}
 										>
-											{week.map((day, dayIndex) => {
+											{week.map((day) => {
 												const ratio = day.count / maxDaily;
 												const level =
 													day.count === 0
@@ -180,7 +180,7 @@ export default function StatsPage({
 																	: 1;
 												return (
 													<span
-														key={`day-${weekIndex}-${dayIndex}`}
+														key={day.date}
 														className={cn(levelClass(level))}
 														style={{
 															width: "var(--cell-size)",
@@ -189,6 +189,7 @@ export default function StatsPage({
 														}}
 														title={`${day.date}：${day.count}件`}
 														aria-label={`${day.date}：${day.count}件`}
+														role="img"
 													/>
 												);
 											})}
@@ -271,10 +272,10 @@ export default function StatsPage({
 						</div>
 
 						<div className="mt-4 divide-y divide-black/5 text-sm dark:divide-white/10">
-							{topPosts.map((post, index) => (
+							{topPosts.map((post) => (
 								<div
 									className="flex items-center justify-between gap-4 py-3"
-									key={`${post.title}-${index}`}
+									key={`${post.title}-${post.date}`}
 								>
 									<div className="min-w-0">
 										<div className="truncate font-semibold text-black dark:text-white">

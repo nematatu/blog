@@ -27,23 +27,13 @@ const posts = (await getCollection("blog"))
 	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 function getNextPost() {
-	let postIndex;
-	for (const post of posts) {
-		if (post.id === Astro.params.id) {
-			postIndex = posts.indexOf(post);
-			return posts[postIndex + 1];
-		}
-	}
+	const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
+	return postIndex >= 0 ? posts[postIndex + 1] : undefined;
 }
 
 function getPrevPost() {
-	let postIndex;
-	for (const post of posts) {
-		if (post.id === Astro.params.id) {
-			postIndex = posts.indexOf(post);
-			return posts[postIndex - 1];
-		}
-	}
+	const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
+	return postIndex >= 0 ? posts[postIndex - 1] : undefined;
 }
 
 const nextPost = getNextPost();

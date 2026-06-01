@@ -77,7 +77,9 @@ function parseTagsFromFrontmatter(contents) {
 				.split(",")
 				.map((item) => stripQuotes(item.trim()))
 				.filter(Boolean)
-				.forEach((tag) => tags.push(tag));
+				.forEach((tag) => {
+					tags.push(tag);
+				});
 		} else if (rest) {
 			tags.push(stripQuotes(rest));
 		} else {
@@ -92,7 +94,9 @@ async function getExistingTags() {
 	const tagSet = new Set();
 	for (const file of files) {
 		const content = await readFile(file, "utf8");
-		parseTagsFromFrontmatter(content).forEach((tag) => tagSet.add(tag));
+		parseTagsFromFrontmatter(content).forEach((tag) => {
+			tagSet.add(tag);
+		});
 	}
 	return Array.from(tagSet).sort((a, b) => a.localeCompare(b, "ja"));
 }
