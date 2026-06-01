@@ -43,17 +43,47 @@ function buildToc(headings: Heading[] = []) {
 }
 ---
 
-<details
-  open
-  class="animate group border border-black/15 dark:border-white/20"
->
+<details open class="animate group">
   <summary
-    class="cursor-pointer px-3 py-1.5 font-medium group-open:bg-black/5 hover:bg-black/5 dark:group-open:bg-white/5 hover:dark:bg-white/5"
+    class="cursor-pointer py-1.5 font-medium text-sm text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
     >Table of Contents</summary
   >
   <nav>
-    <ul class="py-3">
+    <ul class="py-2">
       {toc.map((heading) => <TableOfContentsHeading heading={heading} />)}
     </ul>
   </nav>
 </details>
+
+<script is:inline>
+  const setActiveTocLink = () => {
+    const headings = Array.from(
+      document.querySelectorAll("article :is(h2, h3, h4, h5, h6)[id]"),
+    );
+    const links = Array.from(document.querySelectorAll("[data-toc-link]"));
+    if (headings.length === 0 || links.length === 0) return;
+
+    let active = headings[0];
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top <= 140) {
+        active = heading;
+      } else {
+        break;
+      }
+    }
+
+    for (const link of links) {
+      const isActive = link.dataset.tocLink === active.id;
+      link.dataset.active = String(isActive);
+      if (isActive) {
+        link.setAttribute("aria-current", "location");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    }
+  };
+
+  setActiveTocLink();
+  document.addEventListener("scroll", setActiveTocLink, { passive: true });
+  document.addEventListener("astro:page-load", setActiveTocLink);
+</script>

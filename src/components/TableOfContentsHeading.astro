@@ -1,5 +1,4 @@
 ---
-import Link from "./Link.astro";
 import type { Heading } from "./TableOfContents.astro";
 
 // https://kld.dev/building-table-of-contents/
@@ -7,10 +6,14 @@ import type { Heading } from "./TableOfContents.astro";
 const { heading } = Astro.props;
 ---
 
-<li class="list-inside list-disc px-6 py-1.5 text-sm">
-  <Link href={"#" + heading.slug} underline>
+<li class="list-none py-1.5 text-sm">
+  <a
+    href={"#" + heading.slug}
+    class="inline-block text-current underline decoration-black/30 underline-offset-[3px] hover:text-black hover:decoration-black/50 focus-visible:text-black focus-visible:decoration-black/50 data-[active=true]:font-medium data-[active=true]:text-black data-[active=true]:decoration-black dark:decoration-white/30 dark:hover:text-white dark:hover:decoration-white/50 dark:focus-visible:text-white dark:focus-visible:decoration-white/50 dark:data-[active=true]:text-white dark:data-[active=true]:decoration-white"
+    data-toc-link={heading.slug}
+  >
     {heading.text}
-  </Link>
+  </a>
   {
     heading.subheadings.length > 0 && (
       <ul class="translate-x-3">
