@@ -8,8 +8,8 @@ import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const entries = (await getCollection("blog"))
-    .filter((post) => showDrafts || !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	.filter((post) => showDrafts || !post.data.draft)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const date = new Date();
 ---
 

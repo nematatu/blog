@@ -66,8 +66,8 @@
 	body {
 		@apply font-sans antialiased;
 		@apply flex flex-col;
-		@apply bg-neutral-100 dark:bg-neutral-900;
-		@apply text-black/75 dark:text-white/75;
+		@apply bg-neutral-50 dark:bg-neutral-900;
+		@apply text-black/85 dark:text-white/85;
 	}
 
 	header {
@@ -243,5 +243,13 @@ pre {
 
 	.twitter-card__cta {
 		@apply text-black/70 underline decoration-black/30 dark:text-white/70 dark:decoration-white/30;
+	}
+
+	.youtube-player {
+		@apply my-6 aspect-video w-full overflow-hidden border border-black/15 bg-black dark:border-white/20;
+	}
+
+	.youtube-player iframe {
+		@apply block size-full;
 	}
 }

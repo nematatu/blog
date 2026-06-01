@@ -7,6 +7,7 @@ import pagefind from "astro-pagefind";
 import remarkDirective from "remark-directive";
 import rehypeImageCaption from "./src/lib/markdown/rehype-image-caption.js";
 import remarkTwitterCard from "./src/lib/markdown/remark-twitter-card.js";
+import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,7 +20,7 @@ export default defineConfig({
 		shikiConfig: {
 			theme: "css-variables",
 		},
-		remarkPlugins: [remarkDirective, remarkTwitterCard],
+		remarkPlugins: [remarkDirective, remarkTwitterCard, remarkYoutubePlayer],
 		rehypePlugins: [rehypeImageCaption],
 	},
 });
