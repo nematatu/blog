@@ -68,7 +68,7 @@ const { Content, headings } = await render(project);
     </div>
     <div class="relative">
       {headings.length > 0 && (
-        <aside class="mb-8 lg:fixed lg:left-[calc(50%+26rem)] lg:top-28 lg:mb-0 lg:w-64">
+        <aside class="mx-auto mb-8 max-w-3xl 2xl:fixed 2xl:left-[calc(50%+26rem)] 2xl:top-28 2xl:bottom-40 2xl:mb-0 2xl:w-56 2xl:max-w-none">
           <TableOfContents headings={headings} />
         </aside>
       )}
