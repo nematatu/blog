@@ -11,16 +11,16 @@ import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://blog.amatatu.com",
-  integrations: [sitemap(), mdx(), pagefind(), react()],
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  markdown: {
-    shikiConfig: {
-      theme: "css-variables",
-    },
-    remarkPlugins: [remarkDirective, remarkTwitterCard, remarkYoutubePlayer],
-    rehypePlugins: [rehypeImageCaption],
-  },
+	site: "https://blog.amatatu.com",
+	integrations: [sitemap(), mdx(), pagefind(), react()],
+	vite: {
+		plugins: [tailwindcss()],
+	},
+	markdown: {
+		shikiConfig: {
+			theme: "css-variables",
+		},
+		remarkPlugins: [remarkDirective, remarkTwitterCard, remarkYoutubePlayer],
+		rehypePlugins: [rehypeImageCaption],
+	},
 });

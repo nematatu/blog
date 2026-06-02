@@ -1,32 +1,32 @@
 ---
 type Day = {
-  date: string;
-  count: number;
-  className: string;
+	date: string;
+	count: number;
+	className: string;
 };
 
 type Props = {
-  weeks: Day[][];
-  monthLabels: string[];
-  cellSize?: number;
-  gap?: number;
+	weeks: Day[][];
+	monthLabels: string[];
+	cellSize?: number;
+	gap?: number;
 };
 
 const { weeks, monthLabels, cellSize, gap = 2 } = Astro.props;
 const weekCount = weeks.length;
 const labelHeight = cellSize
-  ? `${Math.max(8, Math.round(cellSize * 0.9))}px`
-  : "calc(var(--cell-size) + 4px)";
+	? `${Math.max(8, Math.round(cellSize * 0.9))}px`
+	: "calc(var(--cell-size) + 4px)";
 const labelOffset = cellSize
-  ? `${Math.max(8, Math.round(cellSize * 0.9)) + 4}px`
-  : "calc(var(--cell-size) + 8px)";
+	? `${Math.max(8, Math.round(cellSize * 0.9)) + 4}px`
+	: "calc(var(--cell-size) + 8px)";
 const columnsStyle = `grid-template-columns: repeat(${weekCount}, var(--cell-size)); gap: var(--cell-gap);`;
 const weeksStyle = "grid-auto-columns: var(--cell-size); gap: var(--cell-gap);";
 const dayStyle =
-  "width: var(--cell-size); height: var(--cell-size); border-radius: 2px;";
+	"width: var(--cell-size); height: var(--cell-size); border-radius: 2px;";
 const rootStyle = cellSize
-  ? `--cell-size: ${cellSize}px; --cell-gap: ${gap}px;`
-  : `--cell-size: clamp(4px, 0.85vw, 10px); --cell-gap: clamp(1px, 0.3vw, 2px);`;
+	? `--cell-size: ${cellSize}px; --cell-gap: ${gap}px;`
+	: `--cell-size: clamp(4px, 0.85vw, 10px); --cell-gap: clamp(1px, 0.3vw, 2px);`;
 ---
 
 <div class="relative" data-heatmap>
