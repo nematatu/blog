@@ -16,7 +16,7 @@ tags: ["バドミントン", "日常"]
 2025: 70.45%
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/nomi.webp)
-*打ち上げが楽しいよね*
+_打ち上げが楽しいよね_
 
 ## 経緯
 
@@ -58,7 +58,7 @@ tags: ["バドミントン", "日常"]
 沖縄着いてからも、いつもやらないストレッチとか入念にやってた。
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/kaijou.webp)
-*会場の様子*
+_会場の様子_
 
 ## 会場の様子
 
@@ -141,14 +141,12 @@ tags: ["バドミントン", "日常"]
 普通に疲れてる。
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/asameshi.webp)
-*朝飯*
-
+_朝飯_
 
 開場到着
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/toujitu.webp)
-*マラソン当日*
-
+_マラソン当日_
 
 去年同様、神社にお参り。完走梅干しゲット。
 
@@ -197,7 +195,7 @@ OMGWTF。まあ仕方ない。
 本当は同級生飲み会でいっぱい飲みたかったけど、一気に疲労が襲ってきて、眠たくなって、酔いが回ってきて、ちょっと食べた後はずっとお水飲んでた。
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/nomi.webp)
-*飲み会後の朝すば*
+_飲み会後の朝すば_
 
 去年はまじで歩けなかったのに、今年は階段2段飛ばしできるくらい足は重くなかった。
 
@@ -206,16 +204,16 @@ OMGWTF。まあ仕方ない。
 次の日、朝マックして、沖縄そば食べて、ジュンク堂で本買って、カフェで作業して、結構足動くんだなって思ったし、夜は88ステーキで満足。
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/asamac.webp)
-*初グリドル*
+_初グリドル_
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/taira.webp)
-*平良製麺所*
+_平良製麺所_
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/coffee.webp)
-*やちむんがいい味*
+_やちむんがいい味_
 
 ![](https://assets.blog.amatatu.com/posts/kisei-marathon/88.webp)
-*88ステーキ*
+_88ステーキ_
 
 結構充実してた。  
 次から動画もこまめに撮りつつ、Vlog的なのも作りたい。

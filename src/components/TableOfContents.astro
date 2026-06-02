@@ -8,49 +8,51 @@ const isLongToc = headings.length > 12;
 const detailsAttrs = isLongToc ? {} : { open: true };
 
 export interface Heading {
-	depth: number;
-	slug: string;
-	text: string;
+  depth: number;
+  slug: string;
+  text: string;
 }
 
 type TocHeading = Heading & { subheadings: TocHeading[] };
 
 function buildToc(headings: Heading[] = []) {
-	const toc: TocHeading[] = [];
-	const parentHeadings = new Map<number, TocHeading>();
-	headings.forEach((h) => {
-		const heading: TocHeading = { ...h, subheadings: [] };
-		parentHeadings.set(heading.depth, heading);
-		if (heading.depth === 2) {
-			toc.push(heading);
-			return;
-		}
-		let parent = parentHeadings.get(heading.depth - 1);
-		if (!parent) {
-			for (let depth = heading.depth - 1; depth >= 2; depth -= 1) {
-				const candidate = parentHeadings.get(depth);
-				if (candidate) {
-					parent = candidate;
-					break;
-				}
-			}
-		}
-		if (parent) {
-			parent.subheadings.push(heading);
-		} else {
-			toc.push(heading);
-		}
-	});
-	return toc;
+  const toc: TocHeading[] = [];
+  const parentHeadings = new Map<number, TocHeading>();
+  headings.forEach((h) => {
+    const heading: TocHeading = { ...h, subheadings: [] };
+    parentHeadings.set(heading.depth, heading);
+    if (heading.depth === 2) {
+      toc.push(heading);
+      return;
+    }
+    let parent = parentHeadings.get(heading.depth - 1);
+    if (!parent) {
+      for (let depth = heading.depth - 1; depth >= 2; depth -= 1) {
+        const candidate = parentHeadings.get(depth);
+        if (candidate) {
+          parent = candidate;
+          break;
+        }
+      }
+    }
+    if (parent) {
+      parent.subheadings.push(heading);
+    } else {
+      toc.push(heading);
+    }
+  });
+  return toc;
 }
 ---
 
 <details {...detailsAttrs} class="animate group">
   <summary
-    class="cursor-pointer py-1.5 font-medium text-sm text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
+    class="cursor-pointer py-1.5 text-sm font-medium text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
     >Table of Contents</summary
   >
-  <nav class="max-h-[min(60vh,32rem)] overflow-y-auto overflow-x-hidden pr-2 2xl:max-h-[calc(100dvh-17rem)]">
+  <nav
+    class="max-h-[min(60vh,32rem)] overflow-x-hidden overflow-y-auto pr-2 2xl:max-h-[calc(100dvh-17rem)]"
+  >
     <ul class="py-2">
       {toc.map((heading) => <TableOfContentsHeading heading={heading} />)}
     </ul>

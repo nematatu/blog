@@ -12,19 +12,10 @@ const { prevPost, nextPost } = Astro.props;
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="absolute left-2 top-1/2 size-5 -translate-y-1/2 fill-none stroke-current stroke-2"
+          class="absolute top-1/2 left-2 size-5 -translate-y-1/2 fill-none stroke-current stroke-2"
         >
-          <line
-            x1="5"
-            y1="12"
-            x2="19"
-            y2="12"
-            class="translate-x-0"
-          />
-          <polyline
-            points="12 5 5 12 12 19"
-            class="translate-x-0"
-          />
+          <line x1="5" y1="12" x2="19" y2="12" class="translate-x-0" />
+          <polyline points="12 5 5 12 12 19" class="translate-x-0" />
         </svg>
         <div class="flex items-center text-sm">{prevPost?.data.title}</div>
       </a>
@@ -42,19 +33,10 @@ const { prevPost, nextPost } = Astro.props;
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="absolute right-2 top-1/2 size-5 -translate-y-1/2 fill-none stroke-current stroke-2"
+          class="absolute top-1/2 right-2 size-5 -translate-y-1/2 fill-none stroke-current stroke-2"
         >
-          <line
-            x1="5"
-            y1="12"
-            x2="19"
-            y2="12"
-            class="translate-x-0"
-          />
-          <polyline
-            points="12 5 19 12 12 19"
-            class="translate-x-0"
-          />
+          <line x1="5" y1="12" x2="19" y2="12" class="translate-x-0" />
+          <polyline points="12 5 19 12 12 19" class="translate-x-0" />
         </svg>
         <div class="flex items-center text-sm">{nextPost?.data.title}</div>
       </a>

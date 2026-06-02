@@ -6,8 +6,8 @@ import { tagEmoji } from "@lib/tag-emoji";
 
 const showDrafts = import.meta.env.DEV;
 const posts = await getCollection(
-	"blog",
-	({ data }) => showDrafts || !data.draft,
+  "blog",
+  ({ data }) => showDrafts || !data.draft,
 );
 const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))].sort();
 ---

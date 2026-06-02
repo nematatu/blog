@@ -38,18 +38,17 @@ title: "Blog Collection";
 description: "How to add posts to the blog.";
 date: "2024-03-21";
 draft: false;
-tags:
-  - tutorial
+tags: -tutorial;
 ---
 ```
 
-| Field       | Req | Type    | Remarks                                          |
-| :---------- | :-- | :------ | :----------------------------------------------- |
-| title       | Yes | string  | Title of the content. Used in SEO and RSS.       |
-| description | Yes | string  | Description of the content. Used in SEO and RSS. |
-| date        | Yes | string  | Must be a valid date string (able to be parsed). |
-| draft       | No  | boolean | If draft: true, content will not be published.   |
-| tags        | No  | string array | Tags to organize content |
+| Field       | Req | Type         | Remarks                                          |
+| :---------- | :-- | :----------- | :----------------------------------------------- |
+| title       | Yes | string       | Title of the content. Used in SEO and RSS.       |
+| description | Yes | string       | Description of the content. Used in SEO and RSS. |
+| date        | Yes | string       | Must be a valid date string (able to be parsed). |
+| draft       | No  | boolean      | If draft: true, content will not be published.   |
+| tags        | No  | string array | Tags to organize content                         |
 
 ---
 
@@ -61,8 +60,7 @@ title: "Blog Collection";
 description: "How to add posts to the blog.";
 date: "2024-03-21";
 draft: false;
-tags:
-  - tutorial
+tags: -tutorial;
 ---
 
 ## Working with the blog collection

@@ -9,30 +9,30 @@ import TableOfContents from "@components/TableOfContents.astro";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
-	const showDrafts = import.meta.env.DEV;
-	const posts = (await getCollection("blog"))
-		.filter((post) => showDrafts || !post.data.draft)
-		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-	return posts.map((post) => ({
-		params: { id: post.id },
-		props: post,
-	}));
+  const showDrafts = import.meta.env.DEV;
+  const posts = (await getCollection("blog"))
+    .filter((post) => showDrafts || !post.data.draft)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: post,
+  }));
 }
 type Props = CollectionEntry<"blog">;
 
 const showDrafts = import.meta.env.DEV;
 const posts = (await getCollection("blog"))
-	.filter((post) => showDrafts || !post.data.draft)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .filter((post) => showDrafts || !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 function getNextPost() {
-	const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
-	return postIndex >= 0 ? posts[postIndex + 1] : undefined;
+  const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
+  return postIndex >= 0 ? posts[postIndex + 1] : undefined;
 }
 
 function getPrevPost() {
-	const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
-	return postIndex >= 0 ? posts[postIndex - 1] : undefined;
+  const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
+  return postIndex >= 0 ? posts[postIndex - 1] : undefined;
 }
 
 const nextPost = getNextPost();
@@ -56,11 +56,13 @@ const { Content, headings } = await render(post);
       </div>
       <h1 class="animate text-3xl font-semibold text-black dark:text-white">
         {post.data.title}
-        {post.data.draft && (
-          <span class="ml-2 align-middle text-sm font-semibold text-red-600 dark:text-red-400">
-            (draft)
-          </span>
-        )}
+        {
+          post.data.draft && (
+            <span class="ml-2 align-middle text-sm font-semibold text-red-600 dark:text-red-400">
+              (draft)
+            </span>
+          )
+        }
       </h1>
       {
         post.data.tags && post.data.tags?.length > 0 ? (
@@ -78,12 +80,14 @@ const { Content, headings } = await render(post);
       }
     </div>
     <div class="relative">
-      {headings.length > 0 && (
-        <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:left-[calc(50%+34rem)] 2xl:top-28 2xl:bottom-40 2xl:mb-0 2xl:w-56 2xl:max-w-none">
-          <TableOfContents headings={headings} />
-        </aside>
-      )}
-      <article class="animate mx-auto min-w-0 max-w-5xl">
+      {
+        headings.length > 0 && (
+          <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:top-28 2xl:bottom-40 2xl:left-[calc(50%+34rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none">
+            <TableOfContents headings={headings} />
+          </aside>
+        )
+      }
+      <article class="animate mx-auto max-w-5xl min-w-0">
         <Content />
         <div class="mt-24">
           <PostNavigation prevPost={prevPost} nextPost={nextPost} />

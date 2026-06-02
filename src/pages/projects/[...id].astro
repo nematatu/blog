@@ -9,14 +9,14 @@ import Layout from "@layouts/Layout.astro";
 import { readingTime } from "@lib/utils";
 
 export async function getStaticPaths() {
-	const showDrafts = import.meta.env.DEV;
-	const projects = (await getCollection("projects"))
-		.filter((post) => showDrafts || !post.data.draft)
-		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-	return projects.map((project) => ({
-		params: { id: project.id },
-		props: project,
-	}));
+  const showDrafts = import.meta.env.DEV;
+  const projects = (await getCollection("projects"))
+    .filter((post) => showDrafts || !post.data.draft)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: project,
+  }));
 }
 type Props = CollectionEntry<"projects">;
 
@@ -39,11 +39,11 @@ const { Content, headings } = await render(project);
           <FormattedDate date={project.data.date} />
         </div>
         &bull;
-        {project.body && (
-          <div class="font-base text-sm">
-            {readingTime(project.body)}
-          </div>
-        )}     
+        {
+          project.body && (
+            <div class="font-base text-sm">{readingTime(project.body)}</div>
+          )
+        }
       </div>
       <h1 class="text-3xl font-semibold text-black dark:text-white">
         {project.data.title}
@@ -67,12 +67,14 @@ const { Content, headings } = await render(project);
       }
     </div>
     <div class="relative">
-      {headings.length > 0 && (
-        <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:left-[calc(50%+34rem)] 2xl:top-28 2xl:bottom-40 2xl:mb-0 2xl:w-56 2xl:max-w-none">
-          <TableOfContents headings={headings} />
-        </aside>
-      )}
-      <article class="animate mx-auto min-w-0 max-w-5xl">
+      {
+        headings.length > 0 && (
+          <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:top-28 2xl:bottom-40 2xl:left-[calc(50%+34rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none">
+            <TableOfContents headings={headings} />
+          </aside>
+        )
+      }
+      <article class="animate mx-auto max-w-5xl min-w-0">
         <Content />
       </article>
     </div>

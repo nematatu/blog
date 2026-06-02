@@ -8,46 +8,44 @@ import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const entries = (await getCollection("blog"))
-	.filter((post) => showDrafts || !post.data.draft)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .filter((post) => showDrafts || !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const date = new Date();
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
-    <Container>
-        <div class="space-y-12">
-            <div class="rounded-xl">
-                <img
-                    src={date.getDate() % 2 === 0
-                        ? "DSC_0104.webp"
-                        : "DSC_0105.webp"}
-                    alt=""
-                    class="mx-auto aspect-[2/1] w-full object-cover dark:border-white/10"
-                    loading="eager"
-                    aria-hidden="true"
-                />
-            </div>
-            <section class="space-y-2 text-center sm:text-left">
-                <h1 class="text-xl font-semibold text-black dark:text-white">
-                    {SITE.DESCRIPTION}
-                </h1>
-                <SocialLinks
-                    socials={SOCIALS}
-                    class="justify-center sm:justify-start"
-                />
-            </section>
+  <Container>
+    <div class="space-y-12">
+      <div class="rounded-xl">
+        <img
+          src={date.getDate() % 2 === 0 ? "DSC_0104.webp" : "DSC_0105.webp"}
+          alt=""
+          class="mx-auto aspect-[2/1] w-full object-cover dark:border-white/10"
+          loading="eager"
+          aria-hidden="true"
+        />
+      </div>
+      <section class="space-y-2 text-center sm:text-left">
+        <h1 class="text-xl font-semibold text-black dark:text-white">
+          {SITE.DESCRIPTION}
+        </h1>
+        <SocialLinks
+          socials={SOCIALS}
+          class="justify-center sm:justify-start"
+        />
+      </section>
 
-            <section>
-                <ul class="divide-y divide-black/10 dark:divide-white/10">
-                    {
-                        entries.map((entry) => (
-                            <li>
-                                <PostCard entry={entry} />
-                            </li>
-                        ))
-                    }
-                </ul>
-            </section>
-        </div>
-    </Container>
+      <section>
+        <ul class="divide-y divide-black/10 dark:divide-white/10">
+          {
+            entries.map((entry) => (
+              <li>
+                <PostCard entry={entry} />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+  </Container>
 </Layout>
