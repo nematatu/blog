@@ -85,9 +85,9 @@
 	}
 
 	article {
-		@apply prose prose-neutral max-w-full dark:prose-invert prose-img:mx-auto prose-img:my-6;
+		@apply prose prose-neutral max-w-full prose-img:mx-auto prose-img:my-6;
 		@apply prose-headings:font-semibold;
-		@apply prose-headings:text-black dark:prose-headings:text-white;
+		@apply bg-white px-6 py-8 text-black prose-headings:text-black dark:text-black dark:prose-headings:text-black sm:px-10 sm:py-10;
 	}
 
 	article img {
@@ -99,12 +99,10 @@
 
 @layer utilities {
 	article a {
-		@apply font-sans text-current underline underline-offset-[3px];
-		@apply decoration-black/30 dark:decoration-white/30;
+		@apply font-sans text-blue-600 underline underline-offset-[3px] decoration-blue-600 dark:text-blue-600 dark:decoration-blue-600;
 	}
 	article a:hover {
-		@apply text-black dark:text-white;
-		@apply decoration-black/50 dark:decoration-white/50;
+		@apply text-blue-700 decoration-blue-700 dark:text-blue-700 dark:decoration-blue-700;
 	}
 }
 

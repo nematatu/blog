@@ -48,7 +48,7 @@ const { Content, headings } = await render(post);
   image={post.data.ogImage ?? `/og-image/blog/${post.id}.png`}
 >
   <Container>
-    <div class="mx-auto my-10 max-w-3xl space-y-4">
+    <div class="mx-auto my-10 max-w-5xl space-y-4">
       <div class="animate flex items-center gap-1.5">
         <div class="font-base text-sm">
           <FormattedDate date={post.data.date} />
@@ -79,11 +79,11 @@ const { Content, headings } = await render(post);
     </div>
     <div class="relative">
       {headings.length > 0 && (
-        <aside class="mx-auto mb-8 max-w-3xl 2xl:fixed 2xl:left-[calc(50%+26rem)] 2xl:top-28 2xl:bottom-40 2xl:mb-0 2xl:w-56 2xl:max-w-none">
+        <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:left-[calc(50%+34rem)] 2xl:top-28 2xl:bottom-40 2xl:mb-0 2xl:w-56 2xl:max-w-none">
           <TableOfContents headings={headings} />
         </aside>
       )}
-      <article class="animate mx-auto min-w-0 max-w-3xl">
+      <article class="animate mx-auto min-w-0 max-w-5xl">
         <Content />
         <div class="mt-24">
           <PostNavigation prevPost={prevPost} nextPost={nextPost} />
