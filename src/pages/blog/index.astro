@@ -7,22 +7,22 @@ import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const entries = (await getCollection("blog"))
-	.filter((post) => showDrafts || !post.data.draft)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .filter((post) => showDrafts || !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 type PostsByYear = Record<string, typeof entries>;
 const byYear: PostsByYear = {};
 
 for (const entry of entries) {
-	const year = entry.data.date.getFullYear().toString();
-	if (!byYear[year]) {
-		byYear[year] = [];
-	}
-	byYear[year].push(entry);
+  const year = entry.data.date.getFullYear().toString();
+  if (!byYear[year]) {
+    byYear[year] = [];
+  }
+  byYear[year].push(entry);
 }
 
 const years = Object.keys(byYear).sort(
-	(a, b) => parseInt(b, 10) - parseInt(a, 10),
+  (a, b) => parseInt(b, 10) - parseInt(a, 10),
 );
 ---
 

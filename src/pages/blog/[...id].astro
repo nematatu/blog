@@ -9,30 +9,30 @@ import TableOfContents from "@components/TableOfContents.astro";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
-	const showDrafts = import.meta.env.DEV;
-	const posts = (await getCollection("blog"))
-		.filter((post) => showDrafts || !post.data.draft)
-		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-	return posts.map((post) => ({
-		params: { id: post.id },
-		props: post,
-	}));
+  const showDrafts = import.meta.env.DEV;
+  const posts = (await getCollection("blog"))
+    .filter((post) => showDrafts || !post.data.draft)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: post,
+  }));
 }
 type Props = CollectionEntry<"blog">;
 
 const showDrafts = import.meta.env.DEV;
 const posts = (await getCollection("blog"))
-	.filter((post) => showDrafts || !post.data.draft)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .filter((post) => showDrafts || !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 function getNextPost() {
-	const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
-	return postIndex >= 0 ? posts[postIndex + 1] : undefined;
+  const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
+  return postIndex >= 0 ? posts[postIndex + 1] : undefined;
 }
 
 function getPrevPost() {
-	const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
-	return postIndex >= 0 ? posts[postIndex - 1] : undefined;
+  const postIndex = posts.findIndex((post) => post.id === Astro.params.id);
+  return postIndex >= 0 ? posts[postIndex - 1] : undefined;
 }
 
 const nextPost = getNextPost();
