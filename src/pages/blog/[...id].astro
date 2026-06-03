@@ -89,7 +89,7 @@ const titleBackgroundImage =
     <style>
       .post-title-hero {
         position: relative;
-        background: var(--title-background-image) center / cover;
+        background: #0b0f14;
         isolation: isolate;
       }
 
@@ -99,15 +99,13 @@ const titleBackgroundImage =
         z-index: -1;
         background: var(--title-background-image) center / cover;
         content: "";
-        opacity: 0.34;
-        filter: saturate(1.15);
       }
 
       .post-title-hero::after {
         position: absolute;
         inset: 0;
         z-index: -1;
-        background: rgb(0 0 0 / 0.2);
+        background: rgb(0 0 0 / 0.38);
         content: "";
       }
     </style>
