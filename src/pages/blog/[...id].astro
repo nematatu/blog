@@ -40,6 +40,8 @@ const prevPost = getPrevPost();
 
 const post = Astro.props;
 const { Content, headings } = await render(post);
+const titleBackgroundImage =
+  post.data.date.getDate() % 2 === 0 ? "/DSC_0098.webp" : "/DSC_0105.webp";
 ---
 
 <Layout
@@ -48,37 +50,67 @@ const { Content, headings } = await render(post);
   image={post.data.ogImage ?? `/og-image/blog/${post.id}.png`}
 >
   <Container>
-    <div class="mx-auto my-10 max-w-5xl space-y-4">
-      <div class="animate flex items-center gap-1.5">
-        <div class="font-base text-sm">
-          <FormattedDate date={post.data.date} />
-        </div>
-      </div>
-      <h1 class="animate text-3xl font-semibold text-black dark:text-white">
-        {post.data.title}
-        {
-          post.data.draft && (
-            <span class="ml-2 align-middle text-sm font-semibold text-red-600 dark:text-red-400">
-              (draft)
-            </span>
-          )
-        }
-      </h1>
-      {
-        post.data.tags && post.data.tags?.length > 0 ? (
-          <div class="animate flex gap-2 pt-1">
-            {post.data.tags.map((tag) => (
-              <a
-                href={`/tags/${tag}`}
-                class="border border-black/15 px-2 py-1 text-sm hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
-              >
-                {tag}
-              </a>
-            ))}
+    <section
+      class="post-title-hero animate mx-auto my-10 max-w-5xl overflow-hidden border border-black/10 dark:border-white/15"
+      style={`--title-background-image: url("${titleBackgroundImage}")`}
+    >
+      <div class="relative z-10 space-y-5 px-6 py-10 sm:px-10 sm:py-14">
+        <div class="flex items-center gap-1.5">
+          <div class="font-base text-sm text-white/80">
+            <FormattedDate date={post.data.date} />
           </div>
-        ) : null
+        </div>
+        <h1 class="max-w-3xl text-3xl font-semibold text-white sm:text-4xl">
+          {post.data.title}
+          {
+            post.data.draft && (
+              <span class="ml-2 align-middle text-sm font-semibold text-red-200">
+                (draft)
+              </span>
+            )
+          }
+        </h1>
+        {
+          post.data.tags && post.data.tags?.length > 0 ? (
+            <div class="flex flex-wrap gap-2 pt-1">
+              {post.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tag}`}
+                  class="border border-white/25 bg-black/25 px-2 py-1 text-sm text-white/85 hover:bg-white/15 hover:text-white focus-visible:bg-white/15 focus-visible:text-white"
+                >
+                  {tag}
+                </a>
+              ))}
+            </div>
+          ) : null
+        }
+      </div>
+    </section>
+    <style>
+      .post-title-hero {
+        position: relative;
+        background: var(--title-background-image) center / cover;
+        isolation: isolate;
       }
-    </div>
+
+      .post-title-hero::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: var(--title-background-image) center / cover;
+        content: "";
+        opacity: 0.34;
+        filter: saturate(1.15);
+      }
+
+      .post-title-hero::after {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: rgb(0 0 0 / 0.2);
+        content: "";
+      }
+    </style>
     <div class="relative">
       {
         headings.length > 0 && (

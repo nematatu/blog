@@ -109,7 +109,6 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
-
 }
 
 @layer utilities {
@@ -270,11 +269,11 @@ pre {
 article p,
 article li,
 article blockquote {
-  line-height: 1.35 !important;
+  line-height: 1.55 !important;
 }
 
 article p {
-  margin-block: 0.45em !important;
+  margin-block: 0.85em !important;
 }
 
 article ul,
