@@ -6,6 +6,11 @@ draft: false
 tags: ["バドミントン"]
 ---
 
+```javascript
+console.log("hello, world")
+
+```
+
 強豪校とか、個人的に気になる都道府県の結果などまとめ
 
 ## 東北

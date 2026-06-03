@@ -88,7 +88,9 @@
   article {
     @apply prose prose-neutral dark:prose-invert prose-img:mx-auto prose-img:my-6 max-w-full min-w-0;
     @apply prose-headings:font-semibold;
-    @apply bg-white px-6 py-8 text-black sm:px-10 sm:py-10 dark:bg-neutral-950 dark:text-white/85;
+    @apply px-6 py-8 sm:px-10 sm:py-10;
+    background-color: var(--background);
+    color: var(--foreground);
     overflow-wrap: anywhere;
   }
 
@@ -107,14 +109,15 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
+
 }
 
 @layer utilities {
   article a {
-    @apply font-sans text-blue-600 underline decoration-blue-600 underline-offset-[3px] dark:text-blue-600 dark:decoration-blue-600;
+    @apply font-sans text-blue-600 underline decoration-blue-600 underline-offset-[3px] dark:text-blue-300 dark:decoration-blue-300;
   }
   article a:hover {
-    @apply text-blue-700 decoration-blue-700 dark:text-blue-700 dark:decoration-blue-700;
+    @apply text-blue-700 decoration-blue-700 dark:text-blue-200 dark:decoration-blue-200;
   }
 }
 
@@ -262,4 +265,23 @@ pre {
   .youtube-player iframe {
     @apply block size-full;
   }
+}
+
+article p,
+article li,
+article blockquote {
+  line-height: 1.35 !important;
+}
+
+article p {
+  margin-block: 0.45em !important;
+}
+
+article ul,
+article ol {
+  margin-block: 0.6em !important;
+}
+
+article li {
+  margin-block: 0.2em !important;
 }

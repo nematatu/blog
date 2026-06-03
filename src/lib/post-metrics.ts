@@ -25,7 +25,7 @@ export const getTextStats = (value: string): TextStats => {
 };
 
 export const formatDateJP = (date: Date) =>
-  new Intl.DateTimeFormat("ja-JP", {
+  new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Tokyo",
     year: "numeric",
     month: "2-digit",
