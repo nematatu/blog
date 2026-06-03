@@ -61,6 +61,7 @@
   html,
   body {
     @apply size-full;
+    @apply overflow-x-hidden;
   }
 
   body {
@@ -85,15 +86,26 @@
   }
 
   article {
-    @apply prose prose-neutral prose-img:mx-auto prose-img:my-6 max-w-full;
+    @apply prose prose-neutral dark:prose-invert prose-img:mx-auto prose-img:my-6 max-w-full min-w-0;
     @apply prose-headings:font-semibold;
-    @apply prose-headings:text-black dark:prose-headings:text-black bg-white px-6 py-8 text-black sm:px-10 sm:py-10 dark:text-black;
+    @apply bg-white px-6 py-8 text-black sm:px-10 sm:py-10 dark:bg-neutral-950 dark:text-white/85;
+    overflow-wrap: anywhere;
   }
 
   article img {
     max-height: min(58vh, 520px);
+    max-width: 100%;
     width: auto;
     object-fit: contain;
+  }
+
+  article :where(pre, table, iframe, video) {
+    max-width: 100%;
+  }
+
+  article :where(pre, code) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -128,7 +140,7 @@ html.scrolled #back-to-top {
 
 /* shiki config */
 pre {
-  @apply border border-black/15 py-5 dark:border-white/20;
+  @apply overflow-x-hidden border border-black/15 py-5 dark:border-white/20;
 }
 
 :root {
