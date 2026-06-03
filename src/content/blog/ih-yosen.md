@@ -6,7 +6,7 @@ draft: false
 tags: ["バドミントン"]
 ---
 
-```javascript
+```javascript:script.js
 console.log("hello, world");
 ```
 
