@@ -189,6 +189,8 @@ U18の坂口が気になるよね
 
 https://www.youtube.com/watch?v=OYh3OcDhpoM
 
+https://youtu.be/IdI8F2GpUVg?si=5ULvJWG2vhOC9fUN
+
 ### 広島県
 
 選抜予選では男女とも国際学院に連覇阻止されたけど、総体は守ったね〜

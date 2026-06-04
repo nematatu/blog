@@ -28,3 +28,6 @@ draft: false
 - [ ] 一度入れたはずのローカルコマンドが認識されてない
 
 - [ ] GooglePhotoのアルバム仕分け拡張機能、BWFNotifyのコードを理解してシンプルにリファクタする
+- [ ] md -> pdf にする速いやつほしい
+    - `md-to-pdf`はmermaid, latex記法をパースしてくれない
+    - rustチャンス？
