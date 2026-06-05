@@ -44,3 +44,10 @@ draft: false
 
 - [ ] fxftwitterを使ってTweetShotを自作する
 - [ ] czgのconventional commitでchangelog出すやつ使ってないな
+- [ ] OGP修正
+- [ ] Wallpaper回す
+- [ ] nvimでemoji入力
+- [ ] nvimでmdを快適に執筆するためにやっていること
+    - [ ] 画像ペースト
+    - [ ] スニペット
+- [ ] insert -> normalにしたときに自動でIME英字にするやつしたい
