@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import FormattedDate from "@components/FormattedDate.astro";
 import Link from "@components/Link.astro";
 import TableOfContents from "@components/TableOfContents.astro";
+import { SITE } from "@consts";
 import Layout from "@layouts/Layout.astro";
 import { readingTime } from "@lib/utils";
 
@@ -26,7 +27,7 @@ const { Content, headings } = await render(project);
 
 <Layout
   title={project.data.title}
-  description={project.data.description}
+  description={project.data.description ?? SITE.DESCRIPTION}
   image={project.data.ogImage ?? `/og-image/projects/${project.id}.png`}
 >
   <Container>
@@ -69,7 +70,7 @@ const { Content, headings } = await render(project);
     <div class="relative">
       {
         headings.length > 0 && (
-          <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:top-28 2xl:bottom-40 2xl:left-[calc(50%+34rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none">
+          <aside class="mx-auto mb-8 max-w-5xl 2xl:absolute 2xl:top-0 2xl:left-[calc(100%+2rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none">
             <TableOfContents headings={headings} />
           </aside>
         )

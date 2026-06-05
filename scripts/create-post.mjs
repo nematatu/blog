@@ -143,7 +143,7 @@ async function promptForPost(existingTags) {
 		{
 			type: "input",
 			name: "description",
-			message: "description",
+			message: "description (optional)",
 			default: "",
 		},
 		{

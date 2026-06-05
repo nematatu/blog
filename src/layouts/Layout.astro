@@ -7,11 +7,12 @@ import { SITE } from "@consts";
 
 type Props = {
   title: string;
-  description: string;
+  description?: string;
   image?: string;
 };
 
 const { title, description, image } = Astro.props;
+const resolvedDescription = description ?? SITE.DESCRIPTION;
 ---
 
 <!doctype html>
@@ -19,7 +20,7 @@ const { title, description, image } = Astro.props;
   <head>
     <Head
       title={`${title} | ${SITE.TITLE}`}
-      description={description}
+      description={resolvedDescription}
       image={image}
     />
   </head>

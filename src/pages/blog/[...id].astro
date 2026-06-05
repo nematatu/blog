@@ -6,6 +6,7 @@ import FormattedDate from "@components/FormattedDate.astro";
 import Giscus from "@components/Giscus.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
+import { SITE } from "@consts";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
@@ -46,7 +47,7 @@ const titleBackgroundImage =
 
 <Layout
   title={post.data.title}
-  description={post.data.description}
+  description={post.data.description ?? SITE.DESCRIPTION}
   image={post.data.ogImage ?? `/og-image/blog/${post.id}.png`}
 >
   <Container>
@@ -112,7 +113,7 @@ const titleBackgroundImage =
     <div class="relative">
       {
         headings.length > 0 && (
-          <aside class="mx-auto mb-8 max-w-5xl 2xl:fixed 2xl:top-28 2xl:bottom-40 2xl:left-[calc(50%+34rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none">
+          <aside class="mx-auto mb-8 max-w-5xl 2xl:absolute 2xl:top-0 2xl:left-[calc(100%+2rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none">
             <TableOfContents headings={headings} />
           </aside>
         )

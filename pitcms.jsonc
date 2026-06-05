@@ -20,8 +20,7 @@
 				{
 					"type": "text",
 					"name": "description",
-					"label": "説明",
-					"required": true
+					"label": "説明"
 				},
 				{ "type": "date", "name": "date", "label": "日付", "required": true },
 				{
@@ -102,8 +101,7 @@
 				{
 					"type": "textarea",
 					"name": "description",
-					"label": "説明",
-					"required": true
+					"label": "説明"
 				},
 				{ "type": "date", "name": "date", "label": "日付", "required": true },
 				{ "type": "text", "name": "demoURL", "label": "デモURL" },

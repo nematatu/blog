@@ -26,20 +26,21 @@ export async function GET() {
 
   const items = posts.map((post) => {
     const stats = getTextStats(post.body ?? "");
+    const description = post.data.description ?? "";
     const fallbackImage = withBase(`og-image/blog/${post.id}.png`);
     const { ogImage, fallbackImage: resolvedFallback } = normalizeOgImage(
       post.data.ogImage,
       fallbackImage,
     );
     const tags = post.data.tags ?? [];
-    const searchSource = [post.data.title, post.data.description, ...tags]
+    const searchSource = [post.data.title, description, ...tags]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
 
     return {
       title: post.data.title,
-      description: post.data.description,
+      description,
       date: formatDateJP(post.data.date),
       dateKey: dateKey(post.data.date),
       tags,

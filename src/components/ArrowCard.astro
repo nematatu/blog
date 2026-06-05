@@ -25,9 +25,11 @@ const { entry } = Astro.props as {
         )
       }
     </div>
-    <div class="text-sm">
-      {entry.data.description}
-    </div>
+    {
+      entry.data.description && (
+        <div class="text-sm">{entry.data.description}</div>
+      )
+    }
   </div>
   <svg
     xmlns="http://www.w3.org/2000/svg"

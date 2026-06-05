@@ -50,9 +50,7 @@ function buildToc(headings: Heading[] = []) {
     class="cursor-pointer py-1.5 text-sm font-medium text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
     >Table of Contents</summary
   >
-  <nav
-    class="max-h-[min(60vh,32rem)] overflow-x-hidden overflow-y-auto pr-2 2xl:max-h-[calc(100dvh-17rem)]"
-  >
+  <nav class="pr-2">
     <ul class="py-2">
       {toc.map((heading) => <TableOfContentsHeading heading={heading} />)}
     </ul>
@@ -60,34 +58,52 @@ function buildToc(headings: Heading[] = []) {
 </details>
 
 <script is:inline>
-  const setActiveTocLink = () => {
-    const headings = Array.from(
-      document.querySelectorAll("article :is(h2, h3, h4, h5, h6)[id]"),
-    );
-    const links = Array.from(document.querySelectorAll("[data-toc-link]"));
-    if (headings.length === 0 || links.length === 0) return;
+  (() => {
+    const setActiveTocLink = () => {
+      const headings = Array.from(
+        document.querySelectorAll("article :is(h2, h3, h4, h5, h6)[id]"),
+      );
+      const links = Array.from(document.querySelectorAll("[data-toc-link]"));
+      if (headings.length === 0 || links.length === 0) return;
 
-    let active = headings[0];
-    for (const heading of headings) {
-      if (heading.getBoundingClientRect().top <= 140) {
-        active = heading;
-      } else {
-        break;
+      const scrollPosition = window.scrollY + 140;
+      let active = headings[0];
+      for (const heading of headings) {
+        const headingTop = heading.getBoundingClientRect().top + window.scrollY;
+        if (headingTop <= scrollPosition) {
+          active = heading;
+        } else {
+          break;
+        }
       }
-    }
 
-    for (const link of links) {
-      const isActive = link.dataset.tocLink === active.id;
-      link.dataset.active = String(isActive);
-      if (isActive) {
-        link.setAttribute("aria-current", "location");
-      } else {
-        link.removeAttribute("aria-current");
+      for (const link of links) {
+        const isActive = link.dataset.tocLink === active.id;
+        link.dataset.active = String(isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
       }
-    }
-  };
+    };
 
-  setActiveTocLink();
-  document.addEventListener("scroll", setActiveTocLink, { passive: true });
-  document.addEventListener("astro:page-load", setActiveTocLink);
+    let activeLinkFrame = 0;
+    const queueActiveTocLinkUpdate = () => {
+      if (activeLinkFrame) return;
+      activeLinkFrame = window.requestAnimationFrame(() => {
+        activeLinkFrame = 0;
+        setActiveTocLink();
+      });
+    };
+
+    setActiveTocLink();
+    window.addEventListener("scroll", queueActiveTocLinkUpdate, {
+      passive: true,
+    });
+    window.addEventListener("resize", queueActiveTocLinkUpdate, {
+      passive: true,
+    });
+    document.addEventListener("astro:page-load", setActiveTocLink);
+  })();
 </script>
