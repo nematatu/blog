@@ -29,5 +29,12 @@ draft: false
 
 - [ ] GooglePhotoのアルバム仕分け拡張機能、BWFNotifyのコードを理解してシンプルにリファクタする
 - [ ] md -> pdf にする速いやつほしい
-    - `md-to-pdf`はmermaid, latex記法をパースしてくれない
-    - rustチャンス？
+  - `md-to-pdf`はmermaid, latex記法をパースしてくれない
+  - rustチャンス？
+- [ ] バドミントン関連のRSSを作るのあり
+    - FeedlyでGoogle Newsのソースを使えないのが不便
+    - 現状、バドスピとかしかない
+    - [企業テックブログの有志RSS](https://yamadashy.github.io/tech-blog-rss-feed/)が参考になる
+
+- [ ] 記事(技術に限らず)読んだ感想をまとめたページ
+    - はてブから取得して表示するのもあり
