@@ -40,6 +40,7 @@ draft: false
 - [ ] 記事(技術に限らず)読んだ感想をまとめたページ
   - はてブから取得して表示するのもあり
 - 今やってる試合を表示するmac app
-    - 上(バー)に表示しておきたい
+  - 上(バー)に表示しておきたい
 
 - [ ] fxftwitterを使ってTweetShotを自作する
+- [ ] czgのconventional commitでchangelog出すやつ使ってないな
