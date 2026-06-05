@@ -6,9 +6,9 @@ draft: false
 tags: ["バドミントン"]
 ---
 
-```javascript:script.js
-console.log("hello, world");
-```
+(6/6 追記)
+エクセルかスプシで共有したほうがわかりやすいわ。
+ゴッティーの動画見て思った。
 
 強豪校とか、個人的に気になる都道府県の結果などまとめ
 
