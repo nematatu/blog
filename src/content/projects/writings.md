@@ -51,3 +51,4 @@ draft: false
   - [ ] 画像ペースト
   - [ ] スニペット
 - [ ] insert -> normalにしたときに自動でIME英字にするやつしたい
+- [ ] viteがcfに参入エントリ
