@@ -14,9 +14,11 @@ tags: ["開発"]
 `md-to-pdf`と`pandoc`
 
 ## pandoc
+
 `brew install pandoc typst`
 
 単に、以下をやろうとしても出来ないからエンジンにtypstが必要 (typst以外にも選択肢あるけど、typstが1番手軽そう。なんとなく)
+
 ```
 pandoc -t pdf README.md -o README.pdf
 ```
@@ -26,12 +28,13 @@ pandoc -t pdf README.md -o README.pdf
 明朝体で、文字の一部がボールドになってて、中華感があるな〜
 
 ## md-to-pdf
+
 ```
-npx md-to-pdf README.md     
+npx md-to-pdf README.md
 
 Need to install the following packages:
 md-to-pdf@5.2.5
-Ok to proceed? (y) 
+Ok to proceed? (y)
   ✔ generating PDF from README.md
 ```
 
