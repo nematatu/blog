@@ -41,6 +41,7 @@ const prevPost = getPrevPost();
 
 const post = Astro.props;
 const { Content, headings } = await render(post);
+const ogImageVersion = "20260613-title-wrap";
 const titleBackgroundImage =
   post.data.date.getDate() % 2 === 0 ? "/DSC_0098.webp" : "/DSC_0105.webp";
 ---
@@ -48,7 +49,8 @@ const titleBackgroundImage =
 <Layout
   title={post.data.title}
   description={post.data.description ?? SITE.DESCRIPTION}
-  image={post.data.ogImage ?? `/og-image/blog/${post.id}.png`}
+  image={post.data.ogImage ??
+    `/og-image/blog/${post.id}.png?v=${ogImageVersion}`}
 >
   <Container>
     <section

@@ -23,12 +23,14 @@ type Props = CollectionEntry<"projects">;
 
 const project = Astro.props;
 const { Content, headings } = await render(project);
+const ogImageVersion = "20260613-title-wrap";
 ---
 
 <Layout
   title={project.data.title}
   description={project.data.description ?? SITE.DESCRIPTION}
-  image={project.data.ogImage ?? `/og-image/projects/${project.id}.png`}
+  image={project.data.ogImage ??
+    `/og-image/projects/${project.id}.png?v=${ogImageVersion}`}
 >
   <Container>
     <div class="animate">

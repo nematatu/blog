@@ -29,6 +29,7 @@
     "@visx/shape": "latest",
     "astro": "^6.4.2",
     "astro-pagefind": "^1.8.6",
+    "budoux": "^0.8.4",
     "clsx": "^2.1.1",
     "d3-array": "latest",
     "motion": "latest",
