@@ -73,6 +73,7 @@ const { image } = Astro.props;
     onScroll();
     updateThemeButtons();
     addCopyCodeButtons();
+    addImageLightbox();
     setGiscusTheme();
     ensureTwitterWidgets()
       .then(() => window.twttr?.widgets?.load?.())
@@ -255,6 +256,76 @@ const { image } = Astro.props;
 
       copyButton?.addEventListener("click", async () => {
         await copyCode(codeBlock, copyButton);
+      });
+    }
+  }
+
+  function addImageLightbox() {
+    const images = Array.from(document.querySelectorAll("article img"));
+    let lightbox = document.querySelector(".image-lightbox");
+
+    if (!lightbox) {
+      lightbox = document.createElement("div");
+      lightbox.className = "image-lightbox";
+      lightbox.setAttribute("aria-hidden", "true");
+      lightbox.innerHTML = `
+        <button class="image-lightbox__close" type="button" aria-label="Close image preview">
+          <iconify-icon icon="lucide:x" aria-hidden="true"></iconify-icon>
+        </button>
+        <img class="image-lightbox__image" alt="" />
+      `;
+      document.body.appendChild(lightbox);
+    }
+
+    const lightboxImage = lightbox.querySelector(".image-lightbox__image");
+    const closeButton = lightbox.querySelector(".image-lightbox__close");
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.documentElement.classList.remove("image-lightbox-open");
+      if (lightboxImage) {
+        lightboxImage.removeAttribute("src");
+        lightboxImage.alt = "";
+      }
+    }
+
+    function openLightbox(image) {
+      if (!lightboxImage) return;
+
+      lightboxImage.src = image.currentSrc || image.src;
+      lightboxImage.alt = image.alt || "";
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.documentElement.classList.add("image-lightbox-open");
+      closeButton?.focus();
+    }
+
+    if (lightbox.dataset.lightboxControlsBound !== "true") {
+      lightbox.dataset.lightboxControlsBound = "true";
+      closeButton?.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+          closeLightbox();
+        }
+      });
+    }
+
+    for (const image of images) {
+      if (image.dataset.lightboxBound === "true") continue;
+
+      image.dataset.lightboxBound = "true";
+      image.setAttribute("tabindex", "0");
+      image.setAttribute("role", "button");
+      image.addEventListener("click", () => openLightbox(image));
+      image.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openLightbox(image);
+        }
       });
     }
   }

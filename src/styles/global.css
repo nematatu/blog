@@ -95,9 +95,11 @@
   }
 
   article img {
+    @apply border-3 border-sky-500 dark:border-sky-400;
     max-height: min(58vh, 520px);
     max-width: 100%;
     width: auto;
+    cursor: zoom-in;
     object-fit: contain;
   }
 
@@ -146,15 +148,15 @@ pre {
 }
 
 :root {
-  --astro-code-foreground: #09090b;
-  --astro-code-background: #fafafa;
+  --astro-code-foreground: #fafafa;
+  --astro-code-background: #08111f;
   --astro-code-token-comment: #a19595;
   --astro-code-token-keyword: #f47067;
   --astro-code-token-string: #00a99a;
-  --astro-code-token-function: #429996;
-  --astro-code-token-constant: #2b70c5;
+  --astro-code-token-function: #6eafad;
+  --astro-code-token-constant: #b3cceb;
   --astro-code-token-parameter: #4e8fdf;
-  --astro-code-token-string-expression: #ae42a0;
+  --astro-code-token-string-expression: #bf7db6;
   --astro-code-token-punctuation: #8996a3;
   --astro-code-token-link: #8d85ff;
   --chart-background: #ffffff;
@@ -183,7 +185,7 @@ pre {
 
 .dark {
   --astro-code-foreground: #fafafa;
-  --astro-code-background: #09090b;
+  --astro-code-background: #08111f;
   --astro-code-token-comment: #a19595;
   --astro-code-token-keyword: #f47067;
   --astro-code-token-string: #00a99a;
@@ -241,6 +243,31 @@ pre {
 
 .copy-code:hover {
   @apply bg-[#E9E9E9] dark:bg-[#232323];
+}
+
+.image-lightbox {
+  @apply fixed inset-0 z-50 hidden place-items-center bg-black/85 p-4;
+}
+
+.image-lightbox.is-open {
+  @apply grid;
+}
+
+.image-lightbox__image {
+  @apply max-h-[90vh] max-w-[92vw] border-2 border-white/25 object-contain;
+  cursor: zoom-out;
+}
+
+.image-lightbox__close {
+  @apply absolute top-4 right-4 grid size-10 place-content-center bg-black/70 text-2xl leading-none text-white;
+}
+
+.image-lightbox__close:hover {
+  @apply bg-black;
+}
+
+.image-lightbox-open {
+  overflow: hidden;
 }
 
 @layer components {
