@@ -4,6 +4,7 @@ date: "2026-06-14T16:25:14+09:00"
 draft: false
 tags: ["開発"]
 ---
+
 Vimキーバインドの`Ctrl+n`を使いたいのに、いつの日か設定したグローバルショートカットのせいでメモアプリが起動してしまう。
 
 犯人を探して削除する。
@@ -11,35 +12,38 @@ Vimキーバインドの`Ctrl+n`を使いたいのに、いつの日か設定し
 今後こんなことがあった時のための備忘録
 
 ## 確認したこと
-* 恐らく、設定したであろう`ProNotes`というNote.appのenhanceアプリを消した
 
-* note appの設定を見たけど、ショートカットの項目はなかった。
+- 恐らく、設定したであろう`ProNotes`というNote.appのenhanceアプリを消した
 
-* `設定 → キーボード → キーボードショートカット → アプリのショートカット`には何も設定されていなかった。
-![](https://assets.blog.amatatu.com/paste-images/20260614163109.avif?)
+- note appの設定を見たけど、ショートカットの項目はなかった。
 
-* Raycastのホットキーには設定されていない。
-(⌘+space → ⌘+. → Extensions)
-![](https://assets.blog.amatatu.com/paste-images/20260614163609.avif?)
+- `設定 → キーボード → キーボードショートカット → アプリのショートカット`には何も設定されていなかった。
+  ![](https://assets.blog.amatatu.com/paste-images/20260614163109.avif?)
+
+- Raycastのホットキーには設定されていない。
+  (⌘+space → ⌘+. → Extensions)
+  ![](https://assets.blog.amatatu.com/paste-images/20260614163609.avif?)
 
 ## 怪しい
-* ProNotesの残骸がまだ残っている？
+
+- ProNotesの残骸がまだ残っている？
 
 ## GPT5.5に聞いた
+
 macではアプリをゴミ箱に入れても、Preference, LaunchAgentsは自動削除されないらしい
 
 ### 確認する
 
 ```
-➜ ls ~/Library/LaunchAgents                        
+➜ ls ~/Library/LaunchAgents
  com.google.GoogleUpdater.wake.plist   com.google.keystone.xpcservice.plist   com.mathworks.mathworksservicehost.agent.plist
  com.google.keystone.agent.plist       com.koekeishiya.yabai.plist
 
-blog on  main [$!?] is 📦 0.0.1 via ⬢ v24.16.0 
+blog on  main [$!?] is 📦 0.0.1 via ⬢ v24.16.0
 ➜ ls ~/Library/Application\ Support  | grep -i ProNotes
 
-blog on  main [$!?] is 📦 0.0.1 via ⬢ v24.16.0 
-➜ ls ~/Library/Preferences  | grep -i ProNotes         
+blog on  main [$!?] is 📦 0.0.1 via ⬢ v24.16.0
+➜ ls ~/Library/Preferences  | grep -i ProNotes
 com.dexterleng.ProNotes.plist
 
 ```
@@ -70,23 +74,26 @@ x: include GUI processes
 ## とりあえず再起動する
 
 先に ProNotesのPreferencesを削除しておく
+
 ```
 rm ~/Library/Preferences/com.dexterleng.ProNotes.plist
 ```
 
 plistを書き換えたり削除した場合は、↓で再起動するらしい
 (キャッシュとかを削除)
+
 ```
-killall cfprefsd 
+killall cfprefsd
 ```
 
 cf: Core Foundation
 
-prefs:  Preferences
+prefs: Preferences
 
 d: Daemon
 
 ### 再起動でもだめだった！！
+
 ## 原因見つかった
 
 普通に設定のキーボードショートカットにあった...
@@ -102,8 +109,9 @@ d: Daemon
 ```
 
 2. jsonにして探しやすくする
+
 ```
-➜ plutil -convert json -o - /tmp/hotkeys.plist | jq .                              
+➜ plutil -convert json -o - /tmp/hotkeys.plist | jq .
 ```
 
 `property List util`の略
@@ -111,6 +119,7 @@ d: Daemon
 apple独自の形式らしいのでjsonに変換する
 
 出力例
+
 ```json
 ➜ plutil -convert json -o - /tmp/hotkeys.plist | jq .
 

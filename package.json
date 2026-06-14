@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "post:new": "node scripts/create-post.mjs",
-    "check": "prettier --write \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\""
+    "format": "prettier --write \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\"",
+    "check": "prettier --check \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\""
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",

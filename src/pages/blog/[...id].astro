@@ -26,7 +26,9 @@ type Props = CollectionEntry<"blog">;
 
 const showDrafts = import.meta.env.DEV;
 const posts = sortByDateDesc(
-  (await getCollection("blog")).filter((post) => showDrafts || !post.data.draft),
+  (await getCollection("blog")).filter(
+    (post) => showDrafts || !post.data.draft,
+  ),
 );
 
 function getNextPost() {

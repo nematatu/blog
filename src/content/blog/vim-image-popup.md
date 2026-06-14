@@ -21,9 +21,9 @@ https://github.com/vim/vim/pull/20136
 
 `popup_create()`と`popup_setoptions()`にpixelバッファをレンダーする機能を追加したと。
 
-ターミナルバックエンドはバッファをDEC sixel DCSセクエンスで出力する。(FEAT_IMAGE_SIXEL)  ←←←なんだこれ
+ターミナルバックエンドはバッファをDEC sixel DCSセクエンスで出力する。(FEAT_IMAGE_SIXEL) ←←←なんだこれ
 
-もしくは、kitty graphics protocol APC セクエンスで出力する。(FEAT_IMAGE_KITTY)  ←←←なんだこれ
+もしくは、kitty graphics protocol APC セクエンスで出力する。(FEAT_IMAGE_KITTY) ←←←なんだこれ
 
 MS-Windows GUIでは何か良い感じにこのデータを処理してやってるらしい。
 
@@ -32,7 +32,7 @@ popupウィンドウは画像のピクセルから自動的にセルボックス
 なので、呼び出し側は`minWidht`とか`maxHeight`などを手動で計算する必要はない。
 
 ![](https://assets.blog.amatatu.com/paste-images/20260614144225.avif)
-*すげー*
+_すげー_
 
 Vim自身は`libpng`, `libjpeg`, `libwebp`などの画像でコード系ライブラリのリンクを持っていない
 
@@ -48,7 +48,6 @@ image dict(←？？引数のことかな) は`data`(`width*heigh*3`のRGB or `w
 
 仲間のscriptの`getbgcolor()`は背景色を[r, g, b]で返す。だから、ピクセルと事前合成したいスクリプトは実際のポップアップの背景に合わせることが出来る。
 
-
 ```vimscript:4x4の赤い正方形を表示する.vim
 let pixels = repeat([0xff, 0x00, 0x00], 4 * 4)->list2blob()
 call popup_create('', #{
@@ -58,9 +57,6 @@ call popup_create('', #{
 ```
 
 サンプルコードのこれをやってみる
-
-
-
 
 ### 最近上がってたissue
 

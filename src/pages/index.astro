@@ -9,7 +9,9 @@ import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
 const entries = sortByDateDesc(
-  (await getCollection("blog")).filter((post) => showDrafts || !post.data.draft),
+  (await getCollection("blog")).filter(
+    (post) => showDrafts || !post.data.draft,
+  ),
 );
 const date = new Date();
 ---
