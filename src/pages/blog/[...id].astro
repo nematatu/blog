@@ -7,13 +7,16 @@ import Giscus from "@components/Giscus.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
   const showDrafts = import.meta.env.DEV;
-  const posts = (await getCollection("blog"))
-    .filter((post) => showDrafts || !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const posts = sortByDateDesc(
+    (await getCollection("blog")).filter(
+      (post) => showDrafts || !post.data.draft,
+    ),
+  );
   return posts.map((post) => ({
     params: { id: post.id },
     props: post,
@@ -22,9 +25,9 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<"blog">;
 
 const showDrafts = import.meta.env.DEV;
-const posts = (await getCollection("blog"))
-  .filter((post) => showDrafts || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = sortByDateDesc(
+  (await getCollection("blog")).filter((post) => showDrafts || !post.data.draft),
+);
 
 function getNextPost() {
   const postIndex = posts.findIndex((post) => post.id === Astro.params.id);

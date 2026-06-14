@@ -22,7 +22,13 @@
 					"name": "description",
 					"label": "説明"
 				},
-				{ "type": "date", "name": "date", "label": "日付", "required": true },
+				{
+					"type": "date",
+					"name": "date",
+					"label": "公開日時",
+					"required": true,
+					"includeTime": true
+				},
 				{
 					"type": "checkbox",
 					"name": "tags",
@@ -103,7 +109,13 @@
 					"name": "description",
 					"label": "説明"
 				},
-				{ "type": "date", "name": "date", "label": "日付", "required": true },
+				{
+					"type": "date",
+					"name": "date",
+					"label": "公開日時",
+					"required": true,
+					"includeTime": true
+				},
 				{ "type": "text", "name": "demoURL", "label": "デモURL" },
 				{ "type": "text", "name": "repoURL", "label": "リポジトリURL" },
 				{

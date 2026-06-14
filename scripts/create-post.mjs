@@ -8,11 +8,21 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const postsDir = path.join(rootDir, "src", "content", "blog");
 
-function formatDate(date = new Date()) {
+function formatDateTime(date = new Date()) {
 	const year = date.getFullYear();
 	const month = String(date.getMonth() + 1).padStart(2, "0");
 	const day = String(date.getDate()).padStart(2, "0");
-	return `${year}-${month}-${day}`;
+	const hours = String(date.getHours()).padStart(2, "0");
+	const minutes = String(date.getMinutes()).padStart(2, "0");
+	const seconds = String(date.getSeconds()).padStart(2, "0");
+	const offsetMinutes = -date.getTimezoneOffset();
+	const offsetSign = offsetMinutes >= 0 ? "+" : "-";
+	const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(
+		2,
+		"0",
+	);
+	const offsetRemainder = String(Math.abs(offsetMinutes) % 60).padStart(2, "0");
+	return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetRemainder}`;
 }
 
 function sanitizeSlug(raw) {
@@ -207,7 +217,7 @@ async function main() {
 	const existingTags = await getExistingTags();
 	const { slug, title, description, ogImage, tags } =
 		await promptForPost(existingTags);
-	const publishDate = formatDate();
+	const publishDate = formatDateTime();
 
 	const filePath = path.join(postsDir, `${slug}.md`);
 	const canWrite = await ensureNotExists(filePath);

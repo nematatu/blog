@@ -4,12 +4,13 @@ import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import SocialLinks from "@components/SocialLinks.astro";
 import { HOME, SITE, SOCIALS } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
-const entries = (await getCollection("blog"))
-  .filter((post) => showDrafts || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const entries = sortByDateDesc(
+  (await getCollection("blog")).filter((post) => showDrafts || !post.data.draft),
+);
 const date = new Date();
 ---
 

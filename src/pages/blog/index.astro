@@ -3,12 +3,13 @@ import { getCollection } from "astro:content";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import { BLOG } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
-const entries = (await getCollection("blog"))
-  .filter((post) => showDrafts || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const entries = sortByDateDesc(
+  (await getCollection("blog")).filter((post) => showDrafts || !post.data.draft),
+);
 
 type PostsByYear = Record<string, typeof entries>;
 const byYear: PostsByYear = {};

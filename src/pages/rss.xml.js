@@ -1,6 +1,7 @@
 import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
 import { SITE } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
 
 export async function GET(context) {
   const showDrafts = import.meta.env.DEV;
@@ -12,9 +13,7 @@ export async function GET(context) {
     (project) => showDrafts || !project.data.draft,
   );
 
-  const items = [...blog, ...projects].sort(
-    (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
-  );
+  const items = sortByDateDesc([...blog, ...projects]);
 
   return rss({
     title: SITE.TITLE,

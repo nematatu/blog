@@ -3,12 +3,15 @@ import { getCollection } from "astro:content";
 import ArrowCard from "@components/ArrowCard.astro";
 import Container from "@components/Container.astro";
 import { PROJECTS } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
-const projects = (await getCollection("projects"))
-  .filter((project) => showDrafts || !project.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const projects = sortByDateDesc(
+  (await getCollection("projects")).filter(
+    (project) => showDrafts || !project.data.draft,
+  ),
+);
 ---
 
 <Layout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>

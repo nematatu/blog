@@ -62,3 +62,8 @@ tags: ["開発"]
 - Kyoheiさん
 - Tech World
   インタビュー動画やカンファレンスの動画とかモチベ上がる
+
+## 好きな記事媒体
+
+- [Gihyo](https://gihyo.jp/))
+- [Software Design]()

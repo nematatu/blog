@@ -6,14 +6,17 @@ import FormattedDate from "@components/FormattedDate.astro";
 import Link from "@components/Link.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 import { readingTime } from "@lib/utils";
 
 export async function getStaticPaths() {
   const showDrafts = import.meta.env.DEV;
-  const projects = (await getCollection("projects"))
-    .filter((post) => showDrafts || !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const projects = sortByDateDesc(
+    (await getCollection("projects")).filter(
+      (post) => showDrafts || !post.data.draft,
+    ),
+  );
   return projects.map((project) => ({
     params: { id: project.id },
     props: project,
