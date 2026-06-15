@@ -8,6 +8,7 @@ import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
 import { sortByDateDesc } from "@lib/content-sort";
+import { getRandomWallpaper } from "@lib/wallpaper";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
@@ -47,8 +48,7 @@ const prevPost = getPrevPost();
 const post = Astro.props;
 const { Content, headings } = await render(post);
 const ogImageVersion = "20260614-og-background";
-const titleBackgroundImage =
-  post.data.date.getDate() % 2 === 0 ? "/DSC_0098.webp" : "/DSC_0105.webp";
+const titleBackgroundImage = getRandomWallpaper();
 ---
 
 <Layout

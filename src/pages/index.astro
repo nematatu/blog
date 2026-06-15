@@ -5,6 +5,7 @@ import PostCard from "@components/PostCard.astro";
 import SocialLinks from "@components/SocialLinks.astro";
 import { HOME, SITE, SOCIALS } from "@consts";
 import { sortByDateDesc } from "@lib/content-sort";
+import { getRandomWallpaper } from "@lib/wallpaper";
 import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
@@ -13,7 +14,7 @@ const entries = sortByDateDesc(
     (post) => showDrafts || !post.data.draft,
   ),
 );
-const date = new Date();
+const wallpaper = getRandomWallpaper();
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
@@ -21,7 +22,7 @@ const date = new Date();
     <div class="space-y-12">
       <div class="rounded-xl">
         <img
-          src={date.getDate() % 2 === 0 ? "DSC_0098.webp" : "DSC_0105.webp"}
+          src={wallpaper}
           alt=""
           class="mx-auto aspect-[2/1] w-full object-cover dark:border-white/10"
           loading="eager"
