@@ -60,8 +60,17 @@ const titleBackgroundImage = getRandomWallpaper();
   <Container>
     <section
       class="post-title-hero animate mx-auto my-10 max-w-5xl overflow-hidden border border-black/10 dark:border-white/15"
-      style={`--title-background-image: url("${titleBackgroundImage}")`}
     >
+      <img
+        src={titleBackgroundImage}
+        alt=""
+        class="absolute inset-0 z-0 size-full object-cover"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+        aria-hidden="true"
+      />
+      <div class="absolute inset-0 z-0 bg-black/40" aria-hidden="true"></div>
       <div class="relative z-10 space-y-5 px-6 py-10 sm:px-10 sm:py-14">
         <div class="flex items-center gap-1.5">
           <div class="font-base text-sm text-white/80">
@@ -99,22 +108,6 @@ const titleBackgroundImage = getRandomWallpaper();
         position: relative;
         background: #0b0f14;
         isolation: isolate;
-      }
-
-      .post-title-hero::before {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: var(--title-background-image) center / cover;
-        content: "";
-      }
-
-      .post-title-hero::after {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: rgb(0 0 0 / 0.38);
-        content: "";
       }
     </style>
     <div class="relative">

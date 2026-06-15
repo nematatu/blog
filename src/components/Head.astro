@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
@@ -40,6 +41,7 @@ const { image } = Astro.props;
   defer
   src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"
 ></script>
+<ClientRouter fallback="swap" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -62,10 +64,6 @@ const { image } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 {image && <meta property="twitter:image" content={new URL(image, Astro.url)} />}
-
-<!-- PageFind -->
-<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
-<script is:inline src="/pagefind/pagefind-ui.js"></script>
 
 <script is:inline>
   function init() {

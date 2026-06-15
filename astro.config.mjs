@@ -14,6 +14,10 @@ import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
 // https://astro.build/config
 export default defineConfig({
   site: "https://blog.amatatu.com",
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "viewport",
+  },
   integrations: [sitemap(), mdx(), pagefind(), react()],
   vite: {
     plugins: [tailwindcss()],

@@ -19,7 +19,7 @@ export function getWallpapers() {
 
 export function getRandomWallpaper() {
   const candidates = getWallpapers();
-  if (candidates.length === 0) return "/DSC_0098.webp";
+  if (candidates.length === 0) return "/wallpaper/DSC_0098.webp";
 
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
