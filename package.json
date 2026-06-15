@@ -39,6 +39,7 @@
     "react-use-measure": "latest",
     "remark-directive": "^4.0.0",
     "satori": "^0.26.0",
+    "sharp": "0.34.5",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",

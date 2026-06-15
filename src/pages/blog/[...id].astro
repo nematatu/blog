@@ -46,7 +46,7 @@ const prevPost = getPrevPost();
 
 const post = Astro.props;
 const { Content, headings } = await render(post);
-const ogImageVersion = "20260613-title-wrap";
+const ogImageVersion = "20260614-og-background";
 const titleBackgroundImage =
   post.data.date.getDate() % 2 === 0 ? "/DSC_0098.webp" : "/DSC_0105.webp";
 ---

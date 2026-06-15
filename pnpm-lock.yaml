@@ -89,6 +89,9 @@ importers:
       satori:
         specifier: ^0.26.0
         version: 0.26.0
+      sharp:
+        specifier: 0.34.5
+        version: 0.34.5
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0

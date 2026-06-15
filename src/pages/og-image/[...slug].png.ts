@@ -2,11 +2,11 @@ import { getCollection } from "astro:content";
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { SITE } from "@consts";
 import type { APIContext, InferGetStaticPropsType } from "astro";
 import { jaModel, Parser } from "budoux";
 import type { ReactNode } from "react";
 import satori, { type SatoriOptions } from "satori";
+import sharp from "sharp";
 
 export const prerender = true;
 
@@ -18,26 +18,28 @@ const fontPath = (fileName: string) =>
 
 const sansRegularPath = fontPath("Kuramubon.otf");
 const sansBoldPath = fontPath("MOBO-Bold.otf");
-const avatarPath = path.resolve(
-  process.cwd(),
-  "public/icon/android-chrome-192x192.png",
-);
+const avatarPath = path.resolve(process.cwd(), "public/icon/icon.svg");
+const backgroundPath = path.resolve(process.cwd(), "public/og-background.avif");
 
-if (
-  !existsSync(sansRegularPath) ||
-  !existsSync(sansBoldPath) ||
-  !existsSync(avatarPath)
-) {
-  throw new Error(
-    "OG asset not found. Ensure fonts and public/icon/android-chrome-192x192.png exist.",
-  );
+if (!existsSync(sansRegularPath) || !existsSync(sansBoldPath)) {
+  throw new Error("OG font not found. Ensure src/assets fonts exist.");
+}
+
+if (!existsSync(avatarPath) || !existsSync(backgroundPath)) {
+  throw new Error("OG asset not found. Ensure fonts and OG assets exist.");
 }
 
 const sansRegular = readFileSync(sansRegularPath);
 const sansBold = readFileSync(sansBoldPath);
-const avatar = `data:image/png;base64,${readFileSync(avatarPath).toString(
+const avatar = `data:image/svg+xml;base64,${readFileSync(avatarPath).toString(
   "base64",
 )}`;
+const background = `data:image/png;base64,${(
+  await sharp(backgroundPath)
+    .resize(OG_WIDTH, OG_HEIGHT, { fit: "cover" })
+    .png()
+    .toBuffer()
+).toString("base64")}`;
 
 const ogOptions: SatoriOptions = {
   width: OG_WIDTH,
@@ -93,9 +95,8 @@ type TitleLine = {
 };
 
 const TITLE_TEXT_WIDTH = 930;
-const TITLE_TEXT_SAFE_WIDTH = 820;
-const FRAME_COLOR = "#2f6f73";
-const FRAME_SUBTLE_COLOR = "rgba(47, 111, 115, 0.32)";
+const TITLE_TEXT_SAFE_WIDTH = 900;
+const PAPER_COLOR = "#fffdfa";
 const japaneseParser = new Parser(jaModel);
 
 const getTextWeight = (text: string) =>
@@ -119,6 +120,7 @@ const closingPunctuationPattern = /^[、。，．・：；！？!?\])）］｝�
 const closingQuoteWithParticlePattern =
   /^([、。，．・：；！？!?\])）］｝〉》」』】]+(?:って)?)(.+)$/;
 const hiraganaPattern = /^[ぁ-んー]+$/;
+const leadingTitleLabelPattern = /^(【[^】]+】)(.+)$/;
 
 const normalizeTitlePhrases = (phrases: string[]) => {
   const normalized: string[] = [];
@@ -198,14 +200,14 @@ const getTitleFontSize = (lines: TitleLine[]) => {
   const widthLimitedSize = Math.floor(TITLE_TEXT_SAFE_WIDTH / maxWeight);
 
   if (lines.length === 1) {
-    return Math.min(86, widthLimitedSize);
+    return Math.min(104, widthLimitedSize);
   }
 
   if (lines.length === 2) {
-    return Math.min(78, widthLimitedSize);
+    return Math.min(92, widthLimitedSize);
   }
 
-  return Math.min(64, widthLimitedSize);
+  return Math.min(76, widthLimitedSize);
 };
 
 const scoreLineCandidate = (lines: TitleLine[]) => {
@@ -225,6 +227,32 @@ const scoreLineCandidate = (lines: TitleLine[]) => {
 };
 
 const splitTitleLines = (title: string): TitleLine[] => {
+  const leadingLabelMatch = title.match(leadingTitleLabelPattern);
+
+  if (leadingLabelMatch) {
+    const [, label, restTitle] = leadingLabelMatch;
+    const restPhrases = getTitlePhrases(restTitle);
+    const maxRestLineCount = Math.min(2, restPhrases.length);
+    const labelCandidates = Array.from(
+      { length: maxRestLineCount },
+      (_, index) => getLineCandidates(restPhrases, index + 1),
+    )
+      .flat()
+      .map((lines) =>
+        [label, ...lines].map((line) => ({
+          text: line,
+          weight: getTextWeight(line),
+        })),
+      );
+    const labelCandidate = labelCandidates.sort(
+      (a, b) => scoreLineCandidate(a) - scoreLineCandidate(b),
+    )[0];
+
+    if (labelCandidate) {
+      return labelCandidate;
+    }
+  }
+
   const phrases = getTitlePhrases(title);
   const maxLineCount = Math.min(3, phrases.length);
   const candidates = Array.from({ length: maxLineCount }, (_, index) =>
@@ -265,30 +293,30 @@ const markup = (title: string): ReactNode => {
         justifyContent: "center",
         padding: "52px",
         fontFamily: "OgJP",
-        backgroundColor: "#f7f5ef",
         color: "#171717",
         position: "relative",
         overflow: "hidden",
       },
     },
-    h("div", {
+    h("img", {
+      src: background,
+      width: OG_WIDTH,
+      height: OG_HEIGHT,
       style: {
         position: "absolute",
-        top: "34px",
-        left: "34px",
-        width: "1132px",
-        height: "562px",
-        border: `3px solid ${FRAME_COLOR}`,
+        top: "0",
+        left: "0",
       },
     }),
     h("div", {
       style: {
         position: "absolute",
-        top: "48px",
-        left: "48px",
-        width: "1104px",
-        height: "534px",
-        border: `1px solid ${FRAME_SUBTLE_COLOR}`,
+        top: "37px",
+        left: "37px",
+        width: "1126px",
+        height: "556px",
+        backgroundColor: PAPER_COLOR,
+        borderRadius: "20px",
       },
     }),
     h(
@@ -299,7 +327,7 @@ const markup = (title: string): ReactNode => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: "42px",
+          gap: "32px",
           width: "100%",
           height: "100%",
           padding: "54px 76px",
@@ -310,13 +338,13 @@ const markup = (title: string): ReactNode => {
         "div",
         {
           style: {
-            minHeight: "270px",
+            minHeight: "340px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             textAlign: "center",
             flexDirection: "column",
-            gap: "12px",
+            gap: "10px",
             width: `${TITLE_TEXT_WIDTH}px`,
             fontSize: `${titleFontSize}px`,
             fontWeight: 700,
@@ -360,31 +388,9 @@ const markup = (title: string): ReactNode => {
           height: 64,
           style: {
             borderRadius: "50%",
-            border: "2px solid #171717",
           },
         }),
-        h(
-          "div",
-          {
-            style: {
-              display: "flex",
-              alignItems: "center",
-              color: "#171717",
-              fontFamily: "OgJP",
-            },
-          },
-          SITE.TITLE,
-        ),
       ),
-      h("div", {
-        style: {
-          position: "absolute",
-          top: "0",
-          width: "140px",
-          height: "8px",
-          backgroundColor: FRAME_COLOR,
-        },
-      }),
     ),
   );
 };
