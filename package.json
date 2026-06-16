@@ -14,7 +14,6 @@
   "dependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/mdx": "^5.0.6",
-    "@astrojs/react": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
     "@resvg/resvg-js": "^2.6.2",
@@ -23,8 +22,6 @@
     "astro-pagefind": "^1.8.6",
     "budoux": "^0.8.4",
     "clsx": "^2.1.1",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "satori": "^0.26.0",

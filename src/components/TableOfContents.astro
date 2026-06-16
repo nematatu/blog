@@ -107,6 +107,5 @@ function buildToc(headings: Heading[] = []) {
     window.addEventListener("resize", queueActiveTocLinkUpdate, {
       passive: true,
     });
-    document.addEventListener("astro:page-load", setActiveTocLink);
   })();
 </script>

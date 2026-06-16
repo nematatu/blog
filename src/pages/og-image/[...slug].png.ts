@@ -4,7 +4,6 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import type { APIContext, InferGetStaticPropsType } from "astro";
 import { jaModel, Parser } from "budoux";
-import type { ReactNode } from "react";
 import satori, { type SatoriOptions } from "satori";
 import sharp from "sharp";
 
@@ -61,6 +60,7 @@ const ogOptions: SatoriOptions = {
 };
 
 type Child = string | number | boolean | null | undefined | Child[] | object;
+type SatoriNode = Parameters<typeof satori>[0];
 
 const h = (
   type: string,
@@ -277,7 +277,7 @@ const splitTitleLines = (title: string): TitleLine[] => {
   return candidate;
 };
 
-const markup = (title: string): ReactNode => {
+const markup = (title: string): SatoriNode => {
   const titleLines = splitTitleLines(title);
   const titleFontSize = getTitleFontSize(titleLines);
 
@@ -392,7 +392,7 @@ const markup = (title: string): ReactNode => {
         }),
       ),
     ),
-  );
+  ) as SatoriNode;
 };
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;

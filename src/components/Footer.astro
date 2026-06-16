@@ -15,7 +15,7 @@ import { SITE } from "@consts";
       <div>&copy; {new Date().getFullYear()} • {SITE.TITLE}</div>
       <div class="flex flex-wrap items-center gap-1.5">
         <button
-          id="light-theme-button"
+          data-theme-button="light"
           aria-label="Light theme"
           class="group flex size-9 items-center justify-center border border-black/15 hover:bg-black/5 focus-visible:bg-black/5 dark:border-white/20 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
         >
@@ -43,7 +43,7 @@ import { SITE } from "@consts";
           </svg>
         </button>
         <button
-          id="dark-theme-button"
+          data-theme-button="dark"
           aria-label="Dark theme"
           class="group flex size-9 items-center justify-center border border-black/15 hover:bg-black/5 focus-visible:bg-black/5 dark:border-white/20 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
         >
@@ -63,7 +63,7 @@ import { SITE } from "@consts";
           </svg>
         </button>
         <button
-          id="system-theme-button"
+          data-theme-button="system"
           aria-label="System theme"
           class="group flex size-9 items-center justify-center border border-black/15 hover:bg-black/5 focus-visible:bg-black/5 dark:border-white/20 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
         >

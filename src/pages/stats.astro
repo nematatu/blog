@@ -2,39 +2,25 @@
 import { getCollection } from "astro:content";
 import CommitHeatmap from "@components/CommitHeatmap.astro";
 import Container from "@components/Container.astro";
-import MonthlyTagBarChart from "@components/charts/MonthlyTagBarChart";
 import { BLOG } from "@consts";
 import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
 
 const showDrafts = import.meta.env.DEV;
-const monthsToShow = 6;
 const now = new Date();
-const rangeStart = new Date(
-  now.getFullYear(),
-  now.getMonth() - (monthsToShow - 1),
-  1,
-);
+const rangeStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
 const entries = sortByDateDesc(
   (await getCollection("blog"))
     .filter((post) => showDrafts || !post.data.draft)
     .filter((post) => post.data.date >= rangeStart && post.data.date <= now),
-);
+).map((entry) => ({
+  entry,
+  charCount: getTextStats(entry.body ?? "").charCount,
+}));
 
-const dayCounts = new Map<string, number>();
-for (const entry of entries) {
-  const dayKey = dateKey(entry.data.date);
-  dayCounts.set(dayKey, (dayCounts.get(dayKey) ?? 0) + 1);
-}
-
-const periodCharTotal = entries.reduce(
-  (acc, entry) => acc + getTextStats(entry.body ?? "").charCount,
-  0,
-);
-
-const months = Array.from({ length: monthsToShow }, (_, index) => {
+const months = Array.from({ length: 6 }, (_, index) => {
   const date = new Date(
     rangeStart.getFullYear(),
     rangeStart.getMonth() + index,
@@ -46,27 +32,27 @@ const months = Array.from({ length: monthsToShow }, (_, index) => {
   );
   return { key, label };
 });
-const monthIndex = new Map(months.map((month, index) => [month.key, index]));
+
+const count = (map: Map<string, number>, key: string, value = 1) =>
+  map.set(key, (map.get(key) ?? 0) + value);
+const monthKeys = new Set(months.map((month) => month.key));
+const dayCounts = new Map<string, number>();
 const monthTagCounts = new Map<string, Map<string, number>>();
 const tagTotals = new Map<string, number>();
 const otherTag = "その他";
+let periodCharTotal = 0;
 
-for (const entry of entries) {
+for (const { entry, charCount } of entries) {
+  periodCharTotal += charCount;
+  count(dayCounts, dateKey(entry.data.date));
   const monthKey = dateKey(entry.data.date).slice(0, 7);
-  if (!monthIndex.has(monthKey)) continue;
-  const tags =
-    entry.data.tags && entry.data.tags.length > 0
-      ? entry.data.tags
-      : ["未分類"];
+  if (!monthKeys.has(monthKey)) continue;
 
-  for (const tag of tags) {
-    tagTotals.set(tag, (tagTotals.get(tag) ?? 0) + 1);
-    if (!monthTagCounts.has(monthKey)) {
-      monthTagCounts.set(monthKey, new Map<string, number>());
-    }
-    const monthMap = monthTagCounts.get(monthKey);
-    if (!monthMap) continue;
-    monthMap.set(tag, (monthMap.get(tag) ?? 0) + 1);
+  const monthMap = monthTagCounts.get(monthKey) ?? new Map<string, number>();
+  monthTagCounts.set(monthKey, monthMap);
+  for (const tag of entry.data.tags?.length ? entry.data.tags : ["未分類"]) {
+    count(tagTotals, tag);
+    count(monthMap, tag);
   }
 }
 
@@ -76,70 +62,90 @@ const topTags = Array.from(tagTotals.entries())
   .map(([tag]) => tag);
 
 const monthlyTagSeries = months.map((month) => {
-  const row: Record<string, number | string> = {
-    monthLabel: month.label,
-  };
+  const row: Record<string, number | string> = Object.fromEntries(
+    topTags.map((tag) => [tag, 0]),
+  );
+  row.monthLabel = month.label;
   const monthMap = monthTagCounts.get(month.key);
   let otherCount = 0;
-  if (monthMap) {
-    for (const [tag, count] of monthMap) {
-      if (topTags.includes(tag)) {
-        row[tag] = count;
-      } else {
-        otherCount += count;
-      }
-    }
+
+  for (const [tag, count] of monthMap ?? []) {
+    if (topTags.includes(tag)) row[tag] = count;
+    else otherCount += count;
   }
-  for (const tag of topTags) {
-    if (row[tag] === undefined) {
-      row[tag] = 0;
-    }
-  }
+
   row[otherTag] = otherCount;
   return row;
 });
 const hasOther = monthlyTagSeries.some((row) => Number(row[otherTag] ?? 0) > 0);
 const stackedTags = hasOther ? [...topTags, otherTag] : topTags;
+const tagColors = [
+  "hsl(217, 91%, 60%)",
+  "hsl(217, 91%, 75%)",
+  "hsl(199, 89%, 60%)",
+  "hsl(199, 89%, 70%)",
+  "hsl(215, 16%, 65%)",
+];
+const tagTotalsByMonth = monthlyTagSeries.map((row) =>
+  stackedTags.reduce((sum, tag) => sum + Number(row[tag] ?? 0), 0),
+);
+const maxTagTotal = Math.max(1, ...tagTotalsByMonth);
+const tagColor = (tag: string, index: number) =>
+  tagColors[tag === otherTag ? 4 : index % tagColors.length];
+const monthlyBars = monthlyTagSeries.map((row, index) => {
+  const total = tagTotalsByMonth[index] ?? 0;
+  let offset = 0;
+  const segments = stackedTags
+    .map((tag, tagIndex) => {
+      const value = Number(row[tag] ?? 0);
+      if (value <= 0 || total <= 0) return "";
+      const start = offset;
+      offset += (value / total) * 100;
+      return `${tagColor(tag, tagIndex)} ${start}% ${offset}%`;
+    })
+    .filter(Boolean);
+
+  return {
+    label: row.monthLabel,
+    title: `${row.monthLabel}: ${total.toLocaleString("ja-JP")}件`,
+    style: `height:${(total / maxTagTotal) * 100}%;background:linear-gradient(to top,${segments.join(",")})`,
+  };
+});
 
 const graphEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 const graphStart = new Date(rangeStart);
-const startOffset = graphStart.getDay();
-graphStart.setDate(graphStart.getDate() - startOffset);
+graphStart.setDate(graphStart.getDate() - graphStart.getDay());
 
-const days: Array<{ date: Date; key: string; count: number }> = [];
+const days: Array<{ date: Date; count: number }> = [];
 for (
   let cursor = new Date(graphStart);
   cursor <= graphEnd;
   cursor.setDate(cursor.getDate() + 1)
 ) {
   const date = new Date(cursor);
-  const key = dateKey(date);
-  const count = dayCounts.get(key) ?? 0;
-  days.push({ date, key, count });
+  days.push({ date, count: dayCounts.get(dateKey(date)) ?? 0 });
 }
 
-const weeks: Array<Array<{ date: Date; key: string; count: number }>> = [];
-days.forEach((day, index) => {
-  const weekIndex = Math.floor(index / 7);
-  if (!weeks[weekIndex]) {
-    weeks[weekIndex] = [];
-  }
-  weeks[weekIndex].push(day);
-});
+const weeks = Array.from({ length: Math.ceil(days.length / 7) }, (_, index) =>
+  days.slice(index * 7, index * 7 + 7),
+);
 
 const monthLabels = weeks.map((week) => {
   const firstDay = week[0]?.date;
-  if (!firstDay) return "";
-  if (firstDay.getDate() <= 7) {
-    return new Intl.DateTimeFormat("ja-JP", {
-      month: "numeric",
-    }).format(firstDay);
-  }
-  return "";
+  return firstDay && firstDay.getDate() <= 7
+    ? new Intl.DateTimeFormat("ja-JP", { month: "numeric" }).format(firstDay)
+    : "";
 });
 
 const maxDaily = Math.max(1, ...dayCounts.values());
-const activityLevel = (count: number) => {
+const heatmapClasses = [
+  "bg-black/5 dark:bg-white/5",
+  "bg-sky-100 dark:bg-sky-500/20",
+  "bg-sky-200 dark:bg-sky-500/35",
+  "bg-sky-300 dark:bg-sky-500/55",
+  "bg-sky-400 dark:bg-sky-500/80",
+];
+const heatmapLevel = (count: number) => {
   if (count === 0) return 0;
   const ratio = count / maxDaily;
   if (ratio >= 0.8) return 4;
@@ -149,35 +155,22 @@ const activityLevel = (count: number) => {
 };
 const heatmapWeeks = weeks.map((week) =>
   week.map((day) => {
-    const level = activityLevel(day.count);
-    const className =
-      level === 0
-        ? "bg-black/5 dark:bg-white/5"
-        : level === 1
-          ? "bg-sky-100 dark:bg-sky-500/20"
-          : level === 2
-            ? "bg-sky-200 dark:bg-sky-500/35"
-            : level === 3
-              ? "bg-sky-300 dark:bg-sky-500/55"
-              : "bg-sky-400 dark:bg-sky-500/80";
     return {
       date: formatDateJP(day.date),
       count: day.count,
-      className,
+      className: heatmapClasses[heatmapLevel(day.count)],
     };
   }),
 );
 const topPosts = entries
-  .map((entry) => ({
+  .map(({ entry, charCount }) => ({
     id: entry.id,
     title: entry.data.title,
     date: formatDateJP(entry.data.date),
-    charCount: getTextStats(entry.body ?? "").charCount,
+    charCount,
   }))
   .sort((a, b) => b.charCount - a.charCount)
   .slice(0, 8);
-
-const formatNumber = (value: number) => value.toLocaleString("ja-JP");
 ---
 
 <Layout title="Stats" description={BLOG.DESCRIPTION}>
@@ -204,7 +197,7 @@ const formatNumber = (value: number) => value.toLocaleString("ja-JP");
           <div
             class="text-2xl font-semibold text-black sm:text-right dark:text-white"
           >
-            {formatNumber(periodCharTotal)} 字
+            {periodCharTotal.toLocaleString("ja-JP")} 字
           </div>
         </div>
 
@@ -216,20 +209,26 @@ const formatNumber = (value: number) => value.toLocaleString("ja-JP");
       <section
         class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70"
       >
-        <div class="min-w-0">
+        <div
+          class="flex h-[280px] items-end gap-3 border-b border-black/10 dark:border-white/10"
+        >
           {
-            stackedTags.length === 0 ? (
-              <div class="text-sm text-black/50 dark:text-white/50">
-                タグがまだありません。
+            monthlyBars.map((bar) => (
+              <div class="flex h-full flex-1 flex-col justify-end gap-2">
+                <div
+                  class="w-full overflow-hidden"
+                  title={bar.title}
+                  style={bar.style}
+                />
+                <span class="text-center text-xs text-black/50 dark:text-white/50">
+                  {bar.label}
+                </span>
               </div>
-            ) : (
-              <MonthlyTagBarChart
-                client:only="react"
-                data={monthlyTagSeries}
-                tags={stackedTags}
-              />
-            )
+            ))
           }
+        </div>
+        <div class="mt-3 text-xs text-black/60 dark:text-white/60">
+          {stackedTags.join(" / ")}
         </div>
       </section>
 
@@ -258,7 +257,7 @@ const formatNumber = (value: number) => value.toLocaleString("ja-JP");
                   </div>
                 </div>
                 <div class="text-left text-sm font-semibold text-black sm:text-right dark:text-white">
-                  {formatNumber(post.charCount)} 字
+                  {post.charCount.toLocaleString("ja-JP")} 字
                 </div>
               </a>
             ))
