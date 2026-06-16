@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
@@ -41,7 +40,6 @@ const { image } = Astro.props;
   defer
   src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"
 ></script>
-<ClientRouter fallback="swap" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -341,8 +339,6 @@ const { image } = Astro.props;
   };
 
   document.addEventListener("DOMContentLoaded", () => init());
-  document.addEventListener("astro:after-swap", () => init());
-
   function ensureTwitterWidgets() {
     if (window.twttr?.widgets?.load) return Promise.resolve();
     return new Promise((resolve) => {

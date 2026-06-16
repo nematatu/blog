@@ -33,16 +33,6 @@
 			"groupSlug": "react"
 		},
 		{
-			"description": "React ベースの UI/アニメーション補助はまとめて更新します。",
-			"matchPackageNames": [
-				"@number-flow/react",
-				"motion",
-				"react-use-measure"
-			],
-			"groupName": "React UI tooling",
-			"groupSlug": "react-ui"
-		},
-		{
 			"description": "整形ツール群は一緒に更新します。",
 			"matchPackageNames": [
 				"prettier",
@@ -68,12 +58,6 @@
 			"matchPackageNames": ["pagefind", "astro-pagefind"],
 			"groupName": "Search tooling",
 			"groupSlug": "search"
-		},
-		{
-			"description": "visx 系パッケージはまとめて更新します。",
-			"matchPackageNames": ["@visx/**"],
-			"groupName": "visx ecosystem",
-			"groupSlug": "visx"
 		},
 		{
 			"description": "Markdown と AST 変換の補助はまとめて更新します。",

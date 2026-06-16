@@ -43,11 +43,3 @@ declare module "react" {
 declare module "react-dom" {
   export function createPortal(children: any, container: any): any;
 }
-
-declare module "d3-array" {
-  export function bisector<T, U>(
-    accessor: (d: T) => U,
-  ): {
-    left: (array: T[], x: U, lo?: number, hi?: number) => number;
-  };
-}
