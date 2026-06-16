@@ -5,7 +5,7 @@ draft: false
 tags: ["開発"]
 ---
 
-`public/wallpaper`配下の対象の特定の画像をavifencする
+`public/wallpaper`配下の対象の特定の画像を`avifenc`する
 
 ```bash
 find -E public/wallpaper/ -type f -iregex '.*\.(jpeg|jpg|png|webp)$' -exec sh -c 'rm "$1"' _ {} \;

@@ -1,0 +1,65 @@
+---
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+
+const xShareUrl = `https://x.com/intent/post?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+const hatenaShareUrl = `https://b.hatena.ne.jp/entry/panel/?url=${encodeURIComponent(url)}&btitle=${encodeURIComponent(title)}`;
+---
+
+<div class="flex items-center justify-end">
+  <a
+    href={xShareUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="grid size-10 place-content-center text-2xl !text-black transition-[background-color] duration-200 hover:bg-black/5 dark:!text-white dark:hover:bg-white/5"
+    aria-label="Share on X"
+    title="Share on X"
+  >
+    <iconify-icon icon="ri:twitter-x-fill"></iconify-icon>
+  </a>
+  <a
+    href={hatenaShareUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="grid size-10 place-content-center text-2xl !text-[#00A4DE] transition-[background-color] duration-200 hover:bg-black/5 dark:hover:bg-white/5"
+    aria-label="Share on Hatena Bookmark"
+    title="Share on Hatena Bookmark"
+  >
+    <iconify-icon icon="simple-icons:hatenabookmark"></iconify-icon>
+  </a>
+  <button
+    type="button"
+    class="grid size-10 cursor-pointer place-content-center text-2xl !text-black/70 transition-[background-color] duration-200 hover:bg-black/5 dark:!text-white/70 dark:hover:bg-white/5"
+    id="share-link-copy"
+    data-url={url}
+    aria-label="Copy link"
+    title="Copy link"
+  >
+    <iconify-icon icon="ri:link"></iconify-icon>
+  </button>
+</div>
+
+<script is:inline>
+  document
+    .getElementById("share-link-copy")
+    ?.addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      const url = button.dataset.url;
+      const icon = button.querySelector("iconify-icon");
+      const originalIcon = icon.getAttribute("icon");
+
+      try {
+        await navigator.clipboard.writeText(url);
+        icon.setAttribute("icon", "lucide:check");
+        setTimeout(() => {
+          icon.setAttribute("icon", originalIcon);
+        }, 2000);
+      } catch (err) {
+        console.error("Failed to copy: ", err);
+      }
+    });
+</script>

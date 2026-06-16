@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import Container from "@components/Container.astro";
+import ShareButtons from "@components/ShareButtons.astro";
 import FormattedDate from "@components/FormattedDate.astro";
 import Giscus from "@components/Giscus.astro";
 import PostNavigation from "@components/PostNavigation.astro";
@@ -95,20 +96,23 @@ const ogImageVersion = "20260614-og-background";
       }
       <article class="animate mx-0 max-w-none min-w-0 sm:mx-auto sm:max-w-5xl">
         <Content />
-        {
-          post.data.tags && post.data.tags?.length > 0 ? (
-            <div class="mt-12 flex flex-wrap gap-2">
-              {post.data.tags.map((tag) => (
-                <a
-                  href={`/tags/${tag}`}
-                  class="border border-black/15 px-2 py-1 text-sm text-black/70 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
-                >
-                  {tag}
-                </a>
-              ))}
-            </div>
-          ) : null
-        }
+        <div class="mt-12 flex flex-col gap-8">
+          {
+            post.data.tags && post.data.tags?.length > 0 ? (
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags.map((tag) => (
+                  <a
+                    href={`/tags/${tag}`}
+                    class="border border-black/15 px-2 py-1 text-sm text-black/70 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+                  >
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            ) : null
+          }
+          <ShareButtons title={post.data.title} url={Astro.url.href} />
+        </div>
         <div class="mt-24">
           <PostNavigation prevPost={prevPost} nextPost={nextPost} />
         </div>

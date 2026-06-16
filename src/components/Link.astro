@@ -19,7 +19,8 @@ const {
 
 <a
   href={href}
-  target={external ? "_blank" : "_self"}
+  target="_blank"
+  rel="noopener noreferrer"
   class={cn(
     "inline-block decoration-black/30 dark:decoration-white/30 hover:decoration-black/50 focus-visible:decoration-black/50 dark:hover:decoration-white/50 dark:focus-visible:decoration-white/50 text-current hover:text-black focus-visible:text-black dark:hover:text-white dark:focus-visible:text-white",
     underline && "underline underline-offset-[3px]",
