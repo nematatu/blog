@@ -175,7 +175,7 @@ html.scrolled #back-to-top {
 
 /* shiki config */
 pre {
-  @apply my-6 overflow-x-auto border-0 px-0 py-5 text-[0.95em] leading-relaxed;
+  @apply my-6 overflow-x-auto border-0 px-0 py-5 text-[0.85em] leading-relaxed;
   border-radius: 12px !important;
   background-color: #1a2638 !important;
   color: #d6e3ed !important;
