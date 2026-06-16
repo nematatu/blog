@@ -19,7 +19,7 @@ tags: ["開発"]
 
 単に、以下をやろうとしても出来ないからエンジンにtypstが必要 (typst以外にも選択肢あるけど、typstが1番手軽そう。なんとなく)
 
-```
+```nushell
 pandoc -t pdf README.md -o README.pdf
 ```
 
@@ -29,7 +29,7 @@ pandoc -t pdf README.md -o README.pdf
 
 ## md-to-pdf
 
-```
+```nushell
 npx md-to-pdf README.md
 
 Need to install the following packages:
@@ -54,7 +54,7 @@ LaTex, mermaid等を使うにはまた別のライブラリ使う必要がある
 
 ## 変換に使ったMarkdown
 
-````
+````md
 # blog
 
 Astroで作っている個人ブログです。
@@ -91,5 +91,4 @@ pnpm dev
 .
 
 (Con'd)
-
 ````
