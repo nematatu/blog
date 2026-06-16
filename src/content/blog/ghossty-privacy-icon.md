@@ -1,7 +1,7 @@
 ---
 title: "ghosstyの右上に表示されるプライバシーアイコンが邪魔"
 date: "2026-06-16T15:01:06+09:00"
-draft: true
+draft: false
 tags: ["開発"]
 ---
 
