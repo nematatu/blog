@@ -95,7 +95,6 @@
   }
 
   article img {
-    @apply border-3 border-sky-500 dark:border-sky-600;
     max-height: min(58vh, 520px);
     max-width: 100%;
     width: auto;
