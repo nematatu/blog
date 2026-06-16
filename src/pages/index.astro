@@ -19,12 +19,12 @@ const wallpaper = getRandomWallpaper();
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
   <Container>
-    <div class="space-y-12">
+    <div class="space-y-6 sm:space-y-12">
       <div class="rounded-xl">
         <img
           src={wallpaper}
           alt=""
-          class="mx-auto aspect-[2/1] w-full object-cover dark:border-white/10"
+          class="mx-auto aspect-[4/1] w-full object-cover sm:aspect-[2/1]"
           loading="eager"
           decoding="async"
           fetchpriority="high"

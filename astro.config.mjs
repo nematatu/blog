@@ -5,9 +5,11 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import pagefind from "astro-pagefind";
 import remarkDirective from "remark-directive";
+import remarkGfm from "remark-gfm";
 import rehypeCodeFilename from "./src/lib/markdown/rehype-code-filename.js";
 import rehypeImageCaption from "./src/lib/markdown/rehype-image-caption.js";
 import remarkCodeLanguage from "./src/lib/markdown/remark-code-language.js";
+import remarkDirectiveWidgets from "./src/lib/markdown/remark-directive-widgets.js";
 import remarkTwitterCard from "./src/lib/markdown/remark-twitter-card.js";
 import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
 
@@ -28,6 +30,8 @@ export default defineConfig({
     },
     remarkPlugins: [
       remarkDirective,
+      remarkDirectiveWidgets,
+      remarkGfm,
       remarkCodeLanguage,
       remarkTwitterCard,
       remarkYoutubePlayer,

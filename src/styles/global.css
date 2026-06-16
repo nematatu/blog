@@ -72,13 +72,13 @@
   }
 
   header {
-    @apply sticky top-0 z-50 py-6;
+    @apply sticky top-0 z-50 py-4 sm:py-6;
     @apply bg-neutral-100/75 dark:bg-neutral-900/75;
     @apply saturate-200 backdrop-blur-xs;
   }
 
   main {
-    @apply flex-1 pt-16 pb-32;
+    @apply flex-1 pt-4 pb-32 sm:pt-10;
   }
 
   footer {
@@ -88,10 +88,13 @@
   article {
     @apply prose prose-neutral dark:prose-invert prose-img:mx-auto prose-img:my-6 max-w-full min-w-0;
     @apply prose-headings:font-semibold;
-    @apply px-6 py-8 sm:px-10 sm:py-10;
-    background-color: var(--background);
+    @apply px-3 pt-0 pb-8 sm:px-10 sm:py-10;
     color: var(--foreground);
     overflow-wrap: anywhere;
+  }
+
+  article > :first-child {
+    margin-top: 0 !important;
   }
 
   article img {
@@ -350,6 +353,54 @@ pre code {
 
   .youtube-player iframe {
     @apply block size-full;
+  }
+
+  .admonition {
+    @apply my-6 border-l-4 bg-black/[0.03] px-4 py-3 text-black/80 dark:bg-white/[0.04] dark:text-white/80;
+  }
+
+  .admonition__title {
+    @apply m-0 font-semibold text-black dark:text-white;
+  }
+
+  .admonition > :last-child {
+    @apply mb-0;
+  }
+
+  .admonition--note {
+    @apply border-blue-500;
+  }
+
+  .admonition--tip {
+    @apply border-emerald-500;
+  }
+
+  .admonition--important {
+    @apply border-violet-500;
+  }
+
+  .admonition--caution {
+    @apply border-amber-500;
+  }
+
+  .admonition--warning {
+    @apply border-red-500;
+  }
+
+  .github-card {
+    @apply my-6 border border-black/15 bg-white/70 px-4 py-3 dark:border-white/20 dark:bg-neutral-900/70;
+  }
+
+  .github-card a {
+    @apply block no-underline;
+  }
+
+  .github-card__label {
+    @apply block font-semibold text-black dark:text-white;
+  }
+
+  .github-card__meta {
+    @apply block text-sm text-black/60 dark:text-white/60;
   }
 }
 

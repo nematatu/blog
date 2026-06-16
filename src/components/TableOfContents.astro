@@ -45,13 +45,16 @@ function buildToc(headings: Heading[] = []) {
 }
 ---
 
-<details {...detailsAttrs} class="animate group">
+<details
+  {...detailsAttrs}
+  class="animate group -mx-2 bg-black/[0.03] px-3 py-3 sm:px-4 dark:bg-white/[0.04]"
+>
   <summary
-    class="cursor-pointer py-1.5 text-sm font-medium text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
+    class="cursor-pointer py-0 text-sm font-medium text-black/70 hover:text-black sm:py-1 dark:text-white/70 dark:hover:text-white"
     >Table of Contents</summary
   >
-  <nav class="pr-2">
-    <ul class="py-2">
+  <nav class="mt-1 pr-0 sm:mt-2 sm:pr-2">
+    <ul class="py-0">
       {toc.map((heading) => <TableOfContentsHeading heading={heading} />)}
     </ul>
   </nav>

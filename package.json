@@ -38,6 +38,7 @@
     "react-dom": "^19.2.6",
     "react-use-measure": "latest",
     "remark-directive": "^4.0.0",
+    "remark-gfm": "^4.0.1",
     "satori": "^0.26.0",
     "sharp": "0.34.5",
     "tailwind-merge": "^3.6.0",
