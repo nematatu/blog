@@ -27,6 +27,10 @@ export default defineConfig({
     shikiConfig: {
       theme: "css-variables",
     },
+    remarkRehype: {
+      footnoteBackContent: "↩︎",
+      footnoteBackLabel: "本文へ戻る",
+    },
     remarkPlugins: [
       remarkDirective,
       remarkDirectiveWidgets,

@@ -143,6 +143,14 @@
   article a:hover {
     @apply text-blue-700 decoration-blue-700 dark:text-blue-200 dark:decoration-blue-200;
   }
+
+  article .data-footnote-backref {
+    @apply ml-1 inline-flex items-center text-sm leading-none font-medium no-underline;
+  }
+
+  article .data-footnote-backref:hover {
+    @apply text-blue-700 dark:text-blue-200;
+  }
 }
 
 .animate {
