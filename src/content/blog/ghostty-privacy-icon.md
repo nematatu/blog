@@ -1,9 +1,8 @@
 ---
-title: "ghosstyの右上に表示されるプライバシーアイコンが邪魔"
+title: "ghosttyの右上に表示されるプライバシーアイコンが邪魔"
 date: "2026-06-16T15:01:06+09:00"
 draft: false
 tags: ["開発"]
-ogImage: https://assets.blog.amatatu.com/paste-images/20260616185200.avif
 ---
 
 ## 結論
@@ -21,7 +20,7 @@ macos-secure-input-indication = false
 
 ## 機能
 
-パスワード入力を自動検知する or 手動でONにすると他のプロセスから監視されないようにするGhosstyの目玉機能
+パスワード入力を自動検知する or 手動でONにすると他のプロセスから監視されないようにするGhosttyの目玉機能
 
 右上にアイコンが表示されると、「Secure Keyboard Entry が機能してますよ〜」ということらしい
 

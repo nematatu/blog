@@ -3,7 +3,7 @@ title: "Vimのアップデート"
 date: "2026-06-14"
 draft: false
 tags: ["開発"]
-ogImage: https://assets.blog.amatatu.com/paste-images/20260614020630.avif
+ogImage: /ogp/vim-update.png
 ---
 
 rgba画像を表示できるようになったらしく、試したかったのでアップデートする
