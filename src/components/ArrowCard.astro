@@ -13,22 +13,26 @@ const ogImage = entry.data.ogImage;
 
 <a
   href={`/${entry.collection}/${entry.id}`}
-  class="not-prose group relative flex flex-col gap-3 border border-black/15 px-4 py-3 pr-10 hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black sm:flex-row sm:gap-4 dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+  class="not-prose group relative flex flex-col gap-4 rounded-xl border border-black/15 px-4 py-4 pr-10 transition-colors duration-200 hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black sm:flex-row sm:gap-6 dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
 >
   {
     ogImage && (
-      <img
-        src={ogImage}
-        alt=""
-        class="aspect-[1200/630] w-32 max-w-full shrink-0 border border-black/10 object-cover dark:border-white/15"
-        loading="lazy"
-        decoding="async"
-        aria-hidden="true"
-      />
+      <div class="aspect-[1200/630] w-full shrink-0 overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
+        <img
+          src={ogImage}
+          alt=""
+          class="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+          aria-hidden="true"
+        />
+      </div>
     )
   }
-  <div class="flex flex-1 flex-col truncate">
-    <div class="font-semibold">
+  <div class="flex min-w-0 flex-1 flex-col justify-center">
+    <div
+      class="text-lg leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400"
+    >
       {entry.data.title}
       {
         entry.data.draft && (
@@ -40,14 +44,16 @@ const ogImage = entry.data.ogImage;
     </div>
     {
       entry.data.description && (
-        <div class="text-sm">{entry.data.description}</div>
+        <div class="mt-2 line-clamp-2 text-sm text-black/60 dark:text-white/60">
+          {entry.data.description}
+        </div>
       )
     }
   </div>
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
-    class="absolute top-1/2 right-2 size-5 -translate-y-1/2 fill-none stroke-current stroke-2"
+    class="absolute top-1/2 right-3 size-5 -translate-y-1/2 fill-none stroke-current stroke-2 transition-transform group-hover:translate-x-1"
   >
     <line x1="5" y1="12" x2="19" y2="12" class="translate-x-0"></line>
     <polyline points="12 5 19 12 12 19" class="translate-x-0"></polyline>
