@@ -1,7 +1,7 @@
 ---
 title: "ワンライナーavifenc"
 date: "2026-06-15T22:46:55+09:00"
-draft: true
+draft: false
 tags: ["開発"]
 ---
 
