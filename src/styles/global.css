@@ -42,8 +42,6 @@
     animation: none !important;
     /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
     transition: none !important;
-    /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
-    scroll-behavior: auto !important;
   }
 }
 
@@ -60,8 +58,8 @@
 
   html,
   body {
-    @apply size-full;
-    @apply overflow-x-hidden;
+    @apply min-h-screen;
+    @apply overflow-x-clip;
   }
 
   body {
