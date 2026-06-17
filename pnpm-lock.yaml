@@ -20,6 +20,9 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.3
         version: 3.7.3
+      '@fontsource/noto-sans-jp':
+        specifier: ^5.2.9
+        version: 5.2.9
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
@@ -62,6 +65,9 @@ importers:
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
+      yakuhanjp:
+        specifier: ^4.1.1
+        version: 4.1.1
     devDependencies:
       '@tailwindcss/typography':
         specifier: ^0.5.19
@@ -354,6 +360,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource/noto-sans-jp@5.2.9':
+    resolution: {integrity: sha512-6yVGiofnrnbiJjU8ch4JGSs2HqyozxMvsVyVmFwOnDH3u//qQKLqmKM4n0lqN0637uaJNzUW9nIJqbbMgHVQzw==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -2771,6 +2780,9 @@ packages:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
 
+  yakuhanjp@4.1.1:
+    resolution: {integrity: sha512-ZzTsleRLEbkmuRNFbREG334D5ef36Xr4bcdSONisF9B7q9DCpdNSnBu4TA4JA7TxCWLDF1q51Sg29/PUnVHIhw==}
+
   yaml-language-server@1.20.0:
     resolution: {integrity: sha512-qhjK/bzSRZ6HtTvgeFvjNPJGWdZ0+x5NREV/9XZWFjIGezew2b4r5JPy66IfOhd5OA7KeFwk1JfmEbnTvev0cA==}
     hasBin: true
@@ -3097,6 +3109,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.7':
     optional: true
+
+  '@fontsource/noto-sans-jp@5.2.9': {}
 
   '@img/colour@1.1.0': {}
 
@@ -5816,6 +5830,8 @@ snapshots:
   xxhash-wasm@1.1.0: {}
 
   y18n@5.0.8: {}
+
+  yakuhanjp@4.1.1: {}
 
   yaml-language-server@1.20.0:
     dependencies:

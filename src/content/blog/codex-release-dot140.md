@@ -13,3 +13,7 @@ tags: ["開発"]
 
 と思ったけど、Codexってマイナーバージョン上がった時だけリリースしてるのか
 キリがいい数字だから目に付いただけかも
+
+## /usage
+
+![](https://assets.blog.amatatu.com/paste-images/20260617152747.avif)

@@ -16,6 +16,7 @@
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/noto-sans-jp": "^5.2.9",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.2",
@@ -29,7 +30,8 @@
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
-    "unist-util-visit": "^5.1.0"
+    "unist-util-visit": "^5.1.0",
+    "yakuhanjp": "^4.1.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",

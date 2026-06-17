@@ -1,4 +1,9 @@
 @import "tailwindcss";
+@import "@fontsource/noto-sans-jp/400.css";
+@import "@fontsource/noto-sans-jp/500.css";
+@import "@fontsource/noto-sans-jp/600.css";
+@import "@fontsource/noto-sans-jp/700.css";
+@import "yakuhanjp";
 
 @plugin "@tailwindcss/typography";
 
@@ -6,9 +11,10 @@
 
 @theme {
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
+    "YakuHanJP", -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Noto Sans JP", ui-sans-serif, system-ui,
+    "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
@@ -88,6 +94,8 @@
     @apply prose-headings:font-semibold;
     @apply px-3 pt-0 pb-8 sm:px-10 sm:py-10;
     color: var(--foreground);
+    font-size: 1.0625rem;
+    text-autospace: normal;
     overflow-wrap: anywhere;
   }
 
@@ -413,7 +421,7 @@ pre code {
 article p,
 article li,
 article blockquote {
-  line-height: 1.55 !important;
+  line-height: 1.7 !important;
 }
 
 article p {

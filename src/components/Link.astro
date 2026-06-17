@@ -1,6 +1,9 @@
 ---
 import { cn } from "@lib/utils";
 
+const site = "https://blog.amatatu.com";
+const httpProtocols = new Set(["http:", "https:"]);
+
 type Props = {
   href: string;
   external?: boolean;
@@ -15,12 +18,25 @@ const {
   group = false,
   ...rest
 } = Astro.props;
+
+const isExternalHref = (href: string) => {
+  try {
+    const url = new URL(href, site);
+    const siteUrl = new URL(site);
+
+    return httpProtocols.has(url.protocol) && url.origin !== siteUrl.origin;
+  } catch {
+    return false;
+  }
+};
+
+const opensInNewTab = external ?? isExternalHref(href);
 ---
 
 <a
   href={href}
-  target="_blank"
-  rel="noopener noreferrer"
+  target={opensInNewTab ? "_blank" : undefined}
+  rel={opensInNewTab ? "noopener noreferrer" : undefined}
   class={cn(
     "inline-block decoration-black/30 dark:decoration-white/30 hover:decoration-black/50 focus-visible:decoration-black/50 dark:hover:decoration-white/50 dark:focus-visible:decoration-white/50 text-current hover:text-black focus-visible:text-black dark:hover:text-white dark:focus-visible:text-white",
     underline && "underline underline-offset-[3px]",

@@ -11,11 +11,13 @@ import remarkCodeLanguage from "./src/lib/markdown/remark-code-language.js";
 import remarkDirectiveWidgets from "./src/lib/markdown/remark-directive-widgets.js";
 import remarkTwitterCard from "./src/lib/markdown/remark-twitter-card.js";
 import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
-import rehypeAllLinksBlank from "./src/lib/markdown/rehype-all-links-blank.js";
+import rehypeExternalLinksBlank from "./src/lib/markdown/rehype-all-links-blank.js";
+
+const site = "https://blog.amatatu.com";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://blog.amatatu.com",
+  site,
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "viewport",
@@ -40,6 +42,10 @@ export default defineConfig({
       remarkTwitterCard,
       remarkYoutubePlayer,
     ],
-    rehypePlugins: [rehypeCodeFilename, rehypeImageCaption, rehypeAllLinksBlank],
+    rehypePlugins: [
+      rehypeCodeFilename,
+      rehypeImageCaption,
+      [rehypeExternalLinksBlank, { site }],
+    ],
   },
 });
