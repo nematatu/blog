@@ -4,6 +4,7 @@ description: "minorバージョンが上がってた"
 date: "2026-06-17T00:42:14+09:00"
 draft: true
 tags: ["開発"]
+ogImage: /ogp/codex-v0140.png
 ---
 
 [GitHubのリリースノート](https://github.com/openai/codex/releases/tag/rust-v0.140.0)
