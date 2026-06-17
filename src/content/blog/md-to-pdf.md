@@ -3,6 +3,7 @@ title: "ターミナルでMarkdownをPDFに変換"
 date: "2026-06-14"
 draft: false
 tags: ["開発"]
+ogImage: /ogp/md-to-pdf.png
 ---
 
 適当なPDFで提出する必要のある課題とかをMarkdownで書いて変換したい時がある

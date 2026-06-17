@@ -4,6 +4,7 @@ description: "快適に書くために"
 date: "2026-06-17T17:53:40+09:00"
 draft: true
 tags: ["開発", "趣味"]
+ogImage: /ogp/writing-blog.png
 ---
 
 Nvimで快適に執筆する
