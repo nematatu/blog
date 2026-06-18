@@ -8,18 +8,6 @@ const ADMONITION_TYPES = new Set([
   "warning",
 ]);
 
-const ADMONITION_LABELS = {
-  note: "Note",
-  tip: "Tip",
-  important: "Important",
-  caution: "Caution",
-  warning: "Warning",
-};
-
-function text(value) {
-  return { type: "text", value };
-}
-
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -29,46 +17,37 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
-function directiveLabel(node, fallback) {
+function directiveLabel(node) {
   if (!Array.isArray(node.children) || node.children.length === 0) {
-    return fallback;
+    return null;
   }
 
   const first = node.children[0];
-  if (first.type !== "paragraph" || !Array.isArray(first.children)) {
-    return fallback;
+  if (first.type !== "paragraph" || first.data?.directiveLabel !== true) {
+    return null;
   }
 
-  const labelParts = [];
-  for (const child of first.children) {
-    if (child.type !== "text") return fallback;
-    labelParts.push(child.value);
-  }
-
-  const value = labelParts.join("").trim();
-  if (!value) return fallback;
-
-  node.children.shift();
-  return value;
+  return node.children.shift();
 }
 
 function transformAdmonition(node) {
   const type = node.name;
-  const title = directiveLabel(node, ADMONITION_LABELS[type]);
+  const title = directiveLabel(node);
   const className = ["admonition", `admonition--${type}`];
 
   node.data = {
     hName: "aside",
     hProperties: { className, dataAdmonition: type },
   };
-  node.children.unshift({
-    type: "paragraph",
-    data: {
+
+  if (title) {
+    title.data = {
+      ...title.data,
       hName: "div",
       hProperties: { className: ["admonition__title"] },
-    },
-    children: [text(title)],
-  });
+    };
+    node.children.unshift(title);
+  }
 }
 
 function githubTarget(node) {

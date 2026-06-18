@@ -7,6 +7,7 @@ import Link from "@components/Link.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
 import { sortByDateDesc } from "@lib/content-sort";
+import { getOgThumbnailSet } from "@lib/og-thumbnail";
 import Layout from "@layouts/Layout.astro";
 import { readingTime } from "@lib/utils";
 
@@ -27,6 +28,7 @@ type Props = CollectionEntry<"projects">;
 const project = Astro.props;
 const { Content, headings } = await render(project);
 const ogImageVersion = "20260614-og-background";
+const thumbnail = getOgThumbnailSet(project.data.ogImage, 1200);
 ---
 
 <Layout
@@ -77,9 +79,13 @@ const ogImageVersion = "20260614-og-background";
       project.data.ogImage && (
         <section class="animate mx-auto mt-4 mb-8 max-w-5xl">
           <img
-            src={project.data.ogImage}
+            src={thumbnail?.src ?? project.data.ogImage}
+            srcset={thumbnail?.srcset}
+            sizes="(min-width: 1024px) 960px, calc(100vw - 1.5rem)"
+            width="1200"
+            height="675"
             alt=""
-            class="aspect-[1200/630] w-full border border-black/10 object-cover dark:border-white/15"
+            class="aspect-video w-full border border-black/10 object-cover dark:border-white/15"
           />
         </section>
       )

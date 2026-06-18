@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getOgThumbnailSet } from "@lib/og-thumbnail";
 
 type Props = {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
@@ -9,6 +10,7 @@ const { entry } = Astro.props as {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
 };
 const ogImage = entry.data.ogImage;
+const thumbnail = getOgThumbnailSet(ogImage);
 ---
 
 <a
@@ -17,9 +19,13 @@ const ogImage = entry.data.ogImage;
 >
   {
     ogImage && (
-      <div class="aspect-[1200/630] w-full shrink-0 overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
+      <div class="aspect-video w-full shrink-0 overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
         <img
-          src={ogImage}
+          src={thumbnail?.src ?? ogImage}
+          srcset={thumbnail?.srcset}
+          sizes="(min-width: 640px) 10rem, calc(100vw - 2rem)"
+          width="480"
+          height="270"
           alt=""
           class="h-full w-full object-cover"
           loading="lazy"

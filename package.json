@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/generate-og-thumbnails.mjs",
     "build": "astro check && astro build",
+    "thumbs": "node scripts/generate-og-thumbnails.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "post:new": "node scripts/create-post.mjs",

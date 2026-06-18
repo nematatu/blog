@@ -7,12 +7,13 @@ import Giscus from "@components/Giscus.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
-import { sortByDateDesc } from "@lib/content-sort";
+import { sortByPinnedThenDateDesc } from "@lib/content-sort";
+import { getOgThumbnailSet } from "@lib/og-thumbnail";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
   const showDrafts = import.meta.env.DEV;
-  const posts = sortByDateDesc(
+  const posts = sortByPinnedThenDateDesc(
     (await getCollection("blog")).filter(
       (post) => showDrafts || !post.data.draft,
     ),
@@ -25,7 +26,7 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<"blog">;
 
 const showDrafts = import.meta.env.DEV;
-const posts = sortByDateDesc(
+const posts = sortByPinnedThenDateDesc(
   (await getCollection("blog")).filter(
     (post) => showDrafts || !post.data.draft,
   ),
@@ -47,6 +48,7 @@ const prevPost = getPrevPost();
 const post = Astro.props;
 const { Content, headings } = await render(post);
 const ogImageVersion = "20260614-og-background";
+const thumbnail = getOgThumbnailSet(post.data.ogImage, 1200);
 ---
 
 <Layout
@@ -79,9 +81,13 @@ const ogImageVersion = "20260614-og-background";
       post.data.ogImage && (
         <section class="animate mx-auto mt-4 mb-8 max-w-5xl px-3 sm:px-10">
           <img
-            src={post.data.ogImage}
+            src={thumbnail?.src ?? post.data.ogImage}
+            srcset={thumbnail?.srcset}
+            sizes="(min-width: 1024px) 960px, calc(100vw - 1.5rem)"
+            width="1200"
+            height="675"
             alt=""
-            class="aspect-[1200/630] w-full border border-black/10 object-cover dark:border-white/15"
+            class="aspect-video w-full border border-black/10 object-cover dark:border-white/15"
           />
         </section>
       )

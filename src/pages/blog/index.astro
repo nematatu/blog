@@ -3,11 +3,11 @@ import { getCollection } from "astro:content";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import { BLOG } from "@consts";
-import { sortByDateDesc } from "@lib/content-sort";
+import { sortByPinnedThenDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
 const showDrafts = import.meta.env.DEV;
-const entries = sortByDateDesc(
+const entries = sortByPinnedThenDateDesc(
   (await getCollection("blog")).filter(
     (post) => showDrafts || !post.data.draft,
   ),

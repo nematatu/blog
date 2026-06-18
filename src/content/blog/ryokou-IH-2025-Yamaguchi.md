@@ -1,10 +1,10 @@
 ---
 title: "山口へインハイ旅行"
-description: "インハイ2026行ってきた"
+description: "インハイ2025行ってきた"
 date: "2026-01-19"
 draft: false
 tags: ["バドミントン", "写真"]
-ogImage: "https://assets.blog.amatatu.com/posts/ryokou-ih-2025-yamaguchi/7DE58784-3C62-4897-931E-836A093D6E94_1_105_c.jpeg"
+ogImage: /ogp/interhigh-2025.png
 pinned: true
 ---
 
