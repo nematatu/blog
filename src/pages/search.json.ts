@@ -1,5 +1,5 @@
 import { getCollection } from "astro:content";
-import { sortByPinnedThenDateDesc } from "@lib/content-sort";
+import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
 import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
 import { tagEmoji } from "@lib/tag-emoji";
 
@@ -9,11 +9,8 @@ export async function GET() {
   const base = import.meta.env.BASE_URL ?? "/";
   const withBase = (value: string) =>
     new URL(value.replace(/^\//, ""), `https://example.com${base}`).pathname;
-  const showDrafts = import.meta.env.DEV;
   const posts = sortByPinnedThenDateDesc(
-    (await getCollection("blog")).filter(
-      (post) => showDrafts || !post.data.draft,
-    ),
+    (await getCollection("blog")).filter(isVisibleEntry),
   );
 
   const normalizeOgImage = (value: string | undefined, fallback: string) => {

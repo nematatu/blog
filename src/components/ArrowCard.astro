@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getOgThumbnailSet } from "@lib/og-thumbnail";
+import EntryBadges from "@components/EntryBadges.astro";
+import OgImage from "@components/OgImage.astro";
 
 type Props = {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
@@ -10,7 +11,6 @@ const { entry } = Astro.props as {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
 };
 const ogImage = entry.data.ogImage;
-const thumbnail = getOgThumbnailSet(ogImage);
 ---
 
 <a
@@ -20,33 +20,23 @@ const thumbnail = getOgThumbnailSet(ogImage);
   {
     ogImage && (
       <div class="aspect-video w-full shrink-0 overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
-        <img
-          src={thumbnail?.src ?? ogImage}
-          srcset={thumbnail?.srcset}
+        <OgImage
+          src={ogImage}
           sizes="(min-width: 640px) 10rem, calc(100vw - 2rem)"
-          width="480"
-          height="270"
-          alt=""
+          width={480}
+          height={270}
           class="h-full w-full object-cover"
           loading="lazy"
-          decoding="async"
-          aria-hidden="true"
         />
       </div>
     )
   }
   <div class="flex min-w-0 flex-1 flex-col justify-center">
     <div
-      class="text-lg leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400"
+      class="flex flex-wrap items-center gap-x-2 gap-y-1 text-lg leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400"
     >
-      {entry.data.title}
-      {
-        entry.data.draft && (
-          <span class="ml-2 align-middle text-xs font-semibold text-red-600 dark:text-red-400">
-            (draft)
-          </span>
-        )
-      }
+      <span>{entry.data.title}</span>
+      <EntryBadges draft={entry.data.draft} />
     </div>
     {
       entry.data.description && (

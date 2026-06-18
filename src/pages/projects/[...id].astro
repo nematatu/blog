@@ -2,21 +2,19 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import Container from "@components/Container.astro";
+import EntryBadges from "@components/EntryBadges.astro";
 import FormattedDate from "@components/FormattedDate.astro";
 import Link from "@components/Link.astro";
+import OgImage from "@components/OgImage.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
-import { sortByDateDesc } from "@lib/content-sort";
-import { getOgThumbnailSet } from "@lib/og-thumbnail";
+import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 import { readingTime } from "@lib/utils";
 
 export async function getStaticPaths() {
-  const showDrafts = import.meta.env.DEV;
   const projects = sortByDateDesc(
-    (await getCollection("projects")).filter(
-      (post) => showDrafts || !post.data.draft,
-    ),
+    (await getCollection("projects")).filter(isVisibleEntry),
   );
   return projects.map((project) => ({
     params: { id: project.id },
@@ -28,7 +26,6 @@ type Props = CollectionEntry<"projects">;
 const project = Astro.props;
 const { Content, headings } = await render(project);
 const ogImageVersion = "20260614-og-background";
-const thumbnail = getOgThumbnailSet(project.data.ogImage, 1200);
 ---
 
 <Layout
@@ -53,8 +50,11 @@ const thumbnail = getOgThumbnailSet(project.data.ogImage, 1200);
           )
         }
       </div>
-      <h1 class="text-3xl font-semibold text-black dark:text-white">
-        {project.data.title}
+      <h1
+        class="flex flex-wrap items-center gap-x-2 gap-y-1 text-3xl font-semibold text-black dark:text-white"
+      >
+        <span>{project.data.title}</span>
+        <EntryBadges draft={project.data.draft} />
       </h1>
       {
         (project.data.demoURL || project.data.repoURL) && (
@@ -78,13 +78,12 @@ const thumbnail = getOgThumbnailSet(project.data.ogImage, 1200);
     {
       project.data.ogImage && (
         <section class="animate mx-auto mt-4 mb-8 max-w-5xl">
-          <img
-            src={thumbnail?.src ?? project.data.ogImage}
-            srcset={thumbnail?.srcset}
+          <OgImage
+            src={project.data.ogImage}
             sizes="(min-width: 1024px) 960px, calc(100vw - 1.5rem)"
-            width="1200"
-            height="675"
-            alt=""
+            width={1200}
+            height={675}
+            fallbackWidth={1200}
             class="aspect-video w-full border border-black/10 object-cover dark:border-white/15"
           />
         </section>

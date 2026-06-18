@@ -1,22 +1,20 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import Container from "@components/Container.astro";
+import EntryBadges from "@components/EntryBadges.astro";
 import ShareButtons from "@components/ShareButtons.astro";
 import FormattedDate from "@components/FormattedDate.astro";
 import Giscus from "@components/Giscus.astro";
+import OgImage from "@components/OgImage.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
-import { sortByPinnedThenDateDesc } from "@lib/content-sort";
-import { getOgThumbnailSet } from "@lib/og-thumbnail";
+import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
-  const showDrafts = import.meta.env.DEV;
   const posts = sortByPinnedThenDateDesc(
-    (await getCollection("blog")).filter(
-      (post) => showDrafts || !post.data.draft,
-    ),
+    (await getCollection("blog")).filter(isVisibleEntry),
   );
   return posts.map((post) => ({
     params: { id: post.id },
@@ -25,11 +23,8 @@ export async function getStaticPaths() {
 }
 type Props = CollectionEntry<"blog">;
 
-const showDrafts = import.meta.env.DEV;
 const posts = sortByPinnedThenDateDesc(
-  (await getCollection("blog")).filter(
-    (post) => showDrafts || !post.data.draft,
-  ),
+  (await getCollection("blog")).filter(isVisibleEntry),
 );
 
 function getNextPost() {
@@ -48,7 +43,6 @@ const prevPost = getPrevPost();
 const post = Astro.props;
 const { Content, headings } = await render(post);
 const ogImageVersion = "20260614-og-background";
-const thumbnail = getOgThumbnailSet(post.data.ogImage, 1200);
 ---
 
 <Layout
@@ -61,16 +55,10 @@ const thumbnail = getOgThumbnailSet(post.data.ogImage, 1200);
     <section class="animate mx-auto mt-0 mb-3 max-w-5xl px-3 sm:px-10">
       <div class="space-y-2">
         <h1
-          class="text-xl font-semibold text-black sm:text-3xl dark:text-white"
+          class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xl font-semibold text-black sm:text-3xl dark:text-white"
         >
-          {post.data.title}
-          {
-            post.data.draft && (
-              <span class="ml-2 align-middle text-sm font-semibold text-red-600 dark:text-red-400">
-                (draft)
-              </span>
-            )
-          }
+          <span>{post.data.title}</span>
+          <EntryBadges draft={post.data.draft} pinned={post.data.pinned} />
         </h1>
         <div class="font-base text-sm text-black/50 dark:text-white/50">
           <FormattedDate date={post.data.date} />
@@ -80,13 +68,12 @@ const thumbnail = getOgThumbnailSet(post.data.ogImage, 1200);
     {
       post.data.ogImage && (
         <section class="animate mx-auto mt-4 mb-8 max-w-5xl px-3 sm:px-10">
-          <img
-            src={thumbnail?.src ?? post.data.ogImage}
-            srcset={thumbnail?.srcset}
+          <OgImage
+            src={post.data.ogImage}
             sizes="(min-width: 1024px) 960px, calc(100vw - 1.5rem)"
-            width="1200"
-            height="675"
-            alt=""
+            width={1200}
+            height={675}
+            fallbackWidth={1200}
             class="aspect-video w-full border border-black/10 object-cover dark:border-white/15"
           />
         </section>

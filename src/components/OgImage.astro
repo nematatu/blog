@@ -1,0 +1,45 @@
+---
+import { getOgThumbnailSet } from "@lib/thumbnails";
+
+type Props = {
+  src: string;
+  alt?: string;
+  class?: string;
+  sizes: string;
+  width: number;
+  height: number;
+  fallbackWidth?: number;
+  loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+  ariaHidden?: boolean;
+};
+
+const {
+  src,
+  alt = "",
+  class: className,
+  sizes,
+  width,
+  height,
+  fallbackWidth,
+  loading,
+  fetchpriority,
+  ariaHidden = alt.length === 0,
+} = Astro.props as Props;
+
+const thumbnail = getOgThumbnailSet(src, fallbackWidth);
+---
+
+<img
+  src={thumbnail?.src ?? src}
+  srcset={thumbnail?.srcset}
+  sizes={thumbnail ? sizes : undefined}
+  width={width}
+  height={height}
+  alt={alt}
+  class={className}
+  loading={loading}
+  decoding="async"
+  fetchpriority={fetchpriority}
+  aria-hidden={ariaHidden ? "true" : undefined}
+/>

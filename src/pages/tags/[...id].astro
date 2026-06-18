@@ -4,14 +4,11 @@ import ArrowCard from "@components/ArrowCard.astro";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import Container from "@components/Container.astro";
 import Layout from "@layouts/Layout.astro";
-import { sortByPinnedThenDateDesc } from "@lib/content-sort";
+import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
 import { tagEmoji } from "@lib/tag-emoji";
 
 export async function getStaticPaths() {
-  const posts = await getCollection(
-    "blog",
-    ({ data }) => import.meta.env.DEV || !data.draft,
-  );
+  const posts = (await getCollection("blog")).filter(isVisibleEntry);
 
   // Get unique tags
   const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))];

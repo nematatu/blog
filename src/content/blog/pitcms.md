@@ -6,6 +6,7 @@ tags:
   - 日常
 updatedAt: 2026-01-31T06:02:30.322Z
 draft: false
+ogImage: /ogp/pitcms.png
 ---
 
 # すごい

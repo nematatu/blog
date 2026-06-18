@@ -3,30 +3,19 @@ import { getCollection } from "astro:content";
 import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import { BLOG } from "@consts";
-import { sortByPinnedThenDateDesc } from "@lib/content-sort";
+import {
+  getYearsDesc,
+  groupByYear,
+  isVisibleEntry,
+  sortByPinnedThenDateDesc,
+} from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
-const showDrafts = import.meta.env.DEV;
 const entries = sortByPinnedThenDateDesc(
-  (await getCollection("blog")).filter(
-    (post) => showDrafts || !post.data.draft,
-  ),
+  (await getCollection("blog")).filter(isVisibleEntry),
 );
-
-type PostsByYear = Record<string, typeof entries>;
-const byYear: PostsByYear = {};
-
-for (const entry of entries) {
-  const year = entry.data.date.getFullYear().toString();
-  if (!byYear[year]) {
-    byYear[year] = [];
-  }
-  byYear[year].push(entry);
-}
-
-const years = Object.keys(byYear).sort(
-  (a, b) => parseInt(b, 10) - parseInt(a, 10),
-);
+const byYear = groupByYear(entries);
+const years = getYearsDesc(byYear);
 ---
 
 <Layout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>

@@ -4,6 +4,7 @@ description: "2026年日本代表予想"
 date: "2026-01-27"
 draft: false
 tags: ["バドミントン"]
+ogImage: /ogp/daihyou.png
 ---
 
 ツイートもしたんだけど、予想理由とかWDの予想も追加して書く。

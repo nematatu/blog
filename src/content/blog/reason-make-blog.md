@@ -6,6 +6,7 @@ tags:
   - 日常
 updatedAt: 2026-05-31T09:11:30.429Z
 draft: false
+ogImage: /ogp/why-made-blog.png
 ---
 
 企業に管理されるのが癪dayone-

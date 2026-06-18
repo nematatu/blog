@@ -1,18 +1,11 @@
 import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
 import { SITE } from "@consts";
-import { sortByDateDesc } from "@lib/content-sort";
+import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
 
 export async function GET(context) {
-  const showDrafts = import.meta.env.DEV;
-  const blog = (await getCollection("blog")).filter(
-    (post) => showDrafts || !post.data.draft,
-  );
-
-  const projects = (await getCollection("projects")).filter(
-    (project) => showDrafts || !project.data.draft,
-  );
-
+  const blog = (await getCollection("blog")).filter(isVisibleEntry);
+  const projects = (await getCollection("projects")).filter(isVisibleEntry);
   const items = sortByDateDesc([...blog, ...projects]);
 
   return rss({

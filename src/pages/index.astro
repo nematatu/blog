@@ -4,17 +4,16 @@ import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import SocialLinks from "@components/SocialLinks.astro";
 import { HOME, SITE, SOCIALS } from "@consts";
-import { sortByPinnedThenDateDesc } from "@lib/content-sort";
+import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
+import { getWallpaperThumbnailSet } from "@lib/thumbnails";
 import { getRandomWallpaper } from "@lib/wallpaper";
 import Layout from "@layouts/Layout.astro";
 
-const showDrafts = import.meta.env.DEV;
 const entries = sortByPinnedThenDateDesc(
-  (await getCollection("blog")).filter(
-    (post) => showDrafts || !post.data.draft,
-  ),
+  (await getCollection("blog")).filter(isVisibleEntry),
 );
 const wallpaper = getRandomWallpaper();
+const wallpaperThumbnail = getWallpaperThumbnailSet(wallpaper);
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION} image="/ogp.png">
@@ -22,7 +21,11 @@ const wallpaper = getRandomWallpaper();
     <div class="space-y-6 sm:space-y-12">
       <div class="rounded-xl">
         <img
-          src={wallpaper}
+          src={wallpaperThumbnail?.src ?? wallpaper}
+          srcset={wallpaperThumbnail?.srcset}
+          sizes="(min-width: 1024px) 1024px, calc(100vw - 2rem)"
+          width="1200"
+          height="600"
           alt=""
           class="mx-auto aspect-[4/1] w-full object-cover sm:aspect-[2/1]"
           loading="eager"
