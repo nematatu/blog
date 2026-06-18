@@ -1,5 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
+import BlogPostList from "@components/BlogPostList.astro";
 import Container from "@components/Container.astro";
 import EntryBadges from "@components/EntryBadges.astro";
 import ShareButtons from "@components/ShareButtons.astro";
@@ -84,6 +85,11 @@ const ogImageVersion = "20260614-og-background";
       )
     }
     <div class="relative">
+      <aside
+        class="hidden 2xl:fixed 2xl:top-28 2xl:left-[calc(50%-48rem)] 2xl:block 2xl:max-h-[calc(100vh-8rem)] 2xl:w-64 2xl:overflow-y-auto 2xl:pr-4"
+      >
+        <BlogPostList currentId={post.id} posts={posts} />
+      </aside>
       {
         headings.length > 0 && (
           <aside class="mx-auto mb-4 max-w-5xl px-3 sm:mb-8 sm:px-10 2xl:fixed 2xl:top-28 2xl:left-[calc(50%+34rem)] 2xl:mb-0 2xl:w-56 2xl:max-w-none 2xl:px-0">
