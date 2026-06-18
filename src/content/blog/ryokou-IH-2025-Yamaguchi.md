@@ -8,6 +8,13 @@ ogImage: /ogp/interhigh-2025.png
 pinned: true
 ---
 
+## 何枚か
+
+![](https://assets.blog.amatatu.com/paste-images/20260619011432.avif)
+![](https://assets.blog.amatatu.com/paste-images/IMG_9247.JPG)
+![](https://assets.blog.amatatu.com/paste-images/IMG_9248.JPG)
+![](https://assets.blog.amatatu.com/paste-images/IMG_9249.JPG)
+
 2025年
 
 福岡、山口はNikon D5300の50mm F1.8
