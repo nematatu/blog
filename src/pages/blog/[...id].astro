@@ -6,6 +6,7 @@ import ShareButtons from "@components/ShareButtons.astro";
 import FormattedDate from "@components/FormattedDate.astro";
 import Giscus from "@components/Giscus.astro";
 import OgImage from "@components/OgImage.astro";
+import PinnedIndicator from "@components/PinnedIndicator.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { SITE } from "@consts";
@@ -58,9 +59,12 @@ const ogImageVersion = "20260614-og-background";
           class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xl font-semibold text-black sm:text-3xl dark:text-white"
         >
           <span>{post.data.title}</span>
-          <EntryBadges draft={post.data.draft} pinned={post.data.pinned} />
+          <EntryBadges draft={post.data.draft} />
         </h1>
-        <div class="font-base text-sm text-black/50 dark:text-white/50">
+        <div
+          class="font-base flex items-center gap-2 text-sm text-black/50 dark:text-white/50"
+        >
+          {post.data.pinned && <PinnedIndicator />}
           <FormattedDate date={post.data.date} />
         </div>
       </div>

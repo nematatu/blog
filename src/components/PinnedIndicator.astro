@@ -1,0 +1,19 @@
+---
+type Props = {
+  class?: string;
+};
+
+const { class: className = "" } = Astro.props as Props;
+---
+
+<span
+  class:list={[
+    "inline-flex items-center text-black/45 dark:text-white/45",
+    className,
+  ]}
+  aria-label="固定記事"
+  title="固定記事"
+>
+  <iconify-icon icon="lucide:pin" class="text-sm" aria-hidden="true"
+  ></iconify-icon>
+</span>
