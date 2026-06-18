@@ -55,6 +55,7 @@
   html {
     overflow-y: auto;
     color-scheme: light;
+    scroll-behavior: smooth;
     scroll-padding-top: 100px;
   }
 
@@ -96,7 +97,9 @@
     color: var(--foreground);
     font-size: 1.0625rem;
     text-autospace: normal;
+    line-break: strict;
     overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   article > :first-child {
@@ -179,6 +182,12 @@ html #back-to-top {
 
 html.scrolled #back-to-top {
   @apply pointer-events-auto opacity-100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* shiki config */
@@ -422,6 +431,13 @@ article p,
 article li,
 article blockquote {
   line-height: 1.7 !important;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+article :where(a, code, kbd, samp) {
+  line-break: auto;
 }
 
 article p {
