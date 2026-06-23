@@ -58,10 +58,10 @@ pnpm check
 ## 記事の作成
 
 ```sh
-pnpm post:new
+pnpm new:post
 ```
 
-対話形式で `src/content/blog` に新しい記事ファイルを作成します。slug は英数字とハイフンのみ利用できます。
+対話形式でカテゴリを選び、`src/content/blog/<category>` に新しい記事ファイルを作成します。カテゴリは `develop`、`badminton`、`hobby` のいずれかです。slug は英数字とハイフンのみ利用できます。
 
 ## ディレクトリ構成
 
@@ -69,7 +69,7 @@ pnpm post:new
 src/
   components/        UIコンポーネント
   content/
-    blog/            ブログ記事
+    blog/            ブログ記事（develop / badminton / hobby）
     projects/        プロジェクト記事
   layouts/           Astroレイアウト
   lib/               ユーティリティとMarkdown拡張
@@ -81,7 +81,7 @@ scripts/             補助スクリプト
 
 ## コンテンツ
 
-ブログ記事は `src/content/blog`、プロジェクト記事は `src/content/projects` に配置します。frontmatter は `src/content.config.ts` のスキーマに従います。
+ブログ記事は内容に合う `src/content/blog/<category>`、プロジェクト記事は `src/content/projects` に配置します。ブログのカテゴリは配置先ディレクトリから決まります。frontmatter は `src/content.config.ts` のスキーマに従います。
 
 ### ブログ記事
 

@@ -9,6 +9,7 @@
     "thumbs": "node scripts/generate-thumbnails.mjs",
     "preview": "astro preview",
     "astro": "astro",
+    "new:post": "node scripts/create-post.mjs",
     "post:new": "node scripts/create-post.mjs",
     "format": "prettier --write \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\"",
     "check": "prettier --check \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\""
