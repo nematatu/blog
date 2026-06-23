@@ -149,10 +149,10 @@
 
 @layer utilities {
   article a {
-    @apply font-sans text-blue-600 underline decoration-blue-600 underline-offset-[3px] dark:text-blue-300 dark:decoration-blue-300;
+    @apply font-sans text-blue-800 underline decoration-blue-700 underline-offset-[3px] dark:text-blue-400 dark:decoration-blue-400;
   }
   article a:hover {
-    @apply text-blue-700 decoration-blue-700 dark:text-blue-200 dark:decoration-blue-200;
+    @apply text-blue-900 decoration-blue-800 dark:text-blue-300 dark:decoration-blue-300;
   }
 
   article .data-footnote-backref {
@@ -160,7 +160,7 @@
   }
 
   article .data-footnote-backref:hover {
-    @apply text-blue-700 dark:text-blue-200;
+    @apply text-blue-900 dark:text-blue-300;
   }
 }
 
