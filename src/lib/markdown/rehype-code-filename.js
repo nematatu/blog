@@ -13,12 +13,19 @@ function extractCodeFilenames(source) {
     if (!fenceMatch) continue;
 
     const marker = fenceMatch[1][0];
+    const length = fenceMatch[1].length;
     if (fence) {
-      if (marker === fence) fence = null;
+      if (
+        marker === fence.marker &&
+        length >= fence.length &&
+        fenceMatch[2].trim() === ""
+      ) {
+        fence = null;
+      }
       continue;
     }
 
-    fence = marker;
+    fence = { marker, length };
     const info = fenceMatch[2].trim().split(/\s+/)[0] || "";
     const filenameMatch = info.match(/^[A-Za-z][\w-]*:(.+)$/);
     filenames.push(filenameMatch?.[1] ?? null);

@@ -103,7 +103,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         target.innerHTML = copyIcon(true);
         setTimeout(() => (target.innerHTML = copyIcon(false)), 2000);
       }
-      if (target.matches("article img")) openLightbox(target);
+      if (target.matches("article img:not(.fuki__icon)")) openLightbox(target);
     });
 
     for (const codeBlock of document.querySelectorAll("pre")) {
@@ -128,7 +128,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       wrapper.append(codeBlock);
     }
 
-    for (const image of document.querySelectorAll("article img")) {
+    for (const image of document.querySelectorAll(
+      "article img:not(.fuki__icon)",
+    )) {
       image.tabIndex = 0;
       image.role = "button";
     }

@@ -37,7 +37,7 @@
     border-color: var(--color-gray-200, currentColor);
   }
 
-  *,
+  *:not(.fuki__content):not(.fuki__icon),
   ::after,
   ::before {
     /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
@@ -425,6 +425,108 @@ pre code {
   .github-card__meta {
     @apply block text-sm text-black/60 dark:text-white/60;
   }
+}
+
+.fuki {
+  --fuki-background: #64748b;
+  position: relative;
+  max-width: calc(100% - 3.75rem);
+  color: #fff;
+}
+
+.fuki__content {
+  border-radius: 0.5rem !important;
+  background-color: var(--fuki-background);
+}
+
+.fuki--inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.fuki--inline > .fuki__content {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45em 0.7em;
+  line-height: 1;
+}
+
+.fuki--block {
+  display: flow-root;
+  margin-block: 1.25rem;
+}
+
+.fuki--block > .fuki__content {
+  display: flow-root;
+  padding: 0.65rem 0.9rem;
+}
+
+.fuki--block > .fuki__content > :first-child {
+  margin-top: 0 !important;
+}
+
+.fuki--block > .fuki__content > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.fuki--emphasis {
+  --fuki-background: #dc2626;
+}
+
+.fuki--left {
+  margin-right: 0.75rem;
+  margin-left: 3rem;
+}
+
+.fuki--right {
+  margin-right: 3rem;
+  margin-left: 0.75rem;
+}
+
+article .fuki__icon {
+  position: absolute;
+  top: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  border-radius: 0.25rem !important;
+  cursor: default;
+  object-fit: cover;
+}
+
+.fuki--left > .fuki__icon {
+  right: calc(100% + 1.25rem);
+}
+
+.fuki--right > .fuki__icon {
+  left: calc(100% + 1.25rem);
+}
+
+.fuki__content::before,
+.fuki__content::after {
+  position: absolute;
+  top: 0.7em;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  content: "";
+}
+
+.fuki--left > .fuki__content::before {
+  right: 100%;
+  border-width: 0 0.7em 0.7em 0;
+  border-color: transparent var(--fuki-background) transparent transparent;
+}
+
+.fuki--right > .fuki__content::after {
+  left: 100%;
+  border-width: 0.7em 0.7em 0 0;
+  border-color: var(--fuki-background) transparent transparent transparent;
+}
+
+article .fuki a {
+  color: #dbeafe;
+  text-decoration-color: #bfdbfe;
 }
 
 article p,

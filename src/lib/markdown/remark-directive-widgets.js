@@ -90,6 +90,52 @@ function transformGithub(node) {
   delete node.data;
 }
 
+function transformFuki(node) {
+  const side = node.name === "fuki-right" ? "right" : "left";
+  const isInline = node.type === "textDirective";
+  const icon =
+    typeof node.attributes?.icon === "string" && node.attributes.icon.trim()
+      ? node.attributes.icon
+      : "/icon/icon.svg";
+  const iconNode = {
+    type: "image",
+    url: icon,
+    alt: "",
+    data: {
+      hProperties: { className: ["fuki__icon"] },
+    },
+  };
+  const contentNode = {
+    type: "containerDirective",
+    name: "fukiContent",
+    children: node.children,
+    data: {
+      hName: isInline ? "span" : "div",
+      hProperties: { className: ["fuki__content"] },
+    },
+  };
+
+  if (side === "right") {
+    node.children = [contentNode, iconNode];
+  } else {
+    node.children = [iconNode, contentNode];
+  }
+
+  const className = [
+    "fuki",
+    `fuki--${side}`,
+    isInline ? "fuki--inline" : "fuki--block",
+  ];
+  if (node.attributes?.tone === "emphasis") {
+    className.push("fuki--emphasis");
+  }
+
+  node.data = {
+    hName: isInline ? "span" : "div",
+    hProperties: { className },
+  };
+}
+
 export default function remarkDirectiveWidgets() {
   return (tree) => {
     visit(tree, (node) => {
@@ -106,6 +152,14 @@ export default function remarkDirectiveWidgets() {
         node.name === "github"
       ) {
         transformGithub(node);
+        return;
+      }
+
+      if (
+        (node.type === "containerDirective" || node.type === "textDirective") &&
+        (node.name === "fuki" || node.name === "fuki-right")
+      ) {
+        transformFuki(node);
       }
     });
   };

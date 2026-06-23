@@ -110,6 +110,34 @@ ogImage: "https://example.com/image.png"
 ---
 ```
 
+### 吹き出し
+
+インラインの吹き出しは `fuki` ディレクティブで記述します。`fuki` は左向き、
+`fuki-right` は右向きです。赤い吹き出しは `tone="emphasis"` を指定します。
+
+```markdown
+:fuki[左の吹き出し]
+
+:fuki-right[右の吹き出し]
+
+:fuki[赤い吹き出し]{tone="emphasis"}
+
+:fuki[別のアイコン]{icon="/画像のパス.png"}
+```
+
+アイコンは既定で `/icon/icon.svg` を表示します。`icon` には `public` からの
+絶対パスまたは画像URLを指定できます。
+
+複数段落を含む場合はコンテナ形式を使います。
+
+```markdown
+:::fuki
+見た目は面白い。
+
+文章や[リンク](https://example.com)を含められます。
+:::
+```
+
 ## ライセンス
 
 このリポジトリには `LICENSE` が含まれています。
