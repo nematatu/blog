@@ -17,9 +17,11 @@ tags: ["趣味"]
 
 ### プレゼン発表の目的は
 
-~~賢さをアピールする場~~
+:::warning
+❌️ ~~賢さをアピールする場~~
 
 ⭕️ <mark>紹介して理解してもらい、学んでもらう</mark>
+:::
 
 - 文字より図
 - 端っこの人もわかるように
@@ -103,3 +105,19 @@ JP の英数字は読みにくいから(gとか1とか)、`font-family: "Noto Sa
 これ良いわ〜
 「お、大事なんだな！読も！」ってなる
 ![](https://b55858b0d5c41b055859b1e758ddf3a2.r2.cloudflarestorage.com/blog-images/paste-images/20260624040316.avif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=068034e59fa6e75d0f3f5e66181df5e6%2F20260623%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260623T190321Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=9d8add8dcb1b2049a77612a01598ee062555f6f8a700e2f172e309e17cb8cf2a)
+
+横線
+
+258D
+
+https://ppt.design4u.jp/symbol/
+
+色反転でアイキャッチは挟むやつとか
+
+https://ppt.design4u.jp/storytelling-with-arranged-layouts/
+
+マジわかりやすい
+
+数値は右揃えとか、長文は両端揃えが良いとか
+
+https://ppt.design4u.jp/alignment/
