@@ -10,6 +10,7 @@ ogImage: /ogp/codex-v0140.png
 [GitHubのリリースノート](https://github.com/openai/codex/releases/tag/rust-v0.140.0)
 
 いつも通りCodexを使おうとしたらminorバージョン[^1]が上がってたので内容見てみた
+
 [^1]: https://semver.org/
 
 と思ったけど、Codexってマイナーバージョン上がった時だけリリースしてるのか

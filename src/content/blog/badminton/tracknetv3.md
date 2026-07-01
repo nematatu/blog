@@ -10,6 +10,7 @@ tags: ["バドミントン", "開発", "趣味"]
 高速に移動する小型物体を追跡する深層学習モデル
 
 https://youtu.be/NHsgkH7DG4k?si=2xhqWZO99-77QXrp
+
 [^1]: ::github{repo="Chang-Chia-Chi/TrackNet-Badminton-Tracking-tensorflow2"}
 
 ↑ こんなことができる！！ [^1]
@@ -172,7 +173,9 @@ M1 MacBook Airでも動くように`MPS`に書き換える。
 - 推論の高速化 \* 結構時間かかるし、エポック数小さくしないと厳しい
 :::note
 <video controls preload="metadata" style="width: 50%;">
-  <source src="https://assets.blog.amatatu.com/videos/%E5%89%A3%E5%85%88%E8%A6%96%E8%A6%9A%E5%8C%96%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%20rDamnthatsinteresting.mp4" type="video/mp4">
+
+<source src="https://assets.blog.amatatu.com/videos/%E5%89%A3%E5%85%88%E8%A6%96%E8%A6%9A%E5%8C%96%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%20rDamnthatsinteresting.mp4" type="video/mp4">
+
 </video>
 
 出典: [剣先視覚化システム : r/Damnthatsinteresting](https://www.reddit.com/r/Damnthatsinteresting/comments/1spqkk3/sword_tip_visualisation_system/?tl=ja)

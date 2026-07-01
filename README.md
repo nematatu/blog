@@ -63,6 +63,14 @@ pnpm new:post
 
 対話形式でカテゴリを選び、`src/content/blog/<category>` に新しい記事ファイルを作成します。カテゴリは `develop`、`badminton`、`hobby` のいずれかです。slug は英数字とハイフンのみ利用できます。
 
+## 下書き記事の確認
+
+```sh
+pnpm draft:list
+```
+
+`src/content/blog` 配下から `draft: true` の記事を一覧表示します。
+
 ## ディレクトリ構成
 
 ```txt

@@ -61,7 +61,7 @@ draft: false
 - [ ] 茜ちゃんのポスター作成
 - [ ] 撮ってきた写真
 - [ ] 莉々菜のポスター画像
-- [ ] LINE SEED
+- [x] LINE SEED
 - [ ] 自分の手書きフォントを作る
   - [ ] Unicode順に書いていく
 
@@ -75,6 +75,10 @@ draft: false
 - [ ] 研究室のプリンター使いたい
 - [ ] 研究室の監視カメラ使いたい
 - [ ] 研究室のNAS使いたい
-- [ ] WSLのセットアップ、環境構築、dotfiles、キーマップ
+- [x] WSLのセットアップ、環境構築、dotfiles
+  - [ ] キーマップ
 
 - [ ] macの写真を外部HDDに移動
+
+- [x] stowでdotfiles管理
+- [x] 大学WSLにdotfiles展開
