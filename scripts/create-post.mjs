@@ -1,6 +1,7 @@
-import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import translate from "google-translate-api-x";
 import inquirer from "inquirer";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,50 @@ function sanitizeSlug(raw) {
   return trimmed;
 }
 
+function slugifyEnglishText(text) {
+  const normalized = text
+    .normalize("NFKD")
+    .toLowerCase()
+    .replaceAll("&", " and ")
+    .replaceAll(/['’]/g, "")
+    .replaceAll(/[^a-z0-9]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "")
+    .replaceAll(/-{2,}/g, "-");
+
+  if (normalized) return normalized;
+  return "";
+}
+
+function includesJapanese(text) {
+  return /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(text);
+}
+
+async function translateTitleToEnglish(title) {
+  const result = await translate(title, {
+    from: "ja",
+    to: "en",
+    client: "gtx",
+    autoCorrect: true,
+  });
+  return result.text;
+}
+
+async function generateSlugFromTitle(title) {
+  if (!includesJapanese(title)) {
+    return slugifyEnglishText(title);
+  }
+
+  try {
+    const translatedTitle = await translateTitleToEnglish(title);
+    return slugifyEnglishText(translatedTitle);
+  } catch (error) {
+    console.warn(
+      `slug自動生成に失敗しました。手入力してください: ${error.message}`,
+    );
+    return "";
+  }
+}
+
 async function listMarkdownFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
@@ -52,90 +97,8 @@ async function listMarkdownFiles(dir) {
   return files;
 }
 
-function stripQuotes(value) {
-  return value.replace(/^['"]|['"]$/g, "").trim();
-}
-
-function parseTagsFromFrontmatter(contents) {
-  const lines = contents.split(/\r?\n/);
-  const tags = [];
-  let inFrontmatter = false;
-  let listMode = false;
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!inFrontmatter) {
-      if (trimmed === "---") {
-        inFrontmatter = true;
-        continue;
-      }
-      break;
-    }
-    if (trimmed === "---") break;
-    if (listMode) {
-      if (trimmed.startsWith("-")) {
-        const value = stripQuotes(trimmed.slice(1).trim());
-        if (value) tags.push(value);
-        continue;
-      }
-      if (trimmed !== "") listMode = false;
-    }
-    const match = trimmed.match(/^tags:\s*(.*)$/);
-    if (!match) continue;
-    const rest = match[1].trim();
-    if (rest.startsWith("[")) {
-      const inner = rest.replace(/^\[/, "").replace(/\]$/, "");
-      inner
-        .split(",")
-        .map((item) => stripQuotes(item.trim()))
-        .filter(Boolean)
-        .forEach((tag) => {
-          tags.push(tag);
-        });
-    } else if (rest) {
-      tags.push(stripQuotes(rest));
-    } else {
-      listMode = true;
-    }
-  }
-  return tags;
-}
-
-async function getExistingTags() {
-  const files = await listMarkdownFiles(postsDir);
-  const tagSet = new Set();
-  for (const file of files) {
-    const content = await readFile(file, "utf8");
-    parseTagsFromFrontmatter(content).forEach((tag) => {
-      tagSet.add(tag);
-    });
-  }
-  return Array.from(tagSet).sort((a, b) => a.localeCompare(b, "ja"));
-}
-
-function mergeTags(selectedTags, extraTags) {
-  const seen = new Set();
-  const merged = [];
-  const add = (tag) => {
-    const trimmed = tag.trim();
-    if (!trimmed) return;
-    const key = trimmed.toLowerCase();
-    if (seen.has(key)) return;
-    seen.add(key);
-    merged.push(trimmed);
-  };
-  selectedTags.forEach(add);
-  extraTags.forEach(add);
-  return merged;
-}
-
-async function promptForPost(existingTags) {
-  const {
-    category,
-    slug: rawSlug,
-    title,
-    description,
-    ogImage,
-  } = await inquirer.prompt([
+async function promptForPost() {
+  const { category, title } = await inquirer.prompt([
     {
       type: "select",
       name: "category",
@@ -144,72 +107,38 @@ async function promptForPost(existingTags) {
     },
     {
       type: "input",
+      name: "title",
+      message: "title (required)",
+      validate: (value) => (value.trim() ? true : "titleは必須です。"),
+    },
+  ]);
+
+  const generatedSlug = await generateSlugFromTitle(title.trim());
+  if (!generatedSlug) {
+    console.warn(
+      "日本語タイトルから英語slugを自動生成できませんでした。手入力してください。",
+    );
+  }
+
+  const { slug: rawSlug } = await inquirer.prompt([
+    {
+      type: "input",
       name: "slug",
       message: "slug (required)",
+      default: generatedSlug,
       filter: (value) => value.trim().replaceAll(" ", "-"),
       validate: (value) =>
         sanitizeSlug(value)
           ? true
           : "slugが不正です。英数字とハイフンのみで指定してください。",
     },
-    {
-      type: "input",
-      name: "title",
-      message: "title (required)",
-      validate: (value) => (value.trim() ? true : "titleは必須です。"),
-    },
-    {
-      type: "input",
-      name: "description",
-      message: "description (optional)",
-      default: "",
-    },
-    {
-      type: "input",
-      name: "ogImage",
-      message: "ogImage（任意・URL）",
-      default: "",
-    },
   ]);
-
-  let selectedTags = [];
-  if (existingTags.length > 0) {
-    const result = await inquirer.prompt([
-      {
-        type: "checkbox",
-        name: "tags",
-        message: "tags（既存タグから選択）",
-        choices: existingTags,
-        pageSize: Math.min(12, existingTags.length),
-        theme: {
-          keybindings: ["vim"],
-        },
-      },
-    ]);
-    selectedTags = result.tags;
-  }
-
-  const { extraTags: extraTagsRaw } = await inquirer.prompt([
-    {
-      type: "input",
-      name: "extraTags",
-      message: "tags追加（任意・カンマ区切り）",
-      default: "",
-    },
-  ]);
-
-  const extraTags = extraTagsRaw
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
 
   return {
     category,
     slug: sanitizeSlug(rawSlug),
     title: title.trim(),
-    description: description.trim(),
-    ogImage: ogImage.trim(),
-    tags: mergeTags(selectedTags, extraTags),
+    tags: [],
   };
 }
 
@@ -232,9 +161,7 @@ async function findExistingPost(slug) {
 }
 
 async function main() {
-  const existingTags = await getExistingTags();
-  const { category, slug, title, description, ogImage, tags } =
-    await promptForPost(existingTags);
+  const { category, slug, title, tags } = await promptForPost();
   const publishDate = formatDateTime();
 
   const categoryDir = path.join(postsDir, category);
@@ -251,12 +178,9 @@ async function main() {
   const lines = [
     "---",
     `title: "${title}"`,
-    ...(description ? [`description: "${description}"`] : []),
     `date: "${publishDate}"`,
     "draft: true",
   ];
-
-  if (ogImage) lines.push(`ogImage: "${ogImage}"`);
 
   if (tags.length > 0) {
     const tagList = tags.map((tag) => `"${tag}"`).join(", ");

@@ -38,6 +38,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      google-translate-api-x:
+        specifier: ^10.7.3
+        version: 10.7.3
       remark-directive:
         specifier: ^4.0.0
         version: 4.0.0
@@ -66,6 +69,9 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
     devDependencies:
+      '@esbuild/darwin-arm64':
+        specifier: 0.28.1
+        version: 0.28.1
       '@tailwindcss/typography':
         specifier: ^0.5.20
         version: 0.5.20(tailwindcss@4.3.2)
@@ -228,6 +234,12 @@ packages:
 
   '@esbuild/darwin-arm64@0.27.7':
     resolution: {integrity: sha512-5lckdqeuBPlKUwvoCXIgI2D9/ABmPq3Rdp7IfL70393YgaASt7tbju3Ac+ePVi3KDH6N2RqePfHnXkaDtY9fkw==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@esbuild/darwin-arm64@0.28.1':
+    resolution: {integrity: sha512-TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX/RTq/WJEk3QyRr0wZpNhBDX+/0CtdqUIJlOiodQcta6tY3Q==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [darwin]
@@ -1578,6 +1590,10 @@ packages:
   google-logging-utils@0.0.2:
     resolution: {integrity: sha512-NEgUnEcBiP5HrPzufUkBzJOD/Sxsco3rLNo1F1TNf7ieU8ryUzBhqba8r756CjLX7rn3fHl6iLEwPYuqpoKgQQ==}
     engines: {node: '>=14'}
+
+  google-translate-api-x@10.7.3:
+    resolution: {integrity: sha512-UCLhGMyzUiQQJuUjw6KM4scl4WJjMq5kYbq3eqLHB0KB96XBQ+VV7L/NUpJ9eMfVxXswXxA6xWhAX1h1OdDLZg==}
+    engines: {node: '>=21.0.0'}
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -3060,6 +3076,8 @@ snapshots:
   '@esbuild/darwin-arm64@0.27.7':
     optional: true
 
+  '@esbuild/darwin-arm64@0.28.1': {}
+
   '@esbuild/darwin-x64@0.27.7':
     optional: true
 
@@ -4137,7 +4155,9 @@ snapshots:
       '@esbuild/win32-ia32': 0.27.7
       '@esbuild/win32-x64': 0.27.7
 
-  esbuild@0.28.1: {}
+  esbuild@0.28.1:
+    optionalDependencies:
+      '@esbuild/darwin-arm64': 0.28.1
 
   escalade@3.2.0: {}
 
@@ -4281,6 +4301,8 @@ snapshots:
       - supports-color
 
   google-logging-utils@0.0.2: {}
+
+  google-translate-api-x@10.7.3: {}
 
   graceful-fs@4.2.11: {}
 

@@ -23,6 +23,7 @@
     "astro-pagefind": "^1.8.6",
     "budoux": "^0.8.4",
     "clsx": "^2.1.1",
+    "google-translate-api-x": "^10.7.3",
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "satori": "^0.26.0",
@@ -34,6 +35,7 @@
     "yakuhanjp": "^4.1.1"
   },
   "devDependencies": {
+    "@esbuild/darwin-arm64": "0.28.1",
     "@tailwindcss/typography": "^0.5.20",
     "husky": "^9.1.7",
     "inquirer": "^13.4.3",

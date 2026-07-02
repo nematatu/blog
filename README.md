@@ -61,7 +61,7 @@ pnpm check
 pnpm new:post
 ```
 
-対話形式でカテゴリを選び、`src/content/blog/<category>` に新しい記事ファイルを作成します。カテゴリは `develop`、`badminton`、`hobby` のいずれかです。slug は英数字とハイフンのみ利用できます。
+対話形式でカテゴリとタイトルを選び、`src/content/blog/<category>` に新しい記事ファイルを作成します。カテゴリは `develop`、`badminton`、`hobby` のいずれかです。日本語タイトルは OSS ライブラリで英訳され、意味に沿った英語 slug が自動提案されます。slug は必要に応じて編集でき、英数字とハイフンのみ利用できます。
 
 ## 下書き記事の確認
 
