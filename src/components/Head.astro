@@ -90,6 +90,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   const copyIcon = (copied) =>
     `<iconify-icon icon="lucide:${copied ? "check" : "copy"}" aria-hidden="true"></iconify-icon>`;
 
+  const copyText = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.top = "0";
+      textarea.style.left = "-9999px";
+      document.body.append(textarea);
+      textarea.select();
+      const copied = document.execCommand("copy");
+      textarea.remove();
+      return copied;
+    }
+  };
+
   addEventListener("DOMContentLoaded", () => {
     setTheme(localStorage.theme);
     root.classList.toggle("scrolled", scrollY > 0);
@@ -113,8 +132,27 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         target.innerHTML = copyIcon(true);
         setTimeout(() => (target.innerHTML = copyIcon(false)), 2000);
       }
+      if (target.dataset.copyHeading) {
+        const heading = target.closest("[id]");
+        const url = new URL(location.href);
+        url.hash = heading.id;
+        await copyText(url.toString());
+      }
       if (target.matches("article img:not(.fuki__icon)")) openLightbox(target);
     });
+
+    for (const heading of document.querySelectorAll(
+      "article :is(h2, h3, h4, h5, h6)[id]",
+    )) {
+      const button = document.createElement("button");
+      button.className = "copy-heading-link";
+      button.type = "button";
+      button.dataset.copyHeading = "true";
+      button.textContent = "#".repeat(Number(heading.tagName.slice(1)));
+      button.title = "Copy link to this heading";
+      button.setAttribute("aria-label", "Copy link to this heading");
+      heading.prepend(button);
+    }
 
     for (const codeBlock of document.querySelectorAll("pre")) {
       const button = document.createElement("button");

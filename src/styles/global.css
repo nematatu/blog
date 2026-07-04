@@ -149,6 +149,21 @@
     background-color: #1e293b;
     color: #d6e3ed;
   }
+
+  article :where(h2, h3, h4, h5, h6)[id] {
+    @apply relative;
+  }
+
+  .copy-heading-link {
+    @apply mr-1 inline cursor-pointer leading-none whitespace-nowrap text-[inherit] text-black/15 dark:text-white/15;
+    font-family: inherit;
+    font-weight: 400;
+  }
+
+  .copy-heading-link:hover,
+  .copy-heading-link:focus-visible {
+    @apply text-black/45 outline-none dark:text-white/55;
+  }
 }
 
 @layer utilities {
