@@ -3,6 +3,7 @@ title: "Rust製リモートデスクトップアプリ Rust Desk"
 date: "2026-07-04T18:24:14+09:00"
 draft: false
 tags: []
+ogImage: /ogp/rustdesk.png
 ---
 
 <h2 class="text-center bg-yellow-300 text-gray-700 py-5 leading-loose"><span class="p-2 bg-gray-800 text-gray-200">Win11 Home</span> はリモートデスクトップが出来ない !</h2>
