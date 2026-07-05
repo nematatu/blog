@@ -443,19 +443,71 @@ pre code * {
   }
 
   .github-card {
-    @apply my-6 border border-black/15 bg-white/70 px-4 py-3 dark:border-white/20 dark:bg-neutral-900/70;
+    @apply max-w-[85%] py-8;
   }
 
-  .github-card a {
-    @apply block no-underline;
+  .github-card__link {
+    @apply flex min-h-[160px] items-stretch gap-0 overflow-hidden border border-black/15 bg-white no-underline dark:border-white/20 dark:bg-neutral-900;
+    @apply text-black/80 transition-[border-color,box-shadow] duration-150 dark:text-white/80;
   }
 
-  .github-card__label {
-    @apply block font-semibold text-black dark:text-white;
+  article .github-card__link {
+    @apply no-underline;
+  }
+
+  article .github-card__link,
+  article .github-card__link * {
+    text-decoration: none !important;
+  }
+
+  .github-card__link:hover,
+  .github-card__link:focus-visible {
+    @apply border-blue-700/60 text-black outline-none dark:border-blue-400/70 dark:text-white;
+    box-shadow: 0 4px 12px rgb(37 99 235 / 12%);
+  }
+
+  .github-card__body {
+    @apply flex min-w-0 flex-1 flex-col justify-between gap-0 px-8 py-5;
+  }
+
+  .github-card__title {
+    @apply line-clamp-2 font-sans text-base leading-snug font-semibold text-black dark:text-white;
+  }
+
+  .github-card__desc {
+    @apply line-clamp-3 text-sm leading-snug text-black/60 dark:text-white/60;
   }
 
   .github-card__meta {
-    @apply block text-sm text-black/60 dark:text-white/60;
+    @apply flex items-center justify-end text-xs text-black/45 dark:text-white/45;
+  }
+
+  .github-card__favicon {
+    @apply inline-flex size-4 shrink-0 items-center justify-center text-black/55 dark:text-white/55;
+  }
+
+  .github-card__thumb {
+    @apply flex w-80 max-w-[58%] shrink-0 items-center justify-center overflow-hidden bg-neutral-100 dark:bg-neutral-800;
+  }
+
+  .github-card__thumb img {
+    @apply block;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    margin: 0 !important;
+    cursor: inherit !important;
+    object-fit: cover !important;
+  }
+
+  @media (max-width: 840px) {
+    .github-card {
+      @apply max-w-full;
+    }
+
+    .github-card__thumb {
+      @apply w-56 max-w-[54%];
+    }
   }
 }
 

@@ -6,7 +6,7 @@ import { SITE } from "@consts";
 
 <header>
   <Container>
-    <div class="flex flex-wrap justify-between gap-y-2">
+    <div class="relative flex flex-wrap justify-between gap-y-2 pr-28">
       <Link href="/" underline={false}>
         <div class="flex items-center gap-2 font-semibold">
           <img src="/icon/icon.svg" alt="" class="size-6" aria-hidden="true" />
@@ -46,6 +46,32 @@ import { SITE } from "@consts";
           &nbsp;Search
         </button>
       </nav>
+      <div class="absolute top-0 right-0 flex items-center gap-1">
+        <button
+          data-theme-button="light"
+          aria-label="Light theme"
+          class="inline-flex size-7 items-center justify-center border border-black/15 text-black/60 hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:text-white/60 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+        >
+          <iconify-icon icon="lucide:sun" class="text-sm" aria-hidden="true"
+          ></iconify-icon>
+        </button>
+        <button
+          data-theme-button="dark"
+          aria-label="Dark theme"
+          class="inline-flex size-7 items-center justify-center border border-black/15 text-black/60 hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:text-white/60 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+        >
+          <iconify-icon icon="lucide:moon" class="text-sm" aria-hidden="true"
+          ></iconify-icon>
+        </button>
+        <button
+          data-theme-button="system"
+          aria-label="System theme"
+          class="inline-flex size-7 items-center justify-center border border-black/15 text-black/60 hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:text-white/60 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+        >
+          <iconify-icon icon="lucide:monitor" class="text-sm" aria-hidden="true"
+          ></iconify-icon>
+        </button>
+      </div>
     </div>
   </Container>
 </header>
