@@ -10,6 +10,12 @@ ogImage: /ogp/md-to-pdf.png
 
 (Markdown Webエディタ→PDF出力 を無料で出来るSaas全然なくね？...)
 
+:::note
+[Saasあった！](https://markdownlivepreview.dev/tools/markdown-to-pdf)
+
+2026.7.7追記
+:::
+
 ## 選択肢
 
 `md-to-pdf`と`pandoc`

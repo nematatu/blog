@@ -121,3 +121,10 @@ https://ppt.design4u.jp/storytelling-with-arranged-layouts/
 数値は右揃えとか、長文は両端揃えが良いとか
 
 https://ppt.design4u.jp/alignment/
+
+## スライドマスター
+
+macってGUIから、フォントの一括カスタマイズ出来ないらしい
+
+この記事を参考に、日本語は「メイリオ」、英数字は「Segoe UI」を使うカスタムフォント設定を作った。
+[Macのパワポのユーザー定義フォント にメイリオとSegoe UIを設定する - print(knowledge)](https://kabik.hatenablog.com/entry/2018/11/23/174626)
