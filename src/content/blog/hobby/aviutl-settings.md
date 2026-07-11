@@ -76,3 +76,12 @@ Aviutl 1.10
 これやらんと、エンコード時にメモリ不足で落ちる
 
 [Flapperさんの記事](https://seguimiii.com/aviutl-tech/inputpipeplugin)
+
+## `.mov`ファイルを読み込む
+
+L-SMASH Worksの`exxdit.ini`に以下を書き込む
+
+```text
+.mov=動画ファイル
+.mov=音声ファイル
+```
