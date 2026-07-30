@@ -130,3 +130,5 @@ draft: false
   - いいね [ヨネックス 株式会社 バドミントン・モーションキャプチャー体験会レポート｜ナックイメージテクノロジー](https://info.nacinc.jp/report_yonex_badminton_motioncapture)
 
 - [ ] TrackNet動かす記事を書く
+
+- [ ]
