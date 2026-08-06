@@ -26,3 +26,6 @@ draft: false
 
 - 標準カメラでeye tracking
 - tweet shot
+- なんでもアーカイバ
+  - 手元に残しておく安心感
+  - baj Collectionも
