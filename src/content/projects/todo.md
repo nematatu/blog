@@ -29,3 +29,13 @@ draft: false
 - なんでもアーカイバ
   - 手元に残しておく安心感
   - baj Collectionも
+- BWFNotify → IC通知してくれない
+- 国内バドミントンDB
+
+## ブログ
+- MBPええなぁ
+
+- PWAバド通知見直し
+- bun httpサーバー
+- ポートフォリオUI見直し
+- cf webMCP
