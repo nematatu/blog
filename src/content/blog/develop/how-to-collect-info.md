@@ -66,4 +66,4 @@ tags: ["開発"]
 ## 好きな記事媒体
 
 - [Gihyo](https://gihyo.jp/))
-- [Software Design]()
+- [Software Design](<>)

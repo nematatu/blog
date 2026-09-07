@@ -1,0 +1,38 @@
+---
+import Layout from "@layouts/Layout.astro";
+---
+
+<Layout
+  title="Image compare visual test"
+  description="Image comparison slider test"
+>
+  <main class="mx-auto max-w-5xl px-4 py-12">
+    <h1 class="mb-6 text-2xl font-semibold">Image compare visual test</h1>
+    <figure class="image-compare not-prose">
+      <div class="image-compare__stage">
+        <img-comparison-slider
+          class="image-compare__slider"
+          value="50"
+          tabindex="0"
+          aria-label="Before and after image comparison"
+        >
+          <img
+            slot="first"
+            class="image-compare__image"
+            src="/thumbs/ogp/kyoto-480.webp"
+            alt="Before"
+          />
+          <img
+            slot="second"
+            class="image-compare__image"
+            src="/thumbs/ogp/rustdesk-480.webp"
+            alt="After"
+          />
+          <span slot="handle" class="image-compare__handle" aria-hidden="true"
+            >↔</span
+          >
+        </img-comparison-slider>
+      </div>
+    </figure>
+  </main>
+</Layout>

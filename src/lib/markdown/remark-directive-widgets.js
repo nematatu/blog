@@ -278,14 +278,189 @@ function transformFuki(node) {
   };
 }
 
+function compareParts(node) {
+  const children = [...(node.children || [])];
+  const caption =
+    children[0]?.type === "paragraph" &&
+    children[0]?.data?.directiveLabel === true
+      ? children.shift()
+      : null;
+  const images = [];
+
+  for (const child of children) {
+    if (child.type !== "paragraph") return null;
+
+    for (const inline of child.children || []) {
+      if (inline.type === "text" && /^\s*$/.test(inline.value)) continue;
+      if (inline.type !== "image") return null;
+      images.push(inline);
+    }
+  }
+
+  if (
+    images.length !== 2 ||
+    images.some(
+      (image) => typeof image.url !== "string" || image.url.trim().length === 0,
+    )
+  ) {
+    return null;
+  }
+
+  return { caption, images };
+}
+
+function compareLabel(node, attribute, fallback) {
+  const value = node.attributes?.[attribute];
+  return typeof value === "string" && value.trim() ? value.trim() : fallback;
+}
+
+function appendClassName(properties, className) {
+  const current = properties?.className;
+  const classNames = Array.isArray(current)
+    ? current
+    : typeof current === "string"
+      ? current.split(/\s+/).filter(Boolean)
+      : [];
+
+  return [...classNames, className];
+}
+
+function prepareCompareImage(image, slot) {
+  const properties = image.data?.hProperties || {};
+
+  image.data = {
+    ...image.data,
+    hProperties: {
+      ...properties,
+      className: appendClassName(properties, "image-compare__image"),
+      slot,
+      loading: "lazy",
+      decoding: "async",
+      dataNoLightbox: "",
+    },
+  };
+
+  return image;
+}
+
+function compareLabelNode(label, modifier) {
+  return {
+    type: "textDirective",
+    name: `compareLabel${modifier}`,
+    children: [{ type: "text", value: label }],
+    data: {
+      hName: "span",
+      hProperties: {
+        className: [
+          "image-compare__label",
+          `image-compare__label--${modifier}`,
+        ],
+        ariaHidden: "true",
+      },
+    },
+  };
+}
+
+function compareHandleNode() {
+  return {
+    type: "textDirective",
+    name: "compareHandle",
+    children: [{ type: "text", value: "↔" }],
+    data: {
+      hName: "span",
+      hProperties: {
+        className: ["image-compare__handle"],
+        slot: "handle",
+        ariaHidden: "true",
+      },
+    },
+  };
+}
+
+function transformCompare(node, file) {
+  const parts = compareParts(node);
+  if (!parts) {
+    file.fail(
+      "compare ディレクティブには、単独の Markdown 画像を2枚指定してください。",
+      node,
+      "remark-directive-widgets:compare",
+    );
+  }
+
+  const beforeLabel = compareLabel(node, "before-label", "変更前");
+  const afterLabel = compareLabel(node, "after-label", "変更後");
+  const [beforeImage, afterImage] = parts.images;
+
+  const slider = {
+    type: "containerDirective",
+    name: "compareSlider",
+    children: [
+      prepareCompareImage(beforeImage, "first"),
+      prepareCompareImage(afterImage, "second"),
+      compareHandleNode(),
+    ],
+    data: {
+      hName: "img-comparison-slider",
+      hProperties: {
+        className: ["image-compare__slider"],
+        value: 50,
+        tabIndex: 0,
+        role: "slider",
+        ariaLabel: `${beforeLabel}と${afterLabel}の画像比較`,
+        ariaOrientation: "horizontal",
+        ariaValueMin: 0,
+        ariaValueMax: 100,
+        ariaValueNow: 50,
+        ariaValueText: `${beforeLabel} 50%、${afterLabel} 50%`,
+        dataBeforeLabel: beforeLabel,
+        dataAfterLabel: afterLabel,
+      },
+    },
+  };
+
+  const stage = {
+    type: "containerDirective",
+    name: "compareStage",
+    children: [
+      slider,
+      compareLabelNode(beforeLabel, "before"),
+      compareLabelNode(afterLabel, "after"),
+    ],
+    data: {
+      hName: "div",
+      hProperties: { className: ["image-compare__stage"] },
+    },
+  };
+
+  if (parts.caption) {
+    parts.caption.data = {
+      ...parts.caption.data,
+      hName: "figcaption",
+      hProperties: { className: ["image-compare__caption"] },
+    };
+  }
+
+  node.children = [stage, ...(parts.caption ? [parts.caption] : [])];
+  node.data = {
+    ...node.data,
+    hName: "figure",
+    hProperties: { className: ["image-compare", "not-prose"] },
+  };
+}
+
 export default function remarkDirectiveWidgets() {
-  return async (tree) => {
+  return async (tree, file) => {
     const githubNodes = [];
     const githubUrlParagraphs = [];
 
     visit(tree, (node) => {
       if (node.type === "paragraph") {
         githubUrlParagraphs.push(node);
+        return;
+      }
+
+      if (node.type === "containerDirective" && node.name === "compare") {
+        transformCompare(node, file);
         return;
       }
 

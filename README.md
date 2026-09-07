@@ -146,6 +146,30 @@ ogImage: "https://example.com/image.png"
 :::
 ```
 
+### 画像比較
+
+`compare` ディレクティブへ Markdown 画像を2枚渡すと、ドラッグ・タッチ・
+キーボードで操作できる比較スライダーを表示します。1枚目が変更前、2枚目が
+変更後です。
+
+```markdown
+:::compare
+![変更前の画像](/images/before.jpg)
+![変更後の画像](/images/after.jpg)
+:::
+```
+
+任意のキャプションと表示ラベルも指定できます。
+
+```markdown
+:::compare[圧縮前後の画質比較]{before-label="圧縮前" after-label="圧縮後"}
+![圧縮前の画像](/images/original.jpg)
+![圧縮後の画像](/images/compressed.jpg)
+:::
+```
+
+比較位置を正しく揃えるため、2枚は同じ寸法または同じ縦横比にしてください。
+
 ## ライセンス
 
 このリポジトリには `LICENSE` が含まれています。

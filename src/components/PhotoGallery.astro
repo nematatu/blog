@@ -1,0 +1,990 @@
+---
+import type { GalleryPhoto } from "@/data/gallery";
+
+type Props = {
+  photos: GalleryPhoto[];
+};
+
+const { photos } = Astro.props;
+const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
+---
+
+<section class="photo-gallery" data-photo-gallery>
+  <div class="photo-gallery__grid">
+    {
+      photos.map((photo, index) => (
+        <a
+          class="photo-gallery__tile"
+          href={`/gallery/?photo=${photo.id}`}
+          data-gallery-open
+          data-gallery-index={index}
+          aria-label={`${photo.title}を拡大表示`}
+        >
+          <img
+            src={photo.src}
+            width={photo.width}
+            height={photo.height}
+            alt={photo.alt}
+            loading={index < 4 ? "eager" : "lazy"}
+            decoding="async"
+            fetchpriority={index === 0 ? "high" : "auto"}
+            draggable="false"
+            data-no-lightbox
+          />
+          <span class="photo-gallery__tile-meta" aria-hidden="true">
+            <span>{photo.title}</span>
+          </span>
+        </a>
+      ))
+    }
+  </div>
+
+  <dialog
+    class="photo-gallery__dialog"
+    data-gallery-dialog
+    aria-label="写真ビューア"
+  >
+    <div
+      class="photo-gallery__backdrop"
+      data-gallery-backdrop
+      aria-hidden="true"
+    >
+    </div>
+    <div class="photo-gallery__viewer">
+      <div class="photo-gallery__topbar">
+        <button
+          class="photo-gallery__control photo-gallery__close"
+          type="button"
+          data-gallery-close
+          aria-label="ギャラリーを閉じる"
+        >
+          <iconify-icon icon="lucide:x" aria-hidden="true"></iconify-icon>
+        </button>
+
+        <div class="photo-gallery__current">
+          <strong data-gallery-title></strong>
+          <time data-gallery-date></time>
+          <a data-gallery-article href="/blog" rel="noopener">記事を開く</a>
+        </div>
+      </div>
+
+      <div class="photo-gallery__stage" data-gallery-stage>
+        <button
+          class="photo-gallery__arrow photo-gallery__arrow--previous"
+          type="button"
+          data-gallery-previous
+          aria-label="前の写真"
+        >
+          <iconify-icon icon="lucide:chevron-left" aria-hidden="true"
+          ></iconify-icon>
+        </button>
+
+        <div class="photo-gallery__image-frame" data-gallery-image-frame>
+          <img
+            class="photo-gallery__image"
+            src={photos[0]?.src}
+            width={photos[0]?.width}
+            height={photos[0]?.height}
+            alt=""
+            draggable="false"
+            data-gallery-image
+            data-no-lightbox
+          />
+        </div>
+
+        <button
+          class="photo-gallery__arrow photo-gallery__arrow--next"
+          type="button"
+          data-gallery-next
+          aria-label="次の写真"
+        >
+          <iconify-icon icon="lucide:chevron-right" aria-hidden="true"
+          ></iconify-icon>
+        </button>
+      </div>
+
+      <div class="photo-gallery__bottom">
+        <div
+          class="photo-gallery__status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span data-gallery-position>1 / {photos.length}</span>
+          <span data-gallery-message></span>
+        </div>
+        <div class="photo-gallery__thumbnails" aria-label="写真一覧">
+          {
+            photos.map((photo, index) => (
+              <button
+                class="photo-gallery__thumbnail"
+                type="button"
+                data-gallery-thumbnail
+                data-gallery-index={index}
+                aria-label={`${photo.title}を表示`}
+              >
+                <img
+                  src={photo.src}
+                  width={photo.width}
+                  height={photo.height}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                  data-no-lightbox
+                />
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script
+    is:inline
+    type="application/json"
+    data-gallery-data
+    set:html={serializedPhotos}
+  />
+</section>
+
+<script>
+  type GalleryPhoto = {
+    id: string;
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+    title: string;
+    articleHref: string;
+    articleTitle: string;
+    articleDate: string;
+  };
+
+  const gallery = document.querySelector<HTMLElement>("[data-photo-gallery]");
+
+  if (gallery) {
+    const data = gallery.querySelector<HTMLScriptElement>(
+      "[data-gallery-data]",
+    );
+    const photos = JSON.parse(data?.textContent || "[]") as GalleryPhoto[];
+    const dialog = gallery.querySelector<HTMLDialogElement>(
+      "[data-gallery-dialog]",
+    );
+    const viewerImage = gallery.querySelector<HTMLImageElement>(
+      "[data-gallery-image]",
+    );
+    const backdrop = gallery.querySelector<HTMLElement>(
+      "[data-gallery-backdrop]",
+    );
+    const title = gallery.querySelector<HTMLElement>("[data-gallery-title]");
+    const article = gallery.querySelector<HTMLAnchorElement>(
+      "[data-gallery-article]",
+    );
+    const date = gallery.querySelector<HTMLElement>("[data-gallery-date]");
+    const position = gallery.querySelector<HTMLElement>(
+      "[data-gallery-position]",
+    );
+    const message = gallery.querySelector<HTMLElement>(
+      "[data-gallery-message]",
+    );
+    const previous = gallery.querySelector<HTMLButtonElement>(
+      "[data-gallery-previous]",
+    );
+    const next = gallery.querySelector<HTMLButtonElement>(
+      "[data-gallery-next]",
+    );
+    const close = gallery.querySelector<HTMLButtonElement>(
+      "[data-gallery-close]",
+    );
+    const stage = gallery.querySelector<HTMLElement>("[data-gallery-stage]");
+    const imageFrame = gallery.querySelector<HTMLElement>(
+      "[data-gallery-image-frame]",
+    );
+    const triggers = Array.from(
+      gallery.querySelectorAll<HTMLAnchorElement>("[data-gallery-open]"),
+    );
+    const thumbnails = Array.from(
+      gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumbnail]"),
+    );
+    if (
+      dialog &&
+      viewerImage &&
+      backdrop &&
+      title &&
+      article &&
+      date &&
+      position &&
+      message &&
+      previous &&
+      next &&
+      close &&
+      stage &&
+      imageFrame &&
+      photos.length > 0
+    ) {
+      let currentIndex = 0;
+      let lastTrigger: HTMLElement | null = null;
+      let pointerStartX: number | null = null;
+      let pointerStartY: number | null = null;
+      let didSwipe = false;
+      const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+      const photoUrl = (photo: GalleryPhoto) => {
+        const url = new URL(location.href);
+        url.searchParams.set("photo", photo.id);
+        return `${url.pathname}${url.search}${url.hash}`;
+      };
+
+      const galleryUrl = () => {
+        const url = new URL(location.href);
+        url.searchParams.delete("photo");
+        return `${url.pathname}${url.search}${url.hash}`;
+      };
+
+      const preloadNeighbors = () => {
+        [currentIndex - 1, currentIndex + 1]
+          .filter((index) => index >= 0 && index < photos.length)
+          .forEach((index) => {
+            const image = new Image();
+            image.src = photos[index].src;
+          });
+      };
+
+      const renderPhoto = (index: number, direction = 0) => {
+        currentIndex = Math.min(photos.length - 1, Math.max(0, index));
+        const photo = photos[currentIndex];
+
+        viewerImage.classList.remove(
+          "photo-gallery__image--moving",
+          "photo-gallery__image--backward",
+        );
+        if (direction < 0) {
+          viewerImage.classList.add("photo-gallery__image--backward");
+        }
+        void viewerImage.offsetWidth;
+
+        viewerImage.src = photo.src;
+        viewerImage.alt = photo.alt;
+        viewerImage.width = photo.width;
+        viewerImage.height = photo.height;
+        viewerImage.classList.add("photo-gallery__image--moving");
+        backdrop.style.backgroundImage = `url(${JSON.stringify(photo.src)})`;
+        title.textContent = photo.title;
+        date.textContent = photo.articleDate;
+        article.href = photo.articleHref;
+        article.textContent = photo.articleTitle;
+        position.textContent = `${currentIndex + 1} / ${photos.length}`;
+        message.textContent = "";
+        previous.hidden = currentIndex === 0;
+        next.hidden = currentIndex === photos.length - 1;
+
+        thumbnails.forEach((thumbnail, thumbnailIndex) => {
+          const isCurrent = thumbnailIndex === currentIndex;
+          thumbnail.setAttribute("aria-current", isCurrent ? "true" : "false");
+          if (isCurrent) {
+            thumbnail.scrollIntoView({
+              behavior: reduceMotion.matches ? "auto" : "smooth",
+              block: "nearest",
+              inline: "center",
+            });
+          }
+        });
+
+        preloadNeighbors();
+      };
+
+      const showPhoto = (
+        index: number,
+        options: {
+          history?: "push" | "replace" | "none";
+          direction?: number;
+        } = {},
+      ) => {
+        const historyMode = options.history ?? "replace";
+        renderPhoto(index, options.direction ?? 0);
+
+        if (historyMode === "push") {
+          history.pushState(
+            { ...history.state, photoGallery: true },
+            "",
+            photoUrl(photos[currentIndex]),
+          );
+        } else if (historyMode === "replace") {
+          history.replaceState(
+            history.state,
+            "",
+            photoUrl(photos[currentIndex]),
+          );
+        }
+
+        if (!dialog.open) {
+          dialog.showModal();
+          document.documentElement.classList.add("photo-gallery-open");
+          close.focus({ preventScroll: true });
+
+          // The dialog has no layout box until showModal(), so the first
+          // render cannot reliably scroll the active thumbnail into view.
+          requestAnimationFrame(() => {
+            thumbnails[currentIndex]?.scrollIntoView({
+              behavior: "auto",
+              block: "nearest",
+              inline: "center",
+            });
+          });
+        }
+      };
+
+      const finishClose = () => {
+        if (dialog.open) dialog.close();
+        document.documentElement.classList.remove("photo-gallery-open");
+
+        if (lastTrigger) {
+          lastTrigger.focus({ preventScroll: true });
+          lastTrigger.scrollIntoView({
+            block: "center",
+            inline: "nearest",
+          });
+        }
+      };
+
+      const closeGallery = () => {
+        if (history.state?.photoGallery === true) {
+          history.back();
+          return;
+        }
+
+        history.replaceState(history.state, "", galleryUrl());
+        finishClose();
+      };
+
+      const move = (step: number) => {
+        const nextIndex = currentIndex + step;
+        if (nextIndex < 0 || nextIndex >= photos.length) return;
+        showPhoto(nextIndex, { history: "replace", direction: step });
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener("click", (event) => {
+          if (
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+          ) {
+            return;
+          }
+
+          event.preventDefault();
+          lastTrigger = trigger;
+          showPhoto(Number(trigger.dataset.galleryIndex), {
+            history: "push",
+          });
+        });
+      });
+
+      thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener("click", () => {
+          const index = Number(thumbnail.dataset.galleryIndex);
+          showPhoto(index, {
+            history: "replace",
+            direction: Math.sign(index - currentIndex),
+          });
+        });
+      });
+
+      previous.addEventListener("click", () => move(-1));
+      next.addEventListener("click", () => move(1));
+      close.addEventListener("click", closeGallery);
+
+      dialog.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        closeGallery();
+      });
+
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) closeGallery();
+      });
+
+      imageFrame.addEventListener("click", (event) => {
+        if (didSwipe) {
+          didSwipe = false;
+          return;
+        }
+        if (event.target === imageFrame) closeGallery();
+      });
+
+      stage.addEventListener("pointerdown", (event) => {
+        if (!event.isPrimary) return;
+        didSwipe = false;
+        pointerStartX = event.clientX;
+        pointerStartY = event.clientY;
+      });
+
+      stage.addEventListener("pointerup", (event) => {
+        if (pointerStartX === null || pointerStartY === null) return;
+
+        const deltaX = event.clientX - pointerStartX;
+        const deltaY = event.clientY - pointerStartY;
+        pointerStartX = null;
+        pointerStartY = null;
+
+        if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY)) {
+          didSwipe = true;
+          move(deltaX < 0 ? 1 : -1);
+          setTimeout(() => {
+            didSwipe = false;
+          }, 0);
+        }
+      });
+
+      stage.addEventListener("pointercancel", () => {
+        pointerStartX = null;
+        pointerStartY = null;
+        didSwipe = false;
+      });
+
+      addEventListener("keydown", (event) => {
+        if (!dialog.open) return;
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          move(-1);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          move(1);
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          showPhoto(0, { history: "replace", direction: -1 });
+        } else if (event.key === "End") {
+          event.preventDefault();
+          showPhoto(photos.length - 1, {
+            history: "replace",
+            direction: 1,
+          });
+        }
+      });
+
+      addEventListener("popstate", () => {
+        const id = new URL(location.href).searchParams.get("photo");
+        const index = photos.findIndex((photo) => photo.id === id);
+
+        if (index >= 0) {
+          showPhoto(index, {
+            history: "none",
+            direction: Math.sign(index - currentIndex),
+          });
+        } else {
+          finishClose();
+        }
+      });
+
+      const initialId = new URL(location.href).searchParams.get("photo");
+      const initialIndex = photos.findIndex((photo) => photo.id === initialId);
+      if (initialIndex >= 0) {
+        showPhoto(initialIndex, { history: "none" });
+      }
+    }
+  }
+</script>
+
+<style>
+  .photo-gallery {
+    width: 100%;
+    max-width: 124rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  .photo-gallery__grid {
+    columns: 1;
+    column-gap: 1rem;
+  }
+
+  .photo-gallery__intro,
+  .photo-gallery__tile {
+    display: inline-flex;
+    width: 100%;
+    margin: 0 0 1rem;
+    break-inside: avoid;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 0.875rem !important;
+  }
+
+  .photo-gallery__intro {
+    min-height: clamp(28rem, 46vw, 39.3125rem);
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    color: white;
+    background:
+      radial-gradient(
+        circle at 78% 14%,
+        rgb(255 255 255 / 18%),
+        transparent 24%
+      ),
+      radial-gradient(
+        circle at 15% 82%,
+        rgb(59 130 246 / 30%),
+        transparent 34%
+      ),
+      linear-gradient(145deg, #171717 0%, #0a0a0a 54%, #111827 100%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%) !important;
+  }
+
+  .photo-gallery__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgb(255 255 255 / 58%);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .photo-gallery__eyebrow-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px !important;
+    background: #60a5fa;
+    box-shadow: 0 0 1.25rem rgb(96 165 250 / 80%) !important;
+  }
+
+  .photo-gallery__intro h1 {
+    margin: 2rem 0 1.25rem;
+    font-size: clamp(3.25rem, 8vw, 6.5rem);
+    font-weight: 650;
+    letter-spacing: -0.065em;
+    line-height: 0.82;
+  }
+
+  .photo-gallery__intro p {
+    max-width: 20rem;
+    margin: 0;
+    color: rgb(255 255 255 / 62%);
+    font-size: 0.9375rem;
+    line-height: 1.8;
+  }
+
+  .photo-gallery__intro-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid rgb(255 255 255 / 16%);
+    border-radius: 0.625rem !important;
+    color: white;
+    background: rgb(255 255 255 / 8%);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    transition: background-color 160ms ease !important;
+  }
+
+  .photo-gallery__intro-link:hover,
+  .photo-gallery__intro-link:focus-visible {
+    background: rgb(255 255 255 / 15%);
+    outline: 2px solid rgb(255 255 255 / 75%);
+    outline-offset: 2px;
+  }
+
+  .photo-gallery__tile {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    background: #171717;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%) !important;
+    cursor: pointer;
+  }
+
+  .photo-gallery__tile img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: brightness(0.88);
+    transform: translate3d(0, 0, 0) scale(1.001);
+    transition: none !important;
+  }
+
+  .photo-gallery__tile:focus-visible {
+    outline: 3px solid #60a5fa;
+    outline-offset: 3px;
+  }
+
+  .photo-gallery__tile-meta {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 3rem 1rem 0.875rem;
+    color: rgb(255 255 255 / 88%);
+    background: linear-gradient(transparent, rgb(0 0 0 / 72%));
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    opacity: 1;
+    transform: none;
+    pointer-events: none;
+  }
+
+  .photo-gallery__dialog {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    color: white;
+    background: #050505;
+  }
+
+  .photo-gallery__dialog[open] {
+    display: block;
+  }
+
+  .photo-gallery__dialog::backdrop {
+    background: #000;
+  }
+
+  .photo-gallery__backdrop {
+    position: absolute;
+    inset: -4rem;
+    background-position: center;
+    background-size: cover;
+    filter: blur(48px) brightness(0.28) saturate(0.8);
+    opacity: 0.58;
+    transform: scale(1.08);
+    transition: background-image 180ms ease !important;
+  }
+
+  .photo-gallery__viewer {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 34%);
+  }
+
+  .photo-gallery__topbar {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem 2.5rem;
+    background: linear-gradient(rgb(0 0 0 / 78%), transparent);
+  }
+
+  .photo-gallery__current {
+    min-width: 0;
+    text-align: center;
+  }
+
+  .photo-gallery__current strong,
+  .photo-gallery__current a {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .photo-gallery__current time {
+    display: block;
+    margin-top: 0.125rem;
+    color: rgb(255 255 255 / 50%);
+    font-size: 0.6875rem;
+  }
+
+  .photo-gallery__current strong {
+    font-size: 0.8125rem;
+  }
+
+  .photo-gallery__current a {
+    width: fit-content;
+    margin: 0.3rem auto 0;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid rgb(255 255 255 / 35%);
+    border-radius: 9999px;
+    color: rgb(255 255 255 / 82%);
+    background: rgb(0 0 0 / 35%);
+    font-size: 0.6875rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: none;
+  }
+
+  .photo-gallery__actions {
+    display: flex;
+    gap: 0.375rem;
+  }
+
+  .photo-gallery__control,
+  .photo-gallery__arrow {
+    display: grid;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 16%);
+    border-radius: 9999px !important;
+    color: white;
+    background: rgb(0 0 0 / 42%);
+    backdrop-filter: blur(16px);
+    cursor: pointer;
+    transition: none !important;
+  }
+
+  .photo-gallery__control {
+    width: 2.625rem;
+    height: 2.625rem;
+    font-size: 1.125rem;
+    cursor: pointer;
+  }
+
+  .photo-gallery__control:focus-visible,
+  .photo-gallery__arrow:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 72%);
+    outline-offset: 2px;
+  }
+
+  .photo-gallery__stage {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    place-items: center;
+    padding: 4.75rem clamp(0.75rem, 6vw, 6rem) 7.75rem;
+    touch-action: pan-y;
+  }
+
+  .photo-gallery__image-frame {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    place-items: center;
+  }
+
+  .photo-gallery__image {
+    display: block;
+    width: auto;
+    max-width: min(80rem, 100%);
+    height: auto;
+    max-height: 100%;
+    border-radius: 0.5rem !important;
+    object-fit: contain;
+    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 42%) !important;
+    user-select: none;
+  }
+
+  .photo-gallery__image--moving {
+    --gallery-shift: 1.25rem;
+    animation: gallery-image-in 180ms ease-out both !important;
+  }
+
+  .photo-gallery__image--backward {
+    --gallery-shift: -1.25rem;
+  }
+
+  .photo-gallery__arrow {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    transform: translateY(-50%);
+  }
+
+  .photo-gallery__arrow--previous {
+    left: 1rem;
+  }
+
+  .photo-gallery__arrow--next {
+    right: 1rem;
+  }
+
+  .photo-gallery__arrow[hidden] {
+    display: none;
+  }
+
+  .photo-gallery__bottom {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2.5rem 0.75rem max(0.75rem, env(safe-area-inset-bottom));
+    background: linear-gradient(transparent, rgb(0 0 0 / 88%) 42%);
+  }
+
+  .photo-gallery__status {
+    display: flex;
+    justify-content: center;
+    min-height: 1.25rem;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    color: rgb(255 255 255 / 58%);
+    font-size: 0.6875rem;
+  }
+
+  .photo-gallery__thumbnails {
+    display: flex;
+    max-width: 60rem;
+    margin-inline: auto;
+    padding: 0.25rem calc(50% - 2.5rem);
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .photo-gallery__thumbnails::-webkit-scrollbar {
+    display: none;
+  }
+
+  .photo-gallery__thumbnail {
+    flex: 0 0 5rem;
+    width: 5rem;
+    height: 3.35rem;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: 0.375rem !important;
+    background: #111;
+    opacity: 0.44;
+    scroll-snap-align: center;
+    cursor: pointer;
+    transform: scale(0.92);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease,
+      border-color 160ms ease !important;
+  }
+
+  .photo-gallery__thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-gallery__thumbnail[aria-current="true"] {
+    border-color: white;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .photo-gallery__thumbnail:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
+  @keyframes gallery-image-in {
+    from {
+      opacity: 0;
+      transform: translateX(var(--gallery-shift));
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .photo-gallery {
+      padding-inline: 1.5rem;
+    }
+
+    .photo-gallery__grid {
+      columns: 2;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .photo-gallery__grid {
+      columns: 3;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .photo-gallery__grid {
+      columns: 4;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .photo-gallery__current {
+      text-align: left;
+    }
+
+    .photo-gallery__current a {
+      margin-left: 0;
+    }
+
+    .photo-gallery__current span,
+    .photo-gallery__actions [data-gallery-source] {
+      display: none;
+    }
+
+    .photo-gallery__control {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .photo-gallery__arrow {
+      top: auto;
+      bottom: 7.15rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      transform: none;
+    }
+
+    .photo-gallery__arrow--previous {
+      left: 0.75rem;
+    }
+
+    .photo-gallery__arrow--next {
+      right: 0.75rem;
+    }
+
+    .photo-gallery__stage {
+      padding-inline: 0.75rem;
+    }
+
+    .photo-gallery__image {
+      border-radius: 0.25rem !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo-gallery__tile img,
+    .photo-gallery__tile-meta,
+    .photo-gallery__control,
+    .photo-gallery__arrow,
+    .photo-gallery__thumbnail,
+    .photo-gallery__image {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  :global(html.photo-gallery-open) {
+    overflow: hidden;
+  }
+</style>

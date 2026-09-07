@@ -25,16 +25,14 @@ draft: false
 ## vive tools
 
 - 標準カメラでeye tracking
-- tweet shot
 - なんでもアーカイバ
   - 手元に残しておく安心感
   - baj Collectionも
-- BWFNotify → IC通知してくれない
 - 国内バドミントンDB
 
 ## ブログ
-- MBPええなぁ
 
+- MBPええなぁ
 - PWAバド通知見直し
 - bun httpサーバー
 - ポートフォリオUI見直し

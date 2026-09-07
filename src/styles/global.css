@@ -33,7 +33,11 @@
     border-color: var(--color-gray-200, currentColor);
   }
 
-  *:not(.fuki__content):not(.fuki__icon),
+  *:not(.fuki__content):not(.fuki__icon):not(.image-compare__stage):not(
+      .image-compare__slider
+    ):not(.image-compare__image):not(.image-compare__handle):not(
+      .image-compare__label
+    ),
   ::after,
   ::before {
     /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
@@ -408,6 +412,113 @@ pre code * {
 
   .youtube-player iframe {
     @apply block size-full;
+  }
+
+  .image-compare {
+    @apply mx-auto my-7 w-full max-w-5xl;
+  }
+
+  .image-compare__stage {
+    @apply relative isolate overflow-hidden border border-black/15 bg-neutral-200 dark:border-white/20 dark:bg-neutral-800;
+    border-radius: 0.875rem;
+    box-shadow: 0 18px 50px rgb(15 23 42 / 14%);
+  }
+
+  /* Keep both slots on one stable canvas even when the source images have
+     different intrinsic dimensions. */
+  .image-compare__slider {
+    --divider-width: 3px;
+    --divider-color: rgb(255 255 255 / 95%);
+    --divider-shadow: 0 0 10px rgb(0 0 0 / 45%);
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    cursor: col-resize;
+    background: repeating-conic-gradient(
+        rgb(0 0 0 / 4%) 0 25%,
+        transparent 0 50%
+      )
+      50% / 18px 18px;
+  }
+
+  .image-compare__slider:focus-visible {
+    outline: none;
+  }
+
+  article .image-compare__image {
+    display: block;
+    width: 100% !important;
+    max-height: none !important;
+    margin: 0 !important;
+    cursor: col-resize !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: rgb(0 0 0 / 6%);
+    user-select: none;
+  }
+
+  .image-compare__slider:focus {
+    outline: none;
+  }
+
+  .image-compare__label {
+    @apply absolute top-3 z-10 max-w-[42%] truncate border border-white/20 bg-black/65 px-2.5 py-1 font-sans text-xs leading-5 font-semibold tracking-wide text-white backdrop-blur-sm;
+    border-radius: 9999px;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 24%);
+    pointer-events: none;
+  }
+
+  .image-compare__label--before {
+    @apply left-3;
+  }
+
+  .image-compare__label--after {
+    @apply right-3;
+  }
+
+  article .image-compare__handle {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border: 1px solid rgb(15 23 42 / 18%);
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 94%);
+    box-shadow: 0 4px 18px rgb(0 0 0 / 30%);
+    color: rgb(15 23 42);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+
+  .image-compare__caption {
+    @apply mx-0 mt-2 mb-0 text-center font-sans text-sm leading-6 text-black/60 dark:text-white/60;
+  }
+
+  @media (max-width: 480px) {
+    .image-compare__stage {
+      border-radius: 0.625rem;
+    }
+
+    .image-compare__label {
+      @apply top-2 px-2 py-0.5 text-[0.6875rem];
+    }
+
+    .image-compare__label--before {
+      @apply left-2;
+    }
+
+    .image-compare__label--after {
+      @apply right-2;
+    }
+
+    article .image-compare__handle {
+      width: 2.625rem;
+      height: 2.625rem;
+    }
   }
 
   .admonition {

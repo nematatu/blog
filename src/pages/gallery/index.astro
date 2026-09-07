@@ -1,0 +1,13 @@
+---
+import PhotoGallery from "@components/PhotoGallery.astro";
+import { galleryPhotos } from "@/data/gallery";
+import Layout from "@layouts/Layout.astro";
+---
+
+<Layout
+  title="Gallery"
+  description="ブログ記事で使った画像のギャラリー"
+  image={galleryPhotos[0]?.src}
+>
+  <PhotoGallery photos={galleryPhotos} />
+</Layout>

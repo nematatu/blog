@@ -274,6 +274,45 @@ const message = "Hello";
 
 ![ブログアイコン](/icon/favicon-32x32.png) _画像キャプションの表示例_
 
+## 画像比較
+
+`:::compare` と `:::` で Markdown 画像を2枚囲むと、画像比較スライダーを表示する。
+1枚目が変更前、2枚目が変更後になる。
+
+### 基本記法
+
+```markdown
+:::compare
+![変更前の画像](/images/before.jpg)
+![変更後の画像](/images/after.jpg)
+:::
+```
+
+:::compare
+![](https://assets.blog.amatatu.com/paste-images/20260618013248.avif)
+![](https://assets.blog.amatatu.com/paste-images/20260618015514.avif)
+:::
+
+画像パスは使用する画像のパスに置き換える。
+
+### キャプションとラベルを指定する
+
+キャプションは `[]`、画像上のラベルは `before-label` と `after-label` で指定する。
+どちらも省略可能。ラベルを省略すると「変更前」「変更後」と表示される。
+
+```markdown
+:::compare[圧縮前後の画質比較]{before-label="圧縮前" after-label="圧縮後"}
+![圧縮前の画像](/images/original.jpg)
+![圧縮後の画像](/images/compressed.jpg)
+:::
+```
+
+### 注意点
+
+- 比較位置を揃えるため、2枚は同じ寸法、または同じ縦横比の画像を使う。
+- ブロック内には Markdown 画像をちょうど2枚置き、説明文やリストは入れない。
+- 比較全体の説明は `:::compare[説明文]` のキャプションに書く。
+
 ## 外部リンク
 
 外部サイトへのHTTP/HTTPSリンクには自動で `target="_blank"` と
