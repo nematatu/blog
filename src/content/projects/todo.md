@@ -37,3 +37,8 @@ draft: false
 - bun httpサーバー
 - ポートフォリオUI見直し
 - cf webMCP
+
+* markdown Linter
+* nodeの更新を追う
+* pnpmのrustとかのマネージャになってるやつ追う
+* bunアプデを読む
