@@ -3,6 +3,7 @@ title: "楽に開発Webサーバーを立てる"
 date: "2026-08-09T17:22:25+09:00"
 draft: true
 tags: []
+ogImage: /ogp/楽に開発サーバーを立てる.png
 ---
 
 ## Why?
