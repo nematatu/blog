@@ -8,7 +8,6 @@ const tasks = [
     sourceDir: "public/ogp",
     outputDir: "public/thumbs/ogp",
     widths: [480, 960, 1200],
-    ratio: 21 / 40,
     quality: 78,
   },
   {
@@ -46,9 +45,11 @@ async function generateThumbnails(task) {
     const sourcePath = path.join(sourceDir, file.name);
     const baseName = path.parse(file.name).name;
     const sourceStat = await stat(sourcePath);
+    const sourceMetadata = await sharp(sourcePath).metadata();
+    const ratio = task.ratio ?? sourceMetadata.height / sourceMetadata.width;
 
     for (const width of task.widths) {
-      const height = Math.round(width * task.ratio);
+      const height = Math.round(width * ratio);
       const outputPath = path.join(outputDir, `${baseName}-${width}.webp`);
       const outputMetadata = await sharp(outputPath)
         .metadata()
