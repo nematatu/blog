@@ -66,7 +66,7 @@ async function generateThumbnails(task) {
       }
 
       await sharp(sourcePath)
-        .resize(width, height, {
+        .resize(width, task.ratio ? height : undefined, {
           fit: "cover",
           position: "attention",
         })

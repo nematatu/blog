@@ -1,0 +1,105 @@
+<!-- Inline in the head so pagereveal is handled before the first render. -->
+<script is:inline>
+  (() => {
+    const pathOf = (url) =>
+      new URL(url, location.href).pathname.replace(/\/$/, "");
+    const isList = (path) =>
+      path === "" || path === "/blog" || path.startsWith("/tags/");
+    const isPost = (path) => path.startsWith("/blog/");
+
+    function prepare(transition, from, to) {
+      if (!transition) return;
+      if (
+        !from ||
+        !to ||
+        matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        transition.skipTransition();
+        return;
+      }
+
+      const fromPath = pathOf(from);
+      const toPath = pathOf(to);
+      const postPath =
+        isList(fromPath) && isPost(toPath)
+          ? toPath
+          : isPost(fromPath) && isList(toPath)
+            ? fromPath
+            : null;
+      if (!postPath) {
+        transition.skipTransition();
+        return;
+      }
+
+      const elements = [
+        ...document.querySelectorAll("[data-post-transition-url]"),
+      ].filter(
+        (element) => pathOf(element.dataset.postTransitionUrl) === postPath,
+      );
+      const selected = [];
+      for (const part of ["image", "title"]) {
+        const matches = elements.filter(
+          (element) => element.dataset.postTransitionPart === part,
+        );
+        if (matches.length !== 1) continue;
+        matches[0].style.viewTransitionName = `post-${part}`;
+        selected.push(matches[0]);
+      }
+      const clear = () =>
+        selected.forEach((element) =>
+          element.style.removeProperty("view-transition-name"),
+        );
+      // Clean up snapshots even if navigation is interrupted or restored from bfcache.
+      transition.finished.then(clear, clear);
+    }
+
+    addEventListener("pageswap", (event) => {
+      prepare(
+        event.viewTransition,
+        location.href,
+        event.activation?.entry?.url,
+      );
+    });
+    addEventListener("pagereveal", (event) => {
+      prepare(
+        event.viewTransition,
+        window.navigation?.activation?.from?.url,
+        location.href,
+      );
+    });
+  })();
+</script>
+
+<style is:global>
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-group(*) {
+    animation-duration: 320ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 160ms;
+  }
+
+  ::view-transition-old(post-image),
+  ::view-transition-new(post-image) {
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    @view-transition {
+      navigation: none;
+    }
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
+</style>

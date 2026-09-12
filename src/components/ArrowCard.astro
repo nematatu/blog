@@ -19,13 +19,14 @@ const ogImage = entry.data.ogImage;
 >
   {
     ogImage && (
-      <div class="aspect-video w-full shrink-0 self-start overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
+      <div class="w-full shrink-0 self-start overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
         <OgImage
+          transitionUrl={
+            entry.collection === "blog" ? `/blog/${entry.id}` : undefined
+          }
           src={ogImage}
           sizes="(min-width: 640px) 10rem, calc(100vw - 2rem)"
-          width={480}
-          height={270}
-          class="h-full w-full object-contain"
+          class="block h-auto w-full"
           loading="lazy"
         />
       </div>
@@ -35,7 +36,12 @@ const ogImage = entry.data.ogImage;
     <div
       class="flex flex-wrap items-center gap-x-2 gap-y-1 text-lg leading-tight font-bold transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-400"
     >
-      <span>{entry.data.title}</span>
+      <span
+        data-post-transition-url={entry.collection === "blog"
+          ? `/blog/${entry.id}`
+          : undefined}
+        data-post-transition-part="title">{entry.data.title}</span
+      >
       <EntryBadges draft={entry.data.draft} />
     </div>
     {

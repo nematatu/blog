@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "img-comparison-slider/dist/styles.css";
+import PostTransitions from "@components/PostTransitions.astro";
 
 interface Props {
   title: string;
@@ -13,6 +14,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <meta charset="utf-8" />
+<PostTransitions />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/x-icon" href="/icon/favicon.ico" />
 <link rel="apple-touch-icon" href="/icon/apple-touch-icon.png" />
