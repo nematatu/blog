@@ -37,7 +37,12 @@
         (element) => pathOf(element.dataset.postTransitionUrl) === postPath,
       );
       const selected = [];
-      for (const part of ["image", "title"]) {
+      const brand = document.querySelector("[data-site-brand]");
+      if (brand) {
+        brand.style.viewTransitionName = "site-brand";
+        selected.push(brand);
+      }
+      for (const part of ["image", "title", "date"]) {
         const matches = elements.filter(
           (element) => element.dataset.postTransitionPart === part,
         );
@@ -89,6 +94,12 @@
   ::view-transition-new(post-image) {
     height: 100%;
     object-fit: contain;
+  }
+
+  ::view-transition-old(site-brand),
+  ::view-transition-new(site-brand) {
+    animation-duration: 360ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -12,6 +12,7 @@ import remarkDirectiveWidgets from "./src/lib/markdown/remark-directive-widgets.
 import remarkTwitterCard from "./src/lib/markdown/remark-twitter-card.js";
 import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
 import rehypeExternalLinksBlank from "./src/lib/markdown/rehype-all-links-blank.js";
+import rehypeExternalLinkFavicon from "./src/lib/markdown/rehype-external-link-favicon.js";
 
 const site = "https://blog.amatatu.com";
 
@@ -46,6 +47,7 @@ export default defineConfig({
       rehypeCodeFilename,
       rehypeImageCaption,
       [rehypeExternalLinksBlank, { site }],
+      [rehypeExternalLinkFavicon, { site }],
     ],
   },
 });

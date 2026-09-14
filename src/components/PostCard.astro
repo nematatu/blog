@@ -61,9 +61,11 @@ const ogImage = entry.data.ogImage;
         class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-black/50 dark:text-white/45"
       >
         {entry.data.pinned && <PinnedIndicator />}
-        <time datetime={entry.data.date.toISOString()}>
-          {dateLabel}
-        </time>
+        <time
+          datetime={entry.data.date.toISOString()}
+          data-post-transition-url={`/blog/${entry.id}`}
+          data-post-transition-part="date">{dateLabel}</time
+        >
         {
           entry.data.tags && entry.data.tags.length > 0 && (
             <div class="flex flex-wrap gap-2">

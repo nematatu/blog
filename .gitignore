@@ -1,5 +1,7 @@
 # build output
 dist/
+public/link-favicons/
+.cache/link-favicons.json
 # generated types
 .astro/
 

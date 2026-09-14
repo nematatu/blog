@@ -1,11 +1,14 @@
-import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import { getCollection } from "astro:content";
+import type { ImageMetadata } from "astro";
+import { getGalleryImageDimensions } from "@/lib/gallery-image-dimensions";
 
 export type GalleryPhoto = {
   id: string;
   src: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   alt: string;
   title: string;
   articleDate: string;
@@ -13,103 +16,92 @@ export type GalleryPhoto = {
   articleTitle: string;
 };
 
-const BLOG_ROOT = path.join(process.cwd(), "src", "content", "blog");
-const IMAGE_PATTERN = /!\[([^\]]*)\]\(([^\s)]+)(?:\s+[^)]*)?\)/g;
-const HTML_IMAGE_PATTERN = /<img\b[^>]*?src=["']([^"']+)["'][^>]*>/gi;
-const SUPPORTED_FILE = /\.(?:avif|gif|jpe?g|png|webp)(?:\?.*)?$/i;
-
-function contentFiles(directory: string): string[] {
-  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    const entryPath = path.join(directory, entry.name);
-    return entry.isDirectory()
-      ? contentFiles(entryPath)
-      : /\.(?:md|mdx)$/.test(entry.name)
-        ? [entryPath]
-        : [];
-  });
-}
-
-function frontmatterValue(source: string, key: string) {
-  return source
-    .match(new RegExp(`^${key}:\\s*["']?([^\\n"']+)`, "m"))?.[1]
-    ?.trim();
-}
-
-function imageTitle(url: string, alt: string, index: number) {
-  if (alt.trim()) return alt.trim();
-  const filename = decodeURIComponent(url.split(/[/?]/).pop() ?? "");
-  const name = filename
-    .replace(/\.[^.]+$/, "")
-    .replace(/[-_]+/g, " ")
-    .trim();
-  return name || `Image ${index + 1}`;
-}
-
-function articleHref(filePath: string) {
-  const relative = path.relative(BLOG_ROOT, filePath).replace(/\\/g, "/");
-  return `/blog/${relative.replace(/\.(?:md|mdx)$/, "")}`;
-}
-
-function sourceImages(source: string) {
-  const images: { alt: string; url: string }[] = [];
-  for (const match of source.matchAll(IMAGE_PATTERN)) {
-    images.push({ alt: match[1], url: match[2] });
-  }
-  for (const match of source.matchAll(HTML_IMAGE_PATTERN)) {
-    images.push({ alt: "", url: match[1] });
-  }
-  return images;
-}
-
-function isRenderableImageUrl(url: string) {
-  return (
-    SUPPORTED_FILE.test(url) &&
-    /^(https?:)?\/\//i.test(url) &&
-    !url.includes("example.com")
-  );
-}
-
-const articles = contentFiles(BLOG_ROOT)
-  .map((filePath) => {
-    const source = readFileSync(filePath, "utf8");
-    return {
-      filePath,
-      source,
-      title: frontmatterValue(source, "title") ?? "Blog",
-      dateText: frontmatterValue(source, "date") ?? "",
-      date: new Date(frontmatterValue(source, "date") ?? 0).valueOf(),
-      draft: /^draft:\s*true\s*$/m.test(source),
-    };
-  })
-  .filter((article) => !article.draft)
-  .sort(
-    (a, b) =>
-      b.date - a.date ||
-      articleHref(a.filePath).localeCompare(articleHref(b.filePath), "en"),
-  );
-
-export const galleryPhotos = articles.flatMap(
-  ({ filePath, source, title: articleTitle, dateText: articleDate }) => {
-    const href = articleHref(filePath);
-    return sourceImages(source).flatMap(({ alt, url }, index) => {
-      if (!isRenderableImageUrl(url)) return [];
-
-      const title = imageTitle(url, alt, index);
-      return [
-        {
-          id: `${href}-${index}`
-            .replace(/[^a-z0-9]+/gi, "-")
-            .replace(/^-|-$/g, ""),
-          src: url,
-          width: 1200,
-          height: 800,
-          alt: alt.trim() || `${articleTitle}の画像: ${title}`,
-          title,
-          articleDate,
-          articleHref: href,
-          articleTitle,
-        } satisfies GalleryPhoto,
-      ];
-    });
-  },
+const localImages = import.meta.glob<ImageMetadata>(
+  "/src/content/**/*.{avif,gif,jpg,jpeg,png,webp,JPG,PNG}",
+  { eager: true, import: "default" },
 );
+
+// Parse serialized Markdown, so code examples and comments cannot become photos.
+function attribute(tag: string, name: string) {
+  const value = tag.match(new RegExp(`\\s${name}="([^"]*)"`, "i"))?.[1] ?? "";
+  return value.replace(
+    /&(#x[\da-f]+|#\d+|amp|quot|apos|lt|gt);/gi,
+    (_, entity: string) => {
+      if (entity.startsWith("#")) {
+        const hex = entity[1].toLowerCase() === "x";
+        return String.fromCodePoint(
+          parseInt(entity.slice(hex ? 2 : 1), hex ? 16 : 10),
+        );
+      }
+      return (
+        { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">" }[
+          entity.toLowerCase()
+        ] ?? _
+      );
+    },
+  );
+}
+
+export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
+  const articles = (await getCollection("blog"))
+    .filter((article) => !article.data.draft)
+    .sort(
+      (a, b) =>
+        b.data.date.valueOf() - a.data.date.valueOf() ||
+        a.id.localeCompare(b.id, "en"),
+    );
+  const processor = await createMarkdownProcessor({
+    syntaxHighlight: false,
+    smartypants: false,
+  });
+
+  const photos = (
+    await Promise.all(
+      articles.map(async (article) => {
+        const { code } = await processor.render(article.body ?? "");
+        const tags = [
+          ...code.replace(/<!--[\s\S]*?-->/g, "").matchAll(/<img\b[^>]*>/gi),
+        ];
+        // Preserve existing shared IDs, including capital letters in filenames.
+        const legacyPath = article.filePath
+          ? path
+              .relative("src/content/blog", article.filePath)
+              .replace(/\.(md|mdx)$/, "")
+          : article.id;
+        return tags.flatMap(([tag], index): GalleryPhoto[] => {
+          let src = attribute(tag, "src");
+          if (!src) return [];
+          if (src.startsWith("//")) src = `https:${src}`;
+          if (!/^(https?:\/\/|\/)/i.test(src)) {
+            const imagePath = path.posix.normalize(
+              `/${path.dirname(path.relative(process.cwd(), path.resolve(article.filePath ?? "")))}/${src}`,
+            );
+            src = localImages[imagePath]?.src ?? "";
+          }
+          if (!src) return [];
+          const url = new URL(src, "https://blog.amatatu.com");
+          if (!/\.(avif|gif|jpe?g|png|webp)$/i.test(url.pathname)) return [];
+          const alt = attribute(tag, "alt").trim();
+          const title = alt || `${article.data.title} — ${index + 1}`;
+          return [
+            {
+              id: `blog/${legacyPath}-${index}`
+                .replace(/[^a-z0-9]+/gi, "-")
+                .replace(/^-|-$/g, ""),
+              src,
+              alt: alt || `${article.data.title}の画像 ${index + 1}`,
+              title,
+              articleDate: article.data.date.toISOString(),
+              articleHref: `/blog/${article.id}`,
+              articleTitle: article.data.title,
+            },
+          ];
+        });
+      }),
+    )
+  ).flat();
+  const dimensions = await getGalleryImageDimensions(
+    photos.map((photo) => photo.src),
+  );
+  return photos.map((photo) => ({ ...photo, ...dimensions.get(photo.src) }));
+}

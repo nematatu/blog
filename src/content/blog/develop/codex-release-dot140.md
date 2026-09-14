@@ -18,4 +18,4 @@ ogImage: /ogp/codex-v0140.png
 
 ## /usage
 
-![](https://assets.blog.amatatu.com/paste-images/20260617152747.avif)
+![](https://assets.blog.amatatu.com/paste-images/20260617152746.avif)

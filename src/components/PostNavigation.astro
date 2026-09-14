@@ -8,7 +8,7 @@ const { prevPost, nextPost } = Astro.props;
       prevPost?.id ? (
         <a
           href={`/blog/${prevPost?.id}`}
-          class="group relative flex flex-nowrap border border-black/15 px-4 py-3 pl-10 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+          class="group relative flex flex-nowrap px-4 py-3 pl-10 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +29,7 @@ const { prevPost, nextPost } = Astro.props;
       nextPost?.id ? (
         <a
           href={`/blog/${nextPost?.id}`}
-          class="group relative flex grow flex-row-reverse flex-nowrap border border-black/15 px-4 py-4 pr-10 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+          class="group relative flex grow flex-row-reverse flex-nowrap px-4 py-4 pr-10 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -45,22 +45,5 @@ const { prevPost, nextPost } = Astro.props;
         <div class="invisible" />
       )
     }
-  </div>
-  <div class="mt-10 text-center">
-    <a
-      href="/blog"
-      class="group inline-flex items-center gap-1.5 bg-blue-500 px-4 py-3 text-sm text-white no-underline hover:border-blue-400 hover:bg-sky-500 hover:text-white focus-visible:border-sky-500 focus-visible:bg-sky-500 focus-visible:text-white dark:border-sky-400 dark:bg-sky-400 dark:text-white dark:hover:border-sky-300 dark:hover:bg-sky-300 dark:hover:text-white dark:focus-visible:border-sky-300 dark:focus-visible:bg-sky-300 dark:focus-visible:text-white"
-    >
-      他の記事も読む
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        class="size-4 !translate-x-0 !translate-y-0 fill-none stroke-current stroke-2 !transition-transform !duration-150 !ease-out group-hover:!translate-x-0.5 group-hover:!-translate-y-0.5"
-        aria-hidden="true"
-      >
-        <path d="M7 17 17 7"></path>
-        <path d="M9 7h8v8"></path>
-      </svg>
-    </a>
   </div>
 </nav>

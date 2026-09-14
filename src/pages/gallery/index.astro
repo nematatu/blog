@@ -1,7 +1,9 @@
 ---
 import PhotoGallery from "@components/PhotoGallery.astro";
-import { galleryPhotos } from "@/data/gallery";
+import { getGalleryPhotos } from "@/data/gallery";
 import Layout from "@layouts/Layout.astro";
+
+const galleryPhotos = await getGalleryPhotos();
 ---
 
 <Layout

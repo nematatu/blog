@@ -9,14 +9,15 @@ type Props = {
   title: string;
   description?: string;
   image?: string;
+  page?: "default" | "article";
 };
 
-const { title, description, image } = Astro.props;
+const { title, description, image, page = "default" } = Astro.props;
 const resolvedDescription = description ?? SITE.DESCRIPTION;
 ---
 
 <!doctype html>
-<html lang="ja" class="dark">
+<html lang="ja" class:list={["dark", page === "article" && "article-page"]}>
   <head>
     <Head
       title={`${title} | ${SITE.TITLE}`}

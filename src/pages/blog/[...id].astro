@@ -51,6 +51,7 @@ const ogImageVersion = "20260614-og-background";
   description={post.data.description ?? SITE.DESCRIPTION}
   image={post.data.ogImage ??
     `/og-image/blog/${post.id}.png?v=${ogImageVersion}`}
+  page="article"
 >
   <Container>
     <section class="animate mx-auto mt-0 mb-3 max-w-5xl px-3 sm:px-10">
@@ -68,7 +69,11 @@ const ogImageVersion = "20260614-og-background";
           class="font-base flex items-center gap-2 text-sm text-black/50 dark:text-white/50"
         >
           {post.data.pinned && <PinnedIndicator />}
-          <FormattedDate date={post.data.date} />
+          <span
+            data-post-transition-url={`/blog/${post.id}`}
+            data-post-transition-part="date"
+            ><FormattedDate date={post.data.date} /></span
+          >
         </div>
       </div>
     </section>
@@ -102,7 +107,7 @@ const ogImageVersion = "20260614-og-background";
                 {post.data.tags.map((tag) => (
                   <a
                     href={`/tags/${tag}`}
-                    class="border border-black/15 px-2 py-1 text-sm text-black/70 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+                    class="px-2 py-1 text-sm text-black/70 no-underline hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
                   >
                     {tag}
                   </a>

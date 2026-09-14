@@ -292,7 +292,7 @@ https://www.youtube.com/watch?v=0W7FqDBD7Ts
 
 結構昔に、百均のアクリル4つだけで立体的に見せるみたいな流行ったよね。↓
 
-![](https://b55858b0d5c41b055859b1e758ddf3a2.r2.cloudflarestorage.com/blog-images/paste-images/20260625045138.avif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=068034e59fa6e75d0f3f5e66181df5e6%2F20260624%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260624T195146Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=c090f91966a51cd37c8f8ce18e7742a1062f0621bb9991f749e69bf64fe1306b)
+![](https://assets.blog.amatatu.com/paste-images/20260625045138.avif)
 
 それと組み合わせれば、ちっちゃいけど机の横に置いといて、そこでちっちゃく試合してるみたいなので遊べそう。
 

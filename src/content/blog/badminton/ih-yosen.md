@@ -78,7 +78,7 @@ tags: ["バドミントン"]
 
 決勝のファイナル17-15で競り勝っててヤバい
 
-![](https://b55858b0d5c41b055859b1e758ddf3a2.r2.cloudflarestorage.com/blog-images/paste-images/20260602204414.avif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=068034e59fa6e75d0f3f5e66181df5e6%2F20260602%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260602T114416Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=c007760261cd01a700cfe15a7cc1b5ddf7b3c1fb50c7baec520d59fa35f6b009)
+![](https://assets.blog.amatatu.com/paste-images/20260602204414.avif)
 
 2位の子も、埼玉→鹿児島飛翔→YANAI(全中優勝メンバー)→日大目黒の2年生らしい
 
@@ -86,7 +86,7 @@ tags: ["バドミントン"]
 
 東京の団体は一ヶ月かかるらしい(東西それぞれで！)
 
-![](https://b55858b0d5c41b055859b1e758ddf3a2.r2.cloudflarestorage.com/blog-images/paste-images/20260602211001.avif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=068034e59fa6e75d0f3f5e66181df5e6%2F20260602%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260602T121004Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=7068de876bda6e449b1920ceaa86a8919f5fd5713c1055252b3229da52503869)
+![](https://assets.blog.amatatu.com/paste-images/20260602211001.avif)
 
 | 種目       | 男子                                                                                 | 女子                                                                              |
 | ---------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
