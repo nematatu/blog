@@ -34,21 +34,72 @@ function extractCodeFilenames(source) {
   return filenames;
 }
 
-function applyCodeFilenames(node, filenames, indexRef) {
+function createCopyButton() {
+  return {
+    type: "element",
+    tagName: "button",
+    properties: {
+      className: ["copy-code"],
+      type: "button",
+      dataCopyCode: "true",
+      title: "Copy code",
+      ariaLabel: "コードをコピー",
+    },
+    children: [
+      {
+        type: "element",
+        tagName: "iconify-icon",
+        properties: { icon: "lucide:copy", ariaHidden: "true" },
+        children: [],
+      },
+    ],
+  };
+}
+
+function wrapCodeBlocks(node, filenames, indexRef) {
   if (!node || !Array.isArray(node.children)) return;
 
-  for (const child of node.children) {
+  for (let index = 0; index < node.children.length; index += 1) {
+    const child = node.children[index];
+
     if (isElement(child) && child.tagName === "pre") {
       const filename = filenames[indexRef.index];
       indexRef.index += 1;
+      child.properties ||= {};
+      child.properties.tabIndex = 0;
 
       if (filename) {
-        child.properties ||= {};
         child.properties["data-filename"] = filename;
       }
+
+      const wrapperChildren = [];
+      if (filename) {
+        wrapperChildren.push({
+          type: "element",
+          tagName: "div",
+          properties: { className: ["code-block-header"] },
+          children: [
+            {
+              type: "element",
+              tagName: "span",
+              properties: { className: ["code-filename"] },
+              children: [{ type: "text", value: filename }],
+            },
+          ],
+        });
+      }
+
+      wrapperChildren.push(child, createCopyButton());
+      node.children[index] = {
+        type: "element",
+        tagName: "div",
+        properties: { className: ["code-block-wrapper"] },
+        children: wrapperChildren,
+      };
+      continue;
     }
 
-    applyCodeFilenames(child, filenames, indexRef);
+    wrapCodeBlocks(child, filenames, indexRef);
   }
 }
 
@@ -58,8 +109,6 @@ export default function rehypeCodeFilename() {
     if (!path) return;
 
     const filenames = extractCodeFilenames(readFileSync(path, "utf8"));
-    if (!filenames.some(Boolean)) return;
-
-    applyCodeFilenames(tree, filenames, { index: 0 });
+    wrapCodeBlocks(tree, filenames, { index: 0 });
   };
 }

@@ -45,11 +45,13 @@
     border-color: var(--color-gray-200, currentColor);
   }
 
-  *:not(.fuki__content):not(.fuki__icon):not(.image-compare__stage):not(
-      .image-compare__slider
-    ):not(.image-compare__image):not(.image-compare__handle):not(
-      .image-compare__label
-    ),
+  *:not(pre):not(.code-block-header):not(.copy-code):not(.image-lightbox):not(
+      .image-lightbox__image
+    ):not(.image-lightbox__close):not(.fuki__content):not(.fuki__icon):not(
+      .image-compare__stage
+    ):not(.image-compare__slider):not(.image-compare__image):not(
+      .image-compare__handle
+    ):not(.image-compare__label),
   ::after,
   ::before {
     /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
@@ -66,6 +68,7 @@
 @layer utilities {
   html {
     overflow-y: auto;
+    scrollbar-gutter: stable;
     color-scheme: light;
     scroll-behavior: smooth;
     scroll-padding-top: 100px;
@@ -188,57 +191,96 @@
     @apply py-6 text-sm;
   }
 
+  .article-card {
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial,
+      "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    letter-spacing: 0.05em;
+  }
+
   article {
     @apply prose prose-neutral dark:prose-invert prose-img:mx-auto prose-img:my-6 max-w-full min-w-0;
     @apply prose-headings:font-semibold;
-    @apply px-3 pt-0 pb-8 sm:px-10 sm:py-10;
-    color: var(--foreground);
+    @apply px-0 py-0;
+    color: #333;
+    font-family: inherit;
     font-size: 1rem;
-    line-height: 1.9;
-    letter-spacing: 0.04em;
+    line-height: 2;
+    letter-spacing: 0.05em;
     text-autospace: normal;
     line-break: strict;
     overflow-wrap: anywhere;
     word-break: normal;
   }
 
-  @media (min-width: 640px) {
-    article {
-      font-size: 1.125rem;
-    }
+  .dark article {
+    color: #e5e5e5;
   }
 
   article > :first-child {
     margin-top: 0 !important;
   }
 
-  article img {
-    max-height: min(58vh, 520px);
+  article p {
+    margin: 0 0 1.5em;
+  }
+
+  article :where(h2, h3, h4, h5, h6) {
+    margin: 2.5rem 0 1rem;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .dark article :where(h2, h3, h4, h5, h6) {
+    color: #f5f5f5;
+  }
+
+  article h2 {
+    font-size: 1.5rem;
+  }
+
+  article h3 {
+    font-size: 1.25rem;
+  }
+
+  article h4 {
+    font-size: 1.4rem;
+  }
+
+  article h5 {
+    font-size: 1.2rem;
+  }
+
+  article h6 {
+    font-size: 0.9rem;
+  }
+
+  article img:not(.fuki__icon) {
+    max-height: none;
     max-width: 100%;
+    height: auto;
     width: auto;
+    margin-block: 3.5rem !important;
     cursor: zoom-in;
     object-fit: contain;
+    vertical-align: middle;
+  }
+
+  article p:has(> img:not([data-no-lightbox])) {
+    margin-block: 0 !important;
   }
 
   article a .external-link-favicon {
     display: inline-block;
-    width: 0.9em;
-    height: 0.9em;
+    width: 1.1em;
+    height: 1.1em;
     max-width: none;
     max-height: none;
-    margin: 0 0 0 0.5em !important;
-    vertical-align: middle;
+    margin: 0 0 0 0.35em !important;
+    vertical-align: -0.15em;
     border-radius: 0 !important;
-    cursor: default;
+    cursor: pointer;
     object-fit: contain;
-  }
-
-  article a:has(.external-link-favicon) {
-    text-decoration: none;
-  }
-
-  article a .external-link-label {
-    text-decoration: none;
   }
 
   article :where(pre, table, iframe, video) {
@@ -259,16 +301,17 @@
   }
 
   article :not(pre) > code {
-    @apply mx-0.5 inline-flex items-center px-2 py-0.5 align-middle font-mono text-[0.9em] leading-[1.35];
-    border-radius: 9999px !important;
-    background-color: #edf2f7;
-    color: #334155;
+    @apply mx-0.5 inline px-1.5 py-0.5 align-baseline font-mono text-[0.9em] leading-[1.35];
+    border: 1px solid rgb(0 0 0 / 8%);
+    border-radius: 3px !important;
+    background-color: rgb(0 0 0 / 3%);
+    color: inherit;
   }
 
   article a > code,
   article li > code,
   article p > code {
-    border-radius: 9999px !important;
+    border-radius: 3px !important;
   }
 
   article :where(code)::before,
@@ -277,8 +320,96 @@
   }
 
   .dark article :not(pre) > code {
-    background-color: #1e293b;
-    color: #d6e3ed;
+    border-color: rgb(255 255 255 / 10%);
+    background-color: rgb(255 255 255 / 6%);
+    color: inherit;
+  }
+
+  article :where(ul, ol) {
+    margin: 0 0 2.5rem 1.5rem;
+    padding: 0;
+    background: transparent;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  article :where(ul, ol) :where(ul, ol) {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  article blockquote {
+    position: relative;
+    margin: 2em 0 1.6em;
+    padding: 20px;
+    border: 0;
+    background: #f5f5f5;
+    color: inherit;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .dark article blockquote {
+    background: #171717;
+  }
+
+  article blockquote::before {
+    content: "“";
+    position: absolute;
+    top: -0.45em;
+    left: -0.08em;
+    font-size: 6em;
+    line-height: 1;
+    opacity: 0.08;
+  }
+
+  article blockquote p:first-of-type::before,
+  article blockquote p:last-of-type::after {
+    content: none;
+  }
+
+  article table {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  article :where(th, td) {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+  }
+
+  .dark article :where(th, td) {
+    border-color: #525252;
+  }
+
+  article th {
+    background: #fff;
+  }
+
+  .dark article th {
+    background: #262626;
+  }
+
+  article hr {
+    width: 50%;
+    margin: 2em auto;
+    border: 0;
+    border-top: 1px solid #ddd;
+  }
+
+  .dark article hr {
+    border-top-color: #525252;
+  }
+
+  @media (min-width: 992px) {
+    article table {
+      font-size: 0.9rem;
+    }
   }
 
   article :where(h2, h3, h4, h5, h6)[id] {
@@ -303,10 +434,20 @@
 
 @layer utilities {
   article a {
-    @apply font-sans text-blue-800 no-underline dark:text-blue-400;
+    color: #1487bd;
+    text-decoration: underline;
   }
   article a:hover {
-    @apply text-blue-900 dark:text-blue-300;
+    color: #0f668f;
+    text-decoration: none;
+  }
+
+  .dark article a {
+    color: #7dd3fc;
+  }
+
+  .dark article a:hover {
+    color: #bae6fd;
   }
 
   article .data-footnote-backref {
@@ -346,20 +487,44 @@ html.scrolled #back-to-top {
 
 /* shiki config */
 pre {
-  @apply my-6 overflow-x-auto border-0 px-0 py-5 leading-relaxed;
-  border-radius: 12px !important;
-  background-color: #1a2638 !important;
-  color: #edf6ff !important;
+  display: flex;
+  margin: 1.3rem 0;
+  overflow-x: auto;
+  border: 0;
+  border-radius: 5px !important;
+  background-color: #1e293b !important;
+  box-shadow: none;
+  color: #fff !important;
+  line-height: 1.7;
+  text-autospace: no-autospace;
+  word-break: normal;
+  overflow-wrap: normal;
+  -webkit-overflow-scrolling: touch;
 }
 
 .dark pre {
-  background-color: #101827 !important;
+  background-color: #1e293b !important;
 }
 
 pre code {
-  @apply block min-w-max bg-transparent px-6 py-0;
+  display: block;
+  min-width: max-content;
+  margin: 0;
+  padding: 1.1rem;
+  background: transparent;
   color: inherit;
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 0.95em;
   font-weight: 400;
+}
+
+@media (max-width: 639px) {
+  pre code {
+    padding: 1rem 0.8rem;
+    font-size: 0.9em;
+  }
 }
 
 pre code * {
@@ -437,62 +602,110 @@ pre code * {
 
 /* copy code button on codeblocks */
 .code-block-wrapper {
-  @apply relative my-6 overflow-hidden border border-slate-200 bg-[#1a2638] dark:border-slate-700;
-  border-radius: 12px !important;
-}
-
-.dark .code-block-wrapper {
-  background-color: #101827;
+  position: relative;
+  margin: 1.3rem 0;
 }
 
 .code-block-wrapper > pre {
-  @apply my-0;
+  margin: 0;
 }
 
 .code-block-header {
-  @apply mt-0 flex h-10 items-center justify-between border-b border-slate-200 bg-slate-100 px-4 dark:border-slate-700 dark:bg-slate-800;
+  position: relative;
+  z-index: 1;
+  display: table;
+  max-width: calc(100% - 3rem);
+  margin-bottom: -16px;
+  padding: 6px 12px 20px;
+  border-radius: 5px 5px 0 0;
+  background-color: #323e52;
 }
 
 .code-block-header + pre {
-  @apply my-0 border-t-0;
-  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
 }
 
 .code-filename {
-  @apply min-w-0 truncate font-mono text-xs font-semibold text-slate-600 dark:text-slate-300;
+  display: block;
+  overflow: hidden;
+  color: rgb(255 255 255 / 90%);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .copy-code {
-  @apply absolute top-2 right-2 z-10 grid size-8 place-content-center bg-white/10 text-center text-base leading-none text-slate-200;
-}
-
-.code-block-header .copy-code {
-  @apply static shrink-0 text-slate-500 dark:text-slate-300;
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-content: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: rgb(255 255 255 / 65%);
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .copy-code:hover {
-  @apply bg-white/15 text-white dark:bg-white/10;
-}
-
-.code-block-header .copy-code:hover {
-  @apply bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-white;
+  background-color: rgb(255 255 255 / 10%);
+  color: #fff;
 }
 
 .image-lightbox {
-  @apply fixed inset-0 z-50 hidden place-items-center bg-black/85 p-4;
+  @apply fixed inset-0 z-50 grid place-items-center p-4;
+  visibility: hidden;
+  background-color: rgb(0 0 0 / 82%);
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(3px);
+  transition:
+    opacity 220ms ease,
+    visibility 0s linear 220ms !important;
 }
 
 .image-lightbox.is-open {
-  @apply grid;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0s !important;
 }
 
 .image-lightbox__image {
-  @apply max-h-[90vh] max-w-[92vw] border-2 border-white/25 object-contain;
+  @apply max-h-[90vh] max-w-[92vw] object-contain;
+  border: 0 !important;
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition:
+    opacity 200ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1) !important;
   cursor: zoom-out;
+}
+
+.image-lightbox.is-open .image-lightbox__image {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .image-lightbox__close {
   @apply absolute top-4 right-4 grid size-10 place-content-center bg-black/70 text-2xl leading-none text-white;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 180ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 160ms ease !important;
+}
+
+.image-lightbox.is-open .image-lightbox__close {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .image-lightbox__close:hover {
@@ -503,13 +716,22 @@ pre code * {
   overflow: hidden;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .image-lightbox,
+  .image-lightbox__image,
+  .image-lightbox__close {
+    transition: none !important;
+  }
+}
+
 @layer components {
   .image-caption {
-    @apply my-6 flex flex-col items-center gap-2;
+    @apply my-14 flex flex-col items-center gap-2;
   }
 
   .image-caption img {
     @apply block;
+    margin-block: 0 !important;
   }
 
   .image-caption figcaption {
@@ -672,7 +894,7 @@ pre code * {
   }
 
   .admonition > :last-child {
-    @apply mb-0;
+    margin-bottom: 0 !important;
   }
 
   .admonition--note {
@@ -825,7 +1047,7 @@ article .fuki__icon {
   top: 0;
   width: 1.5rem;
   height: 1.5rem;
-  margin: 0;
+  margin: 0 !important;
   border-radius: 0.25rem !important;
   cursor: default;
   object-fit: cover;
@@ -869,7 +1091,7 @@ article .fuki a {
 article p,
 article li,
 article blockquote {
-  line-height: 1.7 !important;
+  line-height: 2 !important;
   line-break: strict;
   overflow-wrap: anywhere;
   word-break: normal;
@@ -880,14 +1102,34 @@ article :where(a, code, kbd, samp) {
 }
 
 article p {
-  margin-block: 0.85em !important;
+  margin: 0 0 1.5em !important;
 }
 
 article ul,
 article ol {
-  margin-block: 0.6em !important;
+  margin: 0 0 2.5rem 1.5rem !important;
+  padding: 0;
+}
+
+article :where(ul, ol) :where(ul, ol) {
+  margin: 0 !important;
+  padding-block: 0;
+  padding-right: 0;
 }
 
 article li {
-  margin-block: 0.2em !important;
+  margin-block: 0.375rem !important;
+  line-height: 2 !important;
+}
+
+article li > :where(ul, ol) {
+  margin-block: 0 !important;
+}
+
+article li li {
+  margin-block: 0 !important;
+}
+
+article li:has(> :where(ul, ol)) {
+  margin-bottom: 0 !important;
 }

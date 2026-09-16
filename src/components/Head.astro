@@ -141,9 +141,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       if (target.id === "back-to-prev") history.back();
       if (target.dataset.themeButton) setTheme(target.dataset.themeButton);
       if (target.dataset.copyCode) {
-        await navigator.clipboard.writeText(target.closest("pre").innerText);
-        target.innerHTML = copyIcon(true);
-        setTimeout(() => (target.innerHTML = copyIcon(false)), 2000);
+        const codeBlock = target
+          .closest(".code-block-wrapper")
+          ?.querySelector("pre");
+        if (codeBlock) {
+          await navigator.clipboard.writeText(codeBlock.innerText);
+          target.innerHTML = copyIcon(true);
+          setTimeout(() => (target.innerHTML = copyIcon(false)), 2000);
+        }
       }
       if (target.dataset.copyHeading) {
         const heading = target.closest("[id]");
@@ -153,28 +158,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
       if (target.matches(lightboxImageSelector)) openLightbox(target);
     });
-
-    for (const codeBlock of document.querySelectorAll("pre")) {
-      const button = document.createElement("button");
-      button.className = "copy-code";
-      button.type = "button";
-      button.dataset.copyCode = "true";
-      button.innerHTML = copyIcon(false);
-      button.title = "Copy code";
-      codeBlock.tabIndex = 0;
-
-      const wrapper = document.createElement("div");
-      wrapper.className = "code-block-wrapper";
-      codeBlock.before(wrapper);
-
-      if (codeBlock.dataset.filename) {
-        wrapper.innerHTML = `<div class="code-block-header"><span class="code-filename">${codeBlock.dataset.filename}</span></div>`;
-        wrapper.firstElementChild.append(button);
-      } else {
-        codeBlock.append(button);
-      }
-      wrapper.append(codeBlock);
-    }
 
     for (const image of document.querySelectorAll(lightboxImageSelector)) {
       image.tabIndex = 0;
@@ -194,9 +177,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       lightbox.className = "image-lightbox";
       lightbox.innerHTML = `<button class="image-lightbox__close" type="button" aria-label="Close image preview"><iconify-icon icon="lucide:x" aria-hidden="true"></iconify-icon></button><img class="image-lightbox__image" alt="" />`;
       lightbox.addEventListener("click", (event) => {
-        if (event.target === lightbox || event.target.closest("button")) {
-          lightbox.classList.remove("is-open");
-          root.classList.remove("image-lightbox-open");
+        if (
+          event.target === lightbox ||
+          event.target.closest(".image-lightbox__image, .image-lightbox__close")
+        ) {
+          closeLightbox(lightbox);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+          closeLightbox(lightbox);
         }
       });
       document.body.append(lightbox);
@@ -205,7 +195,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     const preview = lightbox.querySelector("img");
     preview.src = image.currentSrc || image.src;
     preview.alt = image.alt || "";
-    lightbox.classList.add("is-open");
     root.classList.add("image-lightbox-open");
+    requestAnimationFrame(() => lightbox.classList.add("is-open"));
+  }
+
+  function closeLightbox(lightbox) {
+    lightbox.classList.remove("is-open");
+    root.classList.remove("image-lightbox-open");
   }
 </script>

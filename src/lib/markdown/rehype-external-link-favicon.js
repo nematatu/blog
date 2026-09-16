@@ -189,23 +189,16 @@ export default function rehypeExternalLinkFavicon({ site } = {}) {
         )
       )
         continue;
-      const label = {
-        type: "element",
-        tagName: "span",
-        properties: { className: ["external-link-label"] },
-        children: node.children,
-      };
       node.children = [
-        label,
-        { type: "text", value: " " },
+        ...node.children,
         {
           type: "element",
           tagName: "img",
           properties: {
             src,
             alt: "",
-            width: 16,
-            height: 16,
+            width: 18,
+            height: 18,
             loading: "lazy",
             decoding: "async",
             className: ["external-link-favicon"],
