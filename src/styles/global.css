@@ -47,11 +47,13 @@
 
   *:not(pre):not(.code-block-header):not(.copy-code):not(.image-lightbox):not(
       .image-lightbox__image
-    ):not(.image-lightbox__close):not(.fuki__content):not(.fuki__icon):not(
-      .image-compare__stage
-    ):not(.image-compare__slider):not(.image-compare__image):not(
-      .image-compare__handle
-    ):not(.image-compare__label),
+    ):not(.image-lightbox__close):not(.post-card__media):not(
+      .fuki__content
+    ):not(.fuki__icon):not(.image-compare__stage):not(
+      .image-compare__slider
+    ):not(.image-compare__image):not(.image-compare__handle):not(
+      .image-compare__label
+    ),
   ::after,
   ::before {
     /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
@@ -63,6 +65,10 @@
     /* biome-ignore lint/complexity/noImportantStyles: global reset must override component styles */
     transition: none !important;
   }
+}
+
+.post-card__media {
+  border-radius: 6px !important;
 }
 
 @layer utilities {
