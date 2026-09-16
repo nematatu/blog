@@ -42,3 +42,9 @@ draft: false
 * nodeの更新を追う
 * pnpmのrustとかのマネージャになってるやつ追う
 * bunアプデを読む
+
+## 拡張機能
+* YouTube切り抜きツール
+    * 
+* YouTube動画保存
+    * 履歴保存(GitHubホスティングにして同期)

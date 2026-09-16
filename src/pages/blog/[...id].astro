@@ -4,7 +4,6 @@ import Container from "@components/Container.astro";
 import EntryBadges from "@components/EntryBadges.astro";
 import ShareButtons from "@components/ShareButtons.astro";
 import FormattedDate from "@components/FormattedDate.astro";
-import Giscus from "@components/Giscus.astro";
 import OgImage from "@components/OgImage.astro";
 import PinnedIndicator from "@components/PinnedIndicator.astro";
 import PostNavigation from "@components/PostNavigation.astro";
@@ -119,9 +118,6 @@ const ogImageVersion = "20260614-og-background";
         </div>
         <div class="mt-24">
           <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-        </div>
-        <div class="mt-24">
-          <Giscus />
         </div>
       </article>
     </div>

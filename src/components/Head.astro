@@ -83,16 +83,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           ),
         ),
       );
-
-    const giscus = document.querySelector(".giscus-frame");
-    if (giscus) {
-      const url = new URL(giscus.src);
-      url.searchParams.set(
-        "theme",
-        root.classList.contains("dark") ? "dark" : "light",
-      );
-      giscus.src = url.toString();
-    }
   };
 
   const copyIcon = (copied) =>
@@ -163,19 +153,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
       if (target.matches(lightboxImageSelector)) openLightbox(target);
     });
-
-    for (const heading of document.querySelectorAll(
-      "article :is(h2, h3, h4, h5, h6)[id]",
-    )) {
-      const button = document.createElement("button");
-      button.className = "copy-heading-link";
-      button.type = "button";
-      button.dataset.copyHeading = "true";
-      button.textContent = "#".repeat(Number(heading.tagName.slice(1)));
-      button.title = "Copy link to this heading";
-      button.setAttribute("aria-label", "Copy link to this heading");
-      heading.prepend(button);
-    }
 
     for (const codeBlock of document.querySelectorAll("pre")) {
       const button = document.createElement("button");

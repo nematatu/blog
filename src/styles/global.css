@@ -193,12 +193,19 @@
     @apply prose-headings:font-semibold;
     @apply px-3 pt-0 pb-8 sm:px-10 sm:py-10;
     color: var(--foreground);
-    font-size: 1.125rem;
-    letter-spacing: 0.03em;
+    font-size: 1rem;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
     text-autospace: normal;
     line-break: strict;
     overflow-wrap: anywhere;
     word-break: normal;
+  }
+
+  @media (min-width: 640px) {
+    article {
+      font-size: 1.125rem;
+    }
   }
 
   article > :first-child {
@@ -279,9 +286,13 @@
   }
 
   .copy-heading-link {
-    @apply mr-1 inline cursor-pointer leading-none whitespace-nowrap text-[inherit] text-black/15 dark:text-white/15;
+    @apply mr-2 inline cursor-pointer leading-none whitespace-nowrap text-[inherit] text-black/15 dark:text-white/15;
     font-family: inherit;
     font-weight: 400;
+  }
+
+  .copy-heading-link::before {
+    content: attr(data-heading-marker);
   }
 
   .copy-heading-link:hover,
