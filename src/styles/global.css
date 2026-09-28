@@ -84,6 +84,12 @@
     color-scheme: dark;
   }
 
+  @media (min-width: 1024px) {
+    html {
+      font-size: 106.25%;
+    }
+  }
+
   html,
   body {
     @apply min-h-screen;
@@ -102,7 +108,7 @@
   }
 
   header {
-    @apply sticky top-0 z-50 py-4 sm:py-6;
+    @apply sticky top-0 z-50 pt-10 pb-4 lg:py-6;
     @apply bg-neutral-100/75 dark:bg-neutral-900/75;
     @apply saturate-200 backdrop-blur-xs;
   }
@@ -111,22 +117,10 @@
     @apply flex-1 pt-4 pb-32 sm:pt-10;
   }
 
-  /* Article pages keep the brand visible while the utility header slides away. */
-  html.article-page header {
-    height: 3.5rem;
-    overflow: hidden;
-    padding-block: 0;
-    display: flex;
-    align-items: center;
-    animation: article-header-collapse 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
+  /* Article pages keep only the brand in the header. */
   html.article-page [data-header-navigation],
   html.article-page [data-header-actions] {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-1.5rem);
-    animation: article-header-items-away 260ms ease-out both;
+    display: none;
   }
 
   html.article-page main {
@@ -134,7 +128,7 @@
     animation: article-content-rise 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 1024px) {
     html.article-page header {
       position: absolute;
       inset: 0 0 auto;
@@ -143,6 +137,17 @@
       padding: 0;
       background: transparent;
       backdrop-filter: none;
+      animation: article-header-collapse 360ms cubic-bezier(0.22, 1, 0.36, 1)
+        both;
+    }
+
+    html.article-page [data-header-navigation],
+    html.article-page [data-header-actions] {
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-1.5rem);
+      animation: article-header-items-away 260ms ease-out both;
     }
 
     html.article-page header > div {
@@ -210,7 +215,7 @@
     @apply px-0 py-0;
     color: #333;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 2;
     letter-spacing: 0.05em;
     text-autospace: normal;
@@ -417,25 +422,6 @@
       font-size: 0.9rem;
     }
   }
-
-  article :where(h2, h3, h4, h5, h6)[id] {
-    @apply relative;
-  }
-
-  .copy-heading-link {
-    @apply mr-2 inline cursor-pointer leading-none whitespace-nowrap text-[inherit] text-black/15 dark:text-white/15;
-    font-family: inherit;
-    font-weight: 400;
-  }
-
-  .copy-heading-link::before {
-    content: attr(data-heading-marker);
-  }
-
-  .copy-heading-link:hover,
-  .copy-heading-link:focus-visible {
-    @apply text-black/45 outline-none dark:text-white/55;
-  }
 }
 
 @layer utilities {
@@ -475,14 +461,6 @@
   opacity: 1;
   transform: none;
   translate: none;
-}
-
-html #back-to-top {
-  @apply pointer-events-none opacity-0;
-}
-
-html.scrolled #back-to-top {
-  @apply pointer-events-auto opacity-100;
 }
 
 @media (prefers-reduced-motion: reduce) {

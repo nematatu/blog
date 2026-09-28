@@ -21,25 +21,25 @@ const primaryTag = tags[0] ?? "記事";
 <a
   href={`/blog/${entry.id}`}
   class={cn(
-    "post-card group flex h-full min-w-0 flex-col text-left no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400",
+    "post-card group flex h-full min-w-0 items-start gap-3 py-4 text-left no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600 sm:flex-col sm:items-stretch sm:gap-0 sm:py-0 dark:focus-visible:outline-blue-400",
     className,
   )}
 >
   <div
-    class="post-card__media relative aspect-[1.91/1] w-full overflow-hidden border border-black/8 bg-white dark:border-white/10 dark:bg-neutral-800"
+    class="post-card__media relative aspect-[3/2] w-24 shrink-0 overflow-hidden border border-black/8 bg-white sm:aspect-[1.91/1] sm:w-full dark:border-white/10 dark:bg-neutral-800"
   >
     {
       ogImage ? (
         <OgImage
           transitionUrl={`/blog/${entry.id}`}
           src={ogImage}
-          sizes="(min-width: 1024px) 19rem, (min-width: 640px) 46vw, calc(100vw - 2rem)"
+          sizes="(min-width: 1024px) 19rem, (min-width: 640px) 46vw, 6rem"
           class="block h-full w-full object-cover group-hover:opacity-90"
           loading="lazy"
         />
       ) : (
-        <div class="grid h-full place-items-center bg-black/[0.025] px-6 dark:bg-white/[0.025]">
-          <span class="text-sm font-medium tracking-wider text-black/35 dark:text-white/35">
+        <div class="grid h-full place-items-center bg-black/[0.025] px-2 sm:px-6 dark:bg-white/[0.025]">
+          <span class="text-xs font-medium tracking-wider text-black/35 sm:text-sm dark:text-white/35">
             #{primaryTag}
           </span>
         </div>
@@ -47,20 +47,7 @@ const primaryTag = tags[0] ?? "記事";
     }
   </div>
 
-  <div
-    class="grid min-w-0 flex-1 grid-rows-[1.25rem_3.25rem_3rem_1.25rem] gap-y-2 pt-4"
-  >
-    <div
-      class="flex min-h-5 items-center gap-2 text-xs text-black/45 dark:text-white/45"
-    >
-      {entry.data.pinned && <PinnedIndicator />}
-      <time
-        datetime={entry.data.date.toISOString()}
-        data-post-transition-url={`/blog/${entry.id}`}
-        data-post-transition-part="date">{dateLabel}</time
-      >
-    </div>
-
+  <div class="flex min-w-0 flex-1 flex-col gap-1 self-stretch sm:gap-2 sm:pt-4">
     <h3
       class="line-clamp-2 text-[1.05rem] leading-[1.55] font-semibold text-black group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400"
     >
@@ -72,14 +59,26 @@ const primaryTag = tags[0] ?? "記事";
       <EntryBadges draft={entry.data.draft} />
     </h3>
 
-    <p class="line-clamp-2 text-sm leading-6 text-black/55 dark:text-white/55">
-      {entry.data.description ?? ""}
-    </p>
-
-    <div
-      class="flex flex-wrap items-center gap-x-3 overflow-hidden text-xs text-black/40 dark:text-white/40"
-    >
-      {tags.slice(0, 2).map((tag) => <span>#{tag}</span>)}
+    <div class="mt-auto flex items-end justify-between gap-2">
+      {
+        tags.length > 0 && (
+          <div class="hidden flex-wrap items-center gap-x-3 overflow-hidden text-xs text-black/40 sm:flex dark:text-white/40">
+            {tags.slice(0, 2).map((tag) => (
+              <span>#{tag}</span>
+            ))}
+          </div>
+        )
+      }
+      <div
+        class="ml-auto flex min-h-5 items-center gap-2 text-xs text-black/45 dark:text-white/45"
+      >
+        {entry.data.pinned && <PinnedIndicator />}
+        <time
+          datetime={entry.data.date.toISOString()}
+          data-post-transition-url={`/blog/${entry.id}`}
+          data-post-transition-part="date">{dateLabel}</time
+        >
+      </div>
     </div>
   </div>
 </a>

@@ -6,7 +6,6 @@ import pagefind from "astro-pagefind";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import rehypeCodeFilename from "./src/lib/markdown/rehype-code-filename.js";
-import rehypeHeadingLinks from "./src/lib/markdown/rehype-heading-links.js";
 import rehypeImageCaption from "./src/lib/markdown/rehype-image-caption.js";
 import remarkCodeLanguage from "./src/lib/markdown/remark-code-language.js";
 import remarkDirectiveWidgets from "./src/lib/markdown/remark-directive-widgets.js";
@@ -45,7 +44,6 @@ export default defineConfig({
       remarkYoutubePlayer,
     ],
     rehypePlugins: [
-      rehypeHeadingLinks,
       rehypeCodeFilename,
       rehypeImageCaption,
       [rehypeExternalLinksBlank, { site }],
