@@ -51,7 +51,7 @@
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    if (target.closest("#magnifying-glass")) openSearch();
+    if (target.closest("[data-open-search]")) openSearch();
     if (
       target === backdrop ||
       target.classList.contains("pagefind-ui__result-link")
@@ -108,5 +108,11 @@
 
   #search .pagefind-ui__message {
     padding: 0 0 0.75rem;
+  }
+
+  #pagefind-container {
+    max-width: 720px;
+    border-radius: 8px;
+    background: #fff;
   }
 </style>

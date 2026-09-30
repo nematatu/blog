@@ -3,22 +3,24 @@ import { getCollection } from "astro:content";
 import CommitHeatmap from "@components/CommitHeatmap.astro";
 import Container from "@components/Container.astro";
 import { BLOG } from "@consts";
-import { sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
-import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
+import { dateKey, getTextStats } from "@lib/post-metrics";
 
 const showDrafts = import.meta.env.DEV;
 const now = new Date();
 const rangeStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
-const entries = sortByDateDesc(
-  (await getCollection("blog"))
-    .filter((post) => showDrafts || !post.data.draft)
-    .filter((post) => post.data.date >= rangeStart && post.data.date <= now),
-).map((entry) => ({
-  entry,
-  charCount: getTextStats(entry.body ?? "").charCount,
-}));
+const entries = (await getCollection("blog"))
+  .filter(
+    (post) =>
+      (showDrafts || !post.data.draft) &&
+      post.data.date >= rangeStart &&
+      post.data.date <= now,
+  )
+  .map((entry) => ({
+    entry,
+    charCount: getTextStats(entry.body ?? "").charCount,
+  }));
 
 const months = Array.from({ length: 6 }, (_, index) => {
   const date = new Date(
@@ -44,8 +46,9 @@ let periodCharTotal = 0;
 
 for (const { entry, charCount } of entries) {
   periodCharTotal += charCount;
-  count(dayCounts, dateKey(entry.data.date));
-  const monthKey = dateKey(entry.data.date).slice(0, 7);
+  const day = dateKey(entry.data.date);
+  count(dayCounts, day);
+  const monthKey = day.slice(0, 7);
   if (!monthKeys.has(monthKey)) continue;
 
   const monthMap = monthTagCounts.get(monthKey) ?? new Map<string, number>();
@@ -61,23 +64,7 @@ const topTags = Array.from(tagTotals.entries())
   .slice(0, 4)
   .map(([tag]) => tag);
 
-const monthlyTagSeries = months.map((month) => {
-  const row: Record<string, number | string> = Object.fromEntries(
-    topTags.map((tag) => [tag, 0]),
-  );
-  row.monthLabel = month.label;
-  const monthMap = monthTagCounts.get(month.key);
-  let otherCount = 0;
-
-  for (const [tag, count] of monthMap ?? []) {
-    if (topTags.includes(tag)) row[tag] = count;
-    else otherCount += count;
-  }
-
-  row[otherTag] = otherCount;
-  return row;
-});
-const hasOther = monthlyTagSeries.some((row) => Number(row[otherTag] ?? 0) > 0);
+const hasOther = [...tagTotals.keys()].some((tag) => !topTags.includes(tag));
 const stackedTags = hasOther ? [...topTags, otherTag] : topTags;
 const tagColors = [
   "hsl(217, 91%, 60%)",
@@ -86,18 +73,26 @@ const tagColors = [
   "hsl(199, 89%, 70%)",
   "hsl(215, 16%, 65%)",
 ];
-const tagTotalsByMonth = monthlyTagSeries.map((row) =>
-  stackedTags.reduce((sum, tag) => sum + Number(row[tag] ?? 0), 0),
+const tagTotalsByMonth = months.map((month) =>
+  [...(monthTagCounts.get(month.key)?.values() ?? [])].reduce(
+    (sum, value) => sum + value,
+    0,
+  ),
 );
 const maxTagTotal = Math.max(1, ...tagTotalsByMonth);
 const tagColor = (tag: string, index: number) =>
   tagColors[tag === otherTag ? 4 : index % tagColors.length];
-const monthlyBars = monthlyTagSeries.map((row, index) => {
+const monthlyBars = months.map((month, index) => {
+  const counts = monthTagCounts.get(month.key) ?? new Map<string, number>();
   const total = tagTotalsByMonth[index] ?? 0;
+  const otherCount = [...counts].reduce(
+    (sum, [name, count]) => sum + (topTags.includes(name) ? 0 : count),
+    0,
+  );
   let offset = 0;
   const segments = stackedTags
     .map((tag, tagIndex) => {
-      const value = Number(row[tag] ?? 0);
+      const value = tag === otherTag ? otherCount : (counts.get(tag) ?? 0);
       if (value <= 0 || total <= 0) return "";
       const start = offset;
       offset += (value / total) * 100;
@@ -106,8 +101,8 @@ const monthlyBars = monthlyTagSeries.map((row, index) => {
     .filter(Boolean);
 
   return {
-    label: row.monthLabel,
-    title: `${row.monthLabel}: ${total.toLocaleString("ja-JP")}件`,
+    label: month.label,
+    title: `${month.label}: ${total.toLocaleString("ja-JP")}件`,
     style: `height:${(total / maxTagTotal) * 100}%;background:linear-gradient(to top,${segments.join(",")})`,
   };
 });
@@ -156,7 +151,7 @@ const heatmapLevel = (count: number) => {
 const heatmapWeeks = weeks.map((week) =>
   week.map((day) => {
     return {
-      date: formatDateJP(day.date),
+      date: dateKey(day.date),
       count: day.count,
       className: heatmapClasses[heatmapLevel(day.count)],
     };
@@ -166,7 +161,7 @@ const topPosts = entries
   .map(({ entry, charCount }) => ({
     id: entry.id,
     title: entry.data.title,
-    date: formatDateJP(entry.data.date),
+    date: dateKey(entry.data.date),
     charCount,
   }))
   .sort((a, b) => b.charCount - a.charCount)
@@ -176,13 +171,9 @@ const topPosts = entries
 <Layout title="Stats" description={BLOG.DESCRIPTION}>
   <Container>
     <div class="min-w-0 space-y-6">
-      <section class="space-y-1 text-center sm:text-left">
-        <h1 class="text-2xl font-semibold text-black dark:text-white">統計</h1>
-      </section>
+      <h1 class="site-page-title">統計</h1>
 
-      <section
-        class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70"
-      >
+      <section class="site-card">
         <div
           class="flex flex-col gap-2 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left"
         >
@@ -206,9 +197,7 @@ const topPosts = entries
         </div>
       </section>
 
-      <section
-        class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70"
-      >
+      <section class="site-card">
         <div
           class="flex h-[280px] items-end gap-3 border-b border-black/10 dark:border-white/10"
         >
@@ -232,9 +221,7 @@ const topPosts = entries
         </div>
       </section>
 
-      <section
-        class="border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-neutral-900/70"
-      >
+      <section class="site-card">
         <div class="text-center sm:text-left">
           <div class="text-sm font-semibold text-black/70 dark:text-white/70">
             投稿ごとの執筆文字数

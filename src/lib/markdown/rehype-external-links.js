@@ -9,6 +9,9 @@ const FAVICON_ROOT = path.resolve(process.cwd(), "public/link-favicons");
 const CACHE_FILE = path.resolve(process.cwd(), ".cache/link-favicons.json");
 const MAX_AGE = 1000 * 60 * 60 * 24 * 30;
 const MAX_BYTES = 1024 * 1024;
+const inFlight = new Map();
+let cachePromise;
+let writeQueue = Promise.resolve();
 
 const isBlogMarkdown = (filePath) => {
   if (!filePath || path.extname(filePath) !== ".md") return false;
@@ -43,22 +46,12 @@ const findIconUrl = (html, pageUrl) => {
   return null;
 };
 
-const fetchWithTimeout = async (url, options = {}) => {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-  try {
-    return await fetch(url, {
-      ...options,
-      signal: controller.signal,
-      headers: {
-        "User-Agent": "amatatu-blog-build/1.0",
-        ...options.headers,
-      },
-    });
-  } finally {
-    clearTimeout(timeout);
-  }
-};
+const fetchWithTimeout = (url, options = {}) =>
+  fetch(url, {
+    ...options,
+    signal: AbortSignal.timeout(8000),
+    headers: { "User-Agent": "amatatu-blog-build/1.0", ...options.headers },
+  });
 
 const getImageBuffer = async (url) => {
   try {
@@ -99,6 +92,12 @@ const saveCache = async (cache) => {
   await writeFile(CACHE_FILE, `${JSON.stringify(cache, null, 2)}\n`);
 };
 
+const persistCache = (cache) => {
+  const write = writeQueue.then(() => saveCache(cache));
+  writeQueue = write.catch(() => {});
+  return write;
+};
+
 const getFavicon = async (origin, cache) => {
   const cached = cache[origin];
   if (cached && Date.now() - cached.checkedAt < MAX_AGE) {
@@ -137,6 +136,16 @@ const getFavicon = async (origin, cache) => {
   return relativeSrc;
 };
 
+const getFaviconOnce = (origin, cache) => {
+  if (!inFlight.has(origin)) {
+    const request = getFavicon(origin, cache).finally(() =>
+      inFlight.delete(origin),
+    );
+    inFlight.set(origin, request);
+  }
+  return inFlight.get(origin);
+};
+
 const isExternalHttpUrl = (href, site) => {
   if (typeof href !== "string") return null;
   try {
@@ -154,31 +163,33 @@ const hasVisibleText = (node) =>
   node.children?.some((child) => child.type === "text" && child.value.trim()) ??
   false;
 
-export default function rehypeExternalLinkFavicon({ site } = {}) {
+export default function rehypeExternalLinks({ site } = {}) {
   return async (tree, file) => {
-    if (!isBlogMarkdown(file.history?.[0])) return;
-
+    const decorate = isBlogMarkdown(file.history?.[0]);
     const links = [];
     visit(tree, "element", (node) => {
       const url =
         node.tagName === "a"
           ? isExternalHttpUrl(node.properties?.href, site)
           : null;
-      if (url && hasVisibleText(node)) links.push({ node, url });
+      if (!url) return;
+      node.properties.target = "_blank";
+      node.properties.rel = "noopener noreferrer";
+      if (decorate && hasVisibleText(node)) links.push({ node, url });
     });
     if (!links.length) return;
 
-    const cache = await loadCache();
+    const cache = await (cachePromise ??= loadCache());
     const origins = [...new Set(links.map(({ url }) => url.origin))];
     const faviconByOrigin = new Map(
       await Promise.all(
         origins.map(async (origin) => [
           origin,
-          await getFavicon(origin, cache),
+          await getFaviconOnce(origin, cache),
         ]),
       ),
     );
-    await saveCache(cache);
+    await persistCache(cache);
 
     for (const { node, url } of links) {
       const src = faviconByOrigin.get(url.origin);

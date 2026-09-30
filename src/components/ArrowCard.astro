@@ -2,62 +2,55 @@
 import type { CollectionEntry } from "astro:content";
 import EntryBadges from "@components/EntryBadges.astro";
 import OgImage from "@components/OgImage.astro";
+import PinnedIndicator from "@components/PinnedIndicator.astro";
+import { dateKey } from "@lib/post-metrics";
 
 type Props = {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
+  loading?: "eager" | "lazy";
 };
-
-const { entry } = Astro.props as {
-  entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
-};
-const ogImage = entry.data.ogImage;
+const { entry, loading = "lazy" } = Astro.props;
+const url = `/${entry.collection}/${entry.id}`;
+const image =
+  entry.data.ogImage ?? `/og-image/${entry.collection}/${entry.id}.png`;
+const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
 ---
 
-<a
-  href={`/${entry.collection}/${entry.id}`}
-  class="not-prose group relative flex flex-col gap-4 rounded-xl px-4 py-4 pr-10 transition-colors duration-200 hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black sm:flex-row sm:gap-6 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
->
-  {
-    ogImage && (
-      <div class="w-full shrink-0 self-start overflow-hidden rounded border border-black/10 sm:w-40 dark:border-white/15">
-        <OgImage
-          transitionUrl={
-            entry.collection === "blog" ? `/blog/${entry.id}` : undefined
-          }
-          src={ogImage}
-          sizes="(min-width: 640px) 10rem, calc(100vw - 2rem)"
-          class="block h-auto w-full"
-          loading="lazy"
-        />
-      </div>
-    )
-  }
-  <div class="flex min-w-0 flex-1 flex-col justify-center">
-    <div
-      class="flex flex-wrap items-center gap-x-2 gap-y-1 text-lg leading-tight font-bold transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-400"
-    >
+<a class="reference-post-card" href={url}>
+  <OgImage
+    src={image}
+    transitionUrl={entry.collection === "blog" ? url : undefined}
+    sizes="(min-width: 640px) 9rem, 6rem"
+    class="reference-post-card-image"
+    loading={loading}
+    fetchpriority={loading === "eager" ? "high" : "auto"}
+  />
+  <article>
+    <h2>
       <span
-        data-post-transition-url={entry.collection === "blog"
-          ? `/blog/${entry.id}`
-          : undefined}
-        data-post-transition-part="title">{entry.data.title}</span
+        data-post-transition-url={entry.collection === "blog" ? url : undefined}
+        data-post-transition-part={entry.collection === "blog"
+          ? "title"
+          : undefined}>{entry.data.title}</span
       >
+      {entry.collection === "blog" && entry.data.pinned && <PinnedIndicator />}
       <EntryBadges draft={entry.data.draft} />
-    </div>
+    </h2>
+    <time
+      datetime={entry.data.date.toISOString()}
+      data-post-transition-url={entry.collection === "blog" ? url : undefined}
+      data-post-transition-part={entry.collection === "blog"
+        ? "date"
+        : undefined}>{dateKey(entry.data.date).replaceAll("-", "/")}</time
+    >
     {
-      entry.data.description && (
-        <div class="mt-2 line-clamp-2 text-sm text-black/60 dark:text-white/60">
-          {entry.data.description}
-        </div>
+      tags.length > 0 && (
+        <ul class="reference-tags">
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
       )
     }
-  </div>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    class="absolute top-1/2 right-3 size-5 -translate-y-1/2 fill-none stroke-current stroke-2 transition-transform group-hover:translate-x-1"
-  >
-    <line x1="5" y1="12" x2="19" y2="12" class="translate-x-0"></line>
-    <polyline points="12 5 19 12 12 19" class="translate-x-0"></polyline>
-  </svg>
+  </article>
 </a>

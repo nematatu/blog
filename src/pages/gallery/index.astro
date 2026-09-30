@@ -1,5 +1,6 @@
 ---
 import PhotoGallery from "@components/PhotoGallery.astro";
+import Container from "@components/Container.astro";
 import { getGalleryPhotos } from "@/data/gallery";
 import Layout from "@layouts/Layout.astro";
 
@@ -11,5 +12,8 @@ const galleryPhotos = await getGalleryPhotos();
   description="ブログ記事で使った画像のギャラリー"
   image={galleryPhotos[0]?.src}
 >
-  <PhotoGallery photos={galleryPhotos} />
+  <Container>
+    <h1 class="site-page-title">Gallery</h1>
+    <PhotoGallery photos={galleryPhotos} />
+  </Container>
 </Layout>

@@ -14,23 +14,20 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))].sort();
 
 <Layout title="Tags" description="List of tags used.">
   <Container>
-    <div class="space-y-10">
-      <h1 class="animate font-semibold">All Tags</h1>
-      <div class="animate flex flex-wrap gap-2">
+    <section>
+      <h1 class="site-page-title">Tags</h1>
+      <div class="reference-tag-grid">
         {
           tags.map((tag) => (
-            <a
-              href={`/tags/${tag}`}
-              class="px-2 py-1 text-sm hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
-            >
+            <a href={`/tags/${tag}`} class="reference-tag-card">
               {tagEmoji(tag)} {tag}{" "}
-              <span class="text-sm text-gray-600">
+              <span>
                 ({posts.filter((post) => post.data.tags?.includes(tag)).length})
               </span>
             </a>
           ))
         }
       </div>
-    </div>
+    </section>
   </Container>
 </Layout>

@@ -1,5 +1,4 @@
 export type TextStats = {
-  text: string;
   wordCount: number;
   charCount: number;
   readingMinutes: number;
@@ -21,21 +20,14 @@ export const getTextStats = (value: string): TextStats => {
   const wordCount = text ? text.split(/\s+/).length : 0;
   const charCount = text ? text.replace(/\s/g, "").length : 0;
   const readingMinutes = Math.max(1, Math.round(charCount / 450));
-  return { text, wordCount, charCount, readingMinutes };
+  return { wordCount, charCount, readingMinutes };
 };
 
-export const formatDateJP = (date: Date) =>
-  new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
+const dateFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Tokyo",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 
-export const dateKey = (date: Date) =>
-  new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
+export const dateKey = (date: Date) => dateFormatter.format(date);

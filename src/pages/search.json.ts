@@ -1,6 +1,6 @@
 import { getCollection } from "astro:content";
 import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
-import { dateKey, formatDateJP, getTextStats } from "@lib/post-metrics";
+import { dateKey, getTextStats } from "@lib/post-metrics";
 import { tagEmoji } from "@lib/tag-emoji";
 
 export const prerender = true;
@@ -13,25 +13,16 @@ export async function GET() {
     (await getCollection("blog")).filter(isVisibleEntry),
   );
 
-  const normalizeOgImage = (value: string | undefined, fallback: string) => {
-    if (!value) {
-      return { ogImage: fallback, fallbackImage: fallback };
-    }
-    if (value.startsWith("http")) {
-      return { ogImage: value, fallbackImage: fallback };
-    }
-    const ogImage = withBase(value);
-    return { ogImage, fallbackImage: fallback };
-  };
-
   const items = posts.map((post) => {
     const stats = getTextStats(post.body ?? "");
     const description = post.data.description ?? "";
     const fallbackImage = withBase(`og-image/blog/${post.id}.png`);
-    const { ogImage, fallbackImage: resolvedFallback } = normalizeOgImage(
-      post.data.ogImage,
-      fallbackImage,
-    );
+    const ogImage = post.data.ogImage
+      ? post.data.ogImage.startsWith("http")
+        ? post.data.ogImage
+        : withBase(post.data.ogImage)
+      : fallbackImage;
+    const date = dateKey(post.data.date);
     const tags = post.data.tags ?? [];
     const searchSource = [post.data.title, description, ...tags]
       .filter(Boolean)
@@ -41,13 +32,13 @@ export async function GET() {
     return {
       title: post.data.title,
       description,
-      date: formatDateJP(post.data.date),
-      dateKey: dateKey(post.data.date),
+      date,
+      dateKey: date,
       tags,
       tagsWithEmoji: tags.map((tag) => `${tagEmoji(tag)} #${tag}`),
       url: withBase(`blog/${post.id}`),
       ogImage,
-      fallbackImage: resolvedFallback,
+      fallbackImage,
       wordCount: stats.wordCount,
       charCount: stats.charCount,
       readingMinutes: stats.readingMinutes,

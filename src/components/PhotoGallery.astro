@@ -3,20 +3,25 @@ import type { GalleryPhoto } from "@/data/gallery";
 
 type Props = { photos: GalleryPhoto[] };
 const { photos } = Astro.props;
-const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
 ---
 
-<section class="photo-gallery" data-photo-gallery aria-label="画像ギャラリー">
-  <h1 class="sr-only">Gallery</h1>
+<section
+  class="photo-gallery mx-auto w-full max-w-[124rem]"
+  data-photo-gallery
+  aria-label="画像ギャラリー"
+>
   {photos.length === 0 && <p>公開されている画像はまだありません。</p>}
-  <div class="photo-gallery__grid">
+  <div
+    class="photo-gallery__grid grid grid-cols-2 gap-4 max-sm:gap-2 lg:grid-cols-3 2xl:grid-cols-4"
+  >
     {
       photos.map((photo, index) => (
         <a
-          class="photo-gallery__tile"
+          class="photo-gallery__tile relative block min-w-0 self-start overflow-hidden text-white no-underline"
           href={`/gallery/?photo=${encodeURIComponent(photo.id)}`}
           data-gallery-open
-          data-gallery-index={index}
+          data-gallery-id={photo.id}
+          data-gallery-article-href={photo.articleHref}
           style={
             photo.width && photo.height
               ? `--photo-ratio: ${photo.width} / ${photo.height}`
@@ -31,14 +36,14 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
             width={photo.width}
             height={photo.height}
             alt={photo.alt}
-            loading={index < 6 ? "eager" : "lazy"}
+            loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
             fetchpriority={index === 0 ? "high" : "auto"}
             draggable="false"
             data-no-lightbox
           />
           <span
-            class="photo-gallery__tile-error"
+            class="photo-gallery__tile-error absolute inset-x-3 top-[20%] text-center text-[0.8125rem]"
             hidden
             data-gallery-tile-error
           >
@@ -50,17 +55,19 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
   </div>
 
   <dialog
-    class="photo-gallery__dialog"
+    class="photo-gallery__dialog fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 p-0 text-white"
     data-gallery-dialog
     aria-label="写真ビューア"
   >
     <div
-      class="photo-gallery__backdrop"
+      class="photo-gallery__backdrop pointer-events-none absolute -inset-12 bg-cover bg-center opacity-60 blur-[40px] brightness-[0.2]"
       data-gallery-backdrop
       aria-hidden="true"
     >
     </div>
-    <div class="photo-gallery__viewer">
+    <div
+      class="photo-gallery__viewer relative grid h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] gap-3"
+    >
       <div class="photo-gallery__topbar">
         <button
           class="photo-gallery__control"
@@ -74,10 +81,14 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
           >
         </button>
         <div class="photo-gallery__current">
-          <a data-gallery-article href="/">記事を開く</a>
+          <a
+            class="mt-1 block overflow-hidden text-xs text-ellipsis whitespace-nowrap text-[#ddd] underline underline-offset-[3px]"
+            data-gallery-article
+            href="/">記事を開く</a
+          >
         </div>
       </div>
-      <div class="photo-gallery__stage" data-gallery-stage>
+      <div class="photo-gallery__stage min-h-0 min-w-0">
         <button
           class="photo-gallery__arrow"
           type="button"
@@ -88,16 +99,22 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
             ><path d="m15 18-6-6 6-6"></path></svg
           >
         </button>
-        <div class="photo-gallery__image-frame" data-gallery-image-frame>
+        <div
+          class="photo-gallery__image-frame relative grid h-full min-h-0 w-full min-w-0 place-items-center"
+          data-gallery-image-frame
+        >
           <img
-            class="photo-gallery__image"
+            class="photo-gallery__image block h-full min-h-0 w-full object-contain select-none"
             alt=""
             draggable="false"
             data-gallery-image
             data-no-lightbox
             hidden
           />
-          <div class="photo-gallery__feedback" data-gallery-feedback>
+          <div
+            class="photo-gallery__feedback pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4 p-4 text-center text-sm"
+            data-gallery-feedback
+          >
             <p data-gallery-message role="status"></p>
             <button type="button" data-gallery-retry hidden>再読み込み</button>
           </div>
@@ -113,31 +130,31 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
           >
         </button>
       </div>
-      <div class="photo-gallery__bottom">
+      <div class="min-w-0">
         <div
-          class="photo-gallery__status"
+          class="photo-gallery__status mb-2 min-h-5 text-center text-xs text-[#ccc]"
           aria-live="polite"
           aria-atomic="true"
         >
           <span data-gallery-position></span>
         </div>
         <div
-          class="photo-gallery__thumbnails"
+          class="photo-gallery__thumbnails mx-auto flex w-full max-w-240 [scrollbar-width:thin] gap-2 overflow-x-auto [overscroll-behavior-x:contain] p-[0.3rem]"
           data-gallery-thumbnails
           aria-label="写真一覧"
         >
           {
             photos.map((photo, index) => (
               <button
-                class="photo-gallery__thumbnail"
+                class="photo-gallery__thumbnail h-12 w-18 flex-[0_0_4.5rem] cursor-pointer overflow-hidden bg-[#333] p-0 opacity-50"
                 type="button"
                 data-gallery-thumbnail
-                data-gallery-index={index}
                 aria-label={`${index + 1}: ${photo.title}を表示`}
               >
                 <img
-                  data-src={photo.src}
+                  src={photo.src}
                   alt=""
+                  loading="lazy"
                   decoding="async"
                   draggable="false"
                   data-no-lightbox
@@ -149,12 +166,6 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
       </div>
     </div>
   </dialog>
-  <script
-    is:inline
-    type="application/json"
-    data-gallery-data
-    set:html={serializedPhotos}
-  />
 </section>
 
 <script>
@@ -162,44 +173,24 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
 </script>
 
 <style>
-  .photo-gallery {
-    width: 100%;
-    max-width: 124rem;
-    margin-inline: auto;
-    padding-inline: clamp(1rem, 2vw, 2rem);
-  }
-  .photo-gallery__heading p {
-    font-size: 0.8125rem;
-    opacity: 0.65;
-  }
-
-  .photo-gallery__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
   .photo-gallery__grid[data-masonry] {
     grid-auto-rows: 1px;
     row-gap: 0;
   }
 
   .photo-gallery__tile {
-    position: relative;
-    display: block;
-    min-width: 0;
     aspect-ratio: var(--photo-ratio, 3 / 2);
-    align-self: start;
-    overflow: hidden;
-    color: white;
     background: #252525;
-    text-decoration: none;
   }
 
-  .photo-gallery__tile img {
+  .photo-gallery__tile img,
+  .photo-gallery__thumbnail img {
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  .photo-gallery__tile img {
     object-fit: contain;
   }
 
@@ -207,55 +198,19 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
     outline: 3px solid #60a5fa;
     outline-offset: 3px;
   }
-  .photo-gallery__tile-error {
-    position: absolute;
-    inset: 20% 0.75rem auto;
-    text-align: center;
-    font-size: 0.8125rem;
-  }
-
-  .photo-gallery__dialog {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    max-width: none;
-    height: 100dvh;
-    max-height: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 0;
-    color: white;
-    background: #080808;
-  }
-
+  .photo-gallery__dialog,
   .photo-gallery__dialog::backdrop {
     background: #080808;
   }
-  .photo-gallery__backdrop {
-    position: absolute;
-    inset: -3rem;
-    background-position: center;
-    background-size: cover;
-    filter: blur(40px) brightness(0.2);
-    opacity: 0.6;
-    pointer-events: none;
-  }
-
   .photo-gallery__viewer {
-    position: relative;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    width: 100%;
-    height: 100%;
     padding: max(0.75rem, env(safe-area-inset-top))
       max(0.75rem, env(safe-area-inset-right))
       max(0.75rem, env(safe-area-inset-bottom))
       max(0.75rem, env(safe-area-inset-left));
-    gap: 0.75rem;
   }
 
-  .photo-gallery__topbar {
+  .photo-gallery__topbar,
+  .photo-gallery__stage {
     display: grid;
     grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
     align-items: center;
@@ -266,26 +221,6 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
     min-width: 0;
     text-align: center;
   }
-  .photo-gallery__current a {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .photo-gallery__current time {
-    display: block;
-    font-size: 0.6875rem;
-    color: #bdbdbd;
-    margin-top: 0.2rem;
-  }
-  .photo-gallery__current a {
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-    color: #ddd;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
   .photo-gallery__control,
   .photo-gallery__arrow {
     display: grid;
@@ -323,47 +258,8 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
     outline-offset: 3px;
   }
 
-  .photo-gallery__stage {
-    display: grid;
-    grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
-    align-items: center;
-    min-height: 0;
-    min-width: 0;
-    gap: 0.75rem;
-  }
-
   .photo-gallery__image-frame {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    min-width: 0;
     touch-action: pan-y pinch-zoom;
-  }
-
-  .photo-gallery__image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    object-fit: contain;
-    user-select: none;
-  }
-
-  .photo-gallery__feedback {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
-    text-align: center;
-    font-size: 0.875rem;
-    pointer-events: none;
   }
 
   .photo-gallery__feedback button {
@@ -372,41 +268,7 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
     cursor: pointer;
     pointer-events: auto;
   }
-  .photo-gallery__bottom {
-    min-width: 0;
-  }
-  .photo-gallery__status {
-    min-height: 1.25rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    color: #ccc;
-    font-size: 0.75rem;
-  }
-  .photo-gallery__thumbnails {
-    display: flex;
-    width: 100%;
-    max-width: 60rem;
-    margin-inline: auto;
-    gap: 0.5rem;
-    padding: 0.3rem;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-  }
-  .photo-gallery__thumbnail {
-    flex: 0 0 4.5rem;
-    width: 4.5rem;
-    height: 3rem;
-    padding: 0;
-    overflow: hidden;
-    background: #333;
-    opacity: 0.5;
-    cursor: pointer;
-  }
   .photo-gallery__thumbnail img {
-    display: block;
-    width: 100%;
-    height: 100%;
     object-fit: cover;
   }
   .photo-gallery__thumbnail[aria-current="true"] {
@@ -416,24 +278,7 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
     display: none;
   }
 
-  @media (min-width: 1024px) {
-    .photo-gallery__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1536px) {
-    .photo-gallery__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
   @media (max-width: 639px) {
-    .photo-gallery__grid {
-      gap: 0.5rem;
-    }
-
-    .photo-gallery__grid[data-masonry] {
-      row-gap: 0;
-    }
     .photo-gallery__stage {
       grid-template-columns: 1fr auto auto;
       grid-template-rows: minmax(0, 1fr) 2.75rem;
@@ -472,9 +317,5 @@ const serializedPhotos = JSON.stringify(photos).replaceAll("<", "\\u003c");
   }
   :global(html.photo-gallery-open) {
     overflow: hidden;
-  }
-
-  :global(html:has([data-photo-gallery])) {
-    scrollbar-gutter: stable;
   }
 </style>

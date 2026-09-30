@@ -1,62 +1,28 @@
 ---
 import Container from "@components/Container.astro";
-import Link from "@components/Link.astro";
 import { SITE, SOCIALS } from "@consts";
 
-const footerSocials = SOCIALS.filter((social) =>
-  ["X", "GitHub"].includes(social.NAME),
-);
+const pages = ["gallery", "stats", "projects", "tags"];
 ---
 
-<footer class="animate">
+<footer class="reference-site-footer">
   <Container>
-    <div
-      class="grid gap-10 border-t border-black/10 pt-6 sm:grid-cols-[1fr_auto] sm:items-end dark:border-white/15"
-    >
-      <div class="text-xs leading-relaxed text-black/55 dark:text-white/55">
-        <div>
-          <div class="font-semibold text-black/80 dark:text-white/80">
-            {SITE.TITLE}
-          </div>
-        </div>
-        <div>&copy; {new Date().getFullYear()}</div>
-      </div>
-
-      <nav
-        class="flex flex-wrap items-center gap-2 sm:justify-end"
-        aria-label="Footer links"
-      >
-        {
-          footerSocials.map((social) => (
-            <Link
-              href={social.HREF}
-              external={social.EXTERNAL}
-              underline={false}
-              aria-label={social.NAME}
-            >
-              <span class="inline-flex size-8 items-center justify-center text-black/55 hover:text-black focus-visible:text-black dark:text-white/55 dark:hover:text-white dark:focus-visible:text-white">
-                <iconify-icon
-                  icon={social.ICON}
-                  class="text-base"
-                  aria-hidden="true"
-                />
-              </span>
-            </Link>
-          ))
-        }
-        <Link href="https://amatatu.com" underline={false} aria-label="Home">
-          <span
-            class="inline-flex size-8 items-center justify-center opacity-70 hover:opacity-100 focus-visible:opacity-100"
+    <nav aria-label="フッターリンク">
+      <a href="/">記事一覧</a>
+      {pages.map((page) => <a href={`/${page}`}>{page}</a>)}
+      {
+        SOCIALS.map((social) => (
+          <a
+            href={social.HREF}
+            target={social.EXTERNAL ? "_blank" : undefined}
+            rel={social.EXTERNAL ? "noopener noreferrer" : undefined}
           >
-            <img
-              src="/icon/icon.svg"
-              alt=""
-              class="size-5"
-              aria-hidden="true"
-            />
-          </span>
-        </Link>
-      </nav>
-    </div>
+            {social.NAME}
+          </a>
+        ))
+      }
+      <button data-open-search type="button">search</button>
+    </nav>
+    <small>© {new Date().getFullYear()} {SITE.TITLE}</small>
   </Container>
 </footer>

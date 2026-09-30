@@ -26,8 +26,12 @@ const {
   transitionUrl,
 } = Astro.props as Props;
 
-const thumbnail = getOgThumbnailSet(src, fallbackWidth);
+const thumbnail =
+  import.meta.env.DEV && src.startsWith("/og-image/")
+    ? undefined
+    : getOgThumbnailSet(src, fallbackWidth);
 const dimensions = await getOgImageDimensions(src);
+const generated = src.startsWith("/og-image/");
 ---
 
 <img
@@ -36,8 +40,8 @@ const dimensions = await getOgImageDimensions(src);
   src={thumbnail?.src ?? src}
   srcset={thumbnail?.srcset}
   sizes={thumbnail ? sizes : undefined}
-  width={dimensions?.width}
-  height={dimensions?.height}
+  width={dimensions?.width ?? (generated ? 1200 : undefined)}
+  height={dimensions?.height ?? (generated ? 630 : undefined)}
   alt={alt}
   class={className}
   loading={loading}

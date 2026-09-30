@@ -9,10 +9,8 @@ import rehypeCodeFilename from "./src/lib/markdown/rehype-code-filename.js";
 import rehypeImageCaption from "./src/lib/markdown/rehype-image-caption.js";
 import remarkCodeLanguage from "./src/lib/markdown/remark-code-language.js";
 import remarkDirectiveWidgets from "./src/lib/markdown/remark-directive-widgets.js";
-import remarkTwitterCard from "./src/lib/markdown/remark-twitter-card.js";
-import remarkYoutubePlayer from "./src/lib/markdown/remark-youtube-player.js";
-import rehypeExternalLinksBlank from "./src/lib/markdown/rehype-all-links-blank.js";
-import rehypeExternalLinkFavicon from "./src/lib/markdown/rehype-external-link-favicon.js";
+import remarkSocialEmbeds from "./src/lib/markdown/remark-social-embeds.js";
+import rehypeExternalLinks from "./src/lib/markdown/rehype-external-links.js";
 
 const site = "https://blog.amatatu.com";
 
@@ -40,14 +38,12 @@ export default defineConfig({
       remarkDirectiveWidgets,
       remarkGfm,
       remarkCodeLanguage,
-      remarkTwitterCard,
-      remarkYoutubePlayer,
+      remarkSocialEmbeds,
     ],
     rehypePlugins: [
       rehypeCodeFilename,
       rehypeImageCaption,
-      [rehypeExternalLinksBlank, { site }],
-      [rehypeExternalLinkFavicon, { site }],
+      [rehypeExternalLinks, { site }],
     ],
   },
 });

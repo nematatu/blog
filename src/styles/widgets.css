@@ -1,0 +1,160 @@
+@layer components {
+  .image-caption img {
+    @apply block;
+    margin-block: 0 !important;
+  }
+
+  article .twitter-tweet {
+    width: min(100%, 480px) !important;
+    max-width: 480px !important;
+    margin: 1.5rem auto !important;
+    zoom: 0.9;
+  }
+
+  article .twitter-tweet > iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .image-compare {
+    @apply mx-auto my-7 w-full max-w-5xl;
+  }
+
+  .image-compare__stage {
+    @apply relative isolate overflow-hidden border border-black/15 bg-neutral-200 dark:border-white/20 dark:bg-neutral-800;
+    border-radius: 0.875rem;
+    box-shadow: 0 18px 50px rgb(15 23 42 / 14%);
+  }
+
+  /* The second slot determines the slider height. Images with the same aspect
+     ratio then occupy exactly the same canvas. */
+  .image-compare__slider {
+    --divider-width: 3px;
+    --divider-color: rgb(255 255 255 / 95%);
+    --divider-shadow: 0 0 10px rgb(0 0 0 / 45%);
+    @apply block h-auto w-full max-w-full cursor-col-resize overflow-hidden;
+    background: repeating-conic-gradient(
+        rgb(0 0 0 / 4%) 0 25%,
+        transparent 0 50%
+      )
+      50% / 18px 18px;
+  }
+
+  .image-compare__image {
+    @apply block h-auto w-full cursor-col-resize select-none;
+    background: rgb(0 0 0 / 6%);
+  }
+
+  .image-compare__slider:focus {
+    outline: none;
+  }
+
+  .image-compare__label {
+    @apply absolute top-3 z-10 max-w-[42%] truncate border border-white/20 bg-black/65 px-2.5 py-1 font-sans text-xs leading-5 font-semibold tracking-wide text-white backdrop-blur-sm;
+    border-radius: 9999px;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 24%);
+    pointer-events: none;
+  }
+
+  .image-compare__label--before {
+    @apply left-3;
+  }
+
+  .image-compare__label--after {
+    @apply right-3;
+  }
+
+  .image-compare__handle {
+    @apply grid size-12 place-items-center font-sans text-[1.15rem] leading-none;
+    border: 1px solid rgb(15 23 42 / 18%);
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 94%);
+    box-shadow: 0 4px 18px rgb(0 0 0 / 30%);
+    color: rgb(15 23 42);
+  }
+
+  .image-compare__caption {
+    @apply mx-0 mt-2 mb-0 text-center font-sans text-sm leading-6 text-black/60 dark:text-white/60;
+  }
+
+  @media (max-width: 480px) {
+    .image-compare__stage {
+      border-radius: 0.625rem;
+    }
+
+    .image-compare__label {
+      @apply top-2 px-2 py-0.5 text-[0.6875rem];
+    }
+
+    .image-compare__label--before {
+      @apply left-2;
+    }
+
+    .image-compare__label--after {
+      @apply right-2;
+    }
+
+    .image-compare__handle {
+      @apply size-[2.625rem];
+    }
+  }
+
+  .admonition > :last-child {
+    margin-bottom: 0 !important;
+  }
+
+  article .github-card__link {
+    text-decoration: none !important;
+  }
+}
+
+.fuki {
+  --fuki-background: #64748b;
+}
+
+.fuki__content > :first-child {
+  margin-top: 0 !important;
+}
+
+.fuki__content > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.fuki--emphasis {
+  --fuki-background: #dc2626;
+}
+
+.fuki--left > .fuki__icon {
+  right: calc(100% + 1.25rem);
+}
+
+.fuki--right > .fuki__icon {
+  left: calc(100% + 1.25rem);
+}
+
+.fuki__content::before,
+.fuki__content::after {
+  position: absolute;
+  top: 0.7em;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  content: "";
+}
+
+.fuki--left > .fuki__content::before {
+  right: 100%;
+  border-width: 0 0.7em 0.7em 0;
+  border-color: transparent var(--fuki-background) transparent transparent;
+}
+
+.fuki--right > .fuki__content::after {
+  left: 100%;
+  border-width: 0.7em 0.7em 0 0;
+  border-color: var(--fuki-background) transparent transparent transparent;
+}
+
+article .fuki a {
+  color: #dbeafe;
+  text-decoration-color: #bfdbfe;
+}

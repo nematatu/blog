@@ -1,9 +1,12 @@
 ---
-import type { Heading } from "./TableOfContents.astro";
-
 // https://kld.dev/building-table-of-contents/
 
-const { heading } = Astro.props;
+type Heading = {
+  slug: string;
+  text: string;
+  subheadings: Heading[];
+};
+const { heading } = Astro.props as { heading: Heading };
 ---
 
 <li class="list-none py-1.5 text-sm">
@@ -17,7 +20,7 @@ const { heading } = Astro.props;
   {
     heading.subheadings.length > 0 && (
       <ul class="ml-3 border-l border-dotted border-black/20 pl-3 dark:border-white/20">
-        {heading.subheadings.map((subheading: Heading) => (
+        {heading.subheadings.map((subheading) => (
           <Astro.self heading={subheading} />
         ))}
       </ul>

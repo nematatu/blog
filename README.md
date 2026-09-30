@@ -5,7 +5,6 @@ Astroで作っている個人ブログです。
 ## 技術スタック
 
 - Astro
-- React
 - TypeScript
 - Tailwind CSS
 - MDX
@@ -53,12 +52,23 @@ pnpm preview
 pnpm check
 ```
 
-`src` 配下の Astro / JavaScript / TypeScript / Markdown / CSS / JSON を Prettier で整形します。
+`src` 配下の Astro / JavaScript / TypeScript / Markdown / CSS / JSON の整形状態を Prettier で確認します。整形する場合は `pnpm format` を実行します。
+
+## リファクタの確認
+
+```sh
+pnpm test
+pnpm build
+pnpm parity
+```
+
+変更前後の公開ルートと代表的な生成物を比較します。確認対象と手順は
+[`docs/refactor-contract.md`](docs/refactor-contract.md) に記載しています。
 
 ## 記事の作成
 
 ```sh
-pnpm new:post
+pnpm scripts:new-post
 ```
 
 対話形式でカテゴリとタイトルを選び、`src/content/blog/<category>` に新しい記事ファイルを作成します。カテゴリは `develop`、`badminton`、`hobby` のいずれかです。日本語タイトルは OSS ライブラリで英訳され、意味に沿った英語 slug が自動提案されます。slug は必要に応じて編集でき、英数字とハイフンのみ利用できます。
@@ -66,7 +76,7 @@ pnpm new:post
 ## 下書き記事の確認
 
 ```sh
-pnpm draft:list
+pnpm scripts:draft
 ```
 
 `src/content/blog` 配下から `draft: true` の記事を一覧表示します。

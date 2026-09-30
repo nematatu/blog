@@ -11,9 +11,7 @@ export type GalleryPhoto = {
   height?: number;
   alt: string;
   title: string;
-  articleDate: string;
   articleHref: string;
-  articleTitle: string;
 };
 
 const localImages = import.meta.glob<ImageMetadata>(
@@ -91,9 +89,7 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
               src,
               alt: alt || `${article.data.title}の画像 ${index + 1}`,
               title,
-              articleDate: article.data.date.toISOString(),
               articleHref: `/blog/${article.id}`,
-              articleTitle: article.data.title,
             },
           ];
         });

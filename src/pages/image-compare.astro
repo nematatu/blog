@@ -1,4 +1,5 @@
 ---
+import Container from "@components/Container.astro";
 import Layout from "@layouts/Layout.astro";
 ---
 
@@ -6,8 +7,8 @@ import Layout from "@layouts/Layout.astro";
   title="Image compare visual test"
   description="Image comparison slider test"
 >
-  <main class="mx-auto max-w-5xl px-4 py-12">
-    <h1 class="mb-6 text-2xl font-semibold">Image compare visual test</h1>
+  <Container>
+    <h1 class="site-page-title">Image compare visual test</h1>
     <figure class="image-compare not-prose">
       <div class="image-compare__stage">
         <img-comparison-slider
@@ -34,5 +35,5 @@ import Layout from "@layouts/Layout.astro";
         </img-comparison-slider>
       </div>
     </figure>
-  </main>
+  </Container>
 </Layout>

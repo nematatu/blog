@@ -1,0 +1,214 @@
+@layer components {
+  .post-body {
+    max-width: 100%;
+    min-width: 0;
+    font-size: 1rem;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+
+  .post-body p {
+    margin-block: 1rem;
+  }
+
+  .post-body :is(h1, h2, h3, h4, h5, h6) {
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .post-body h1 {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.35rem;
+  }
+
+  .post-body h2 {
+    margin: 1.75rem 0 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .post-body h3 {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .post-body :is(h4, h5, h6) {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1rem;
+  }
+
+  .post-body a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .post-body :is(ul, ol) {
+    margin-block: 1rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  .post-body ul {
+    list-style: disc;
+  }
+
+  .post-body ol {
+    list-style: decimal;
+  }
+
+  .post-body li {
+    margin-block: 0.25rem;
+  }
+
+  .post-body :not(pre) > code {
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    background: #f4f4f5;
+    font-size: 0.85em;
+    overflow-wrap: anywhere;
+  }
+
+  .post-body :is(code, pre) {
+    font-family:
+      ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+      "Liberation Mono", monospace;
+  }
+
+  .post-body pre {
+    margin-block: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .post-body pre code {
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .post-body blockquote {
+    margin-block: 1.5rem;
+    padding-inline-start: 1rem;
+    border-inline-start: 4px solid #2563eb;
+    color: #666;
+    font-style: italic;
+  }
+
+  .post-body hr {
+    margin-block: 2rem;
+    border: 0;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .post-body table {
+    display: block;
+    max-width: 100%;
+    margin-block: 1.5rem;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  .post-body :is(th, td) {
+    padding: 0.5rem;
+    border: 1px solid #e5e5e5;
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  .post-body th {
+    background: #f4f4f5;
+    font-weight: 600;
+  }
+
+  .post-body
+    img:not(.fuki__icon, .external-link-favicon, .image-compare__image) {
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+  }
+
+  .post-body .external-link-favicon {
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    margin-inline-start: 0.35em;
+    vertical-align: -0.15em;
+    object-fit: contain;
+  }
+
+  .post-body .data-footnote-backref {
+    margin-inline-start: 0.25rem;
+  }
+
+  .reference-page {
+    --astro-code-foreground: #24292e;
+    --astro-code-background: #f4f4f5;
+    --astro-code-token-comment: #6a737d;
+    --astro-code-token-keyword: #d73a49;
+    --astro-code-token-string: #032f62;
+    --astro-code-token-function: #6f42c1;
+    --astro-code-token-constant: #005cc5;
+    --astro-code-token-parameter: #e36209;
+    --astro-code-token-string-expression: #22863a;
+    --astro-code-token-punctuation: #24292e;
+    --astro-code-token-link: #032f62;
+  }
+
+  .reference-page .post-body pre {
+    background: #f4f4f5 !important;
+    color: #24292e !important;
+  }
+
+  .reference-page .code-block-header {
+    background: #e4e4e7;
+  }
+
+  .reference-page .code-block-header span,
+  .reference-page .copy-code {
+    color: #666;
+  }
+
+  .reference-page .copy-code:hover {
+    background: #e4e4e7;
+    color: #1a1a1a;
+  }
+
+  @media (max-width: 639px) {
+    .reference-page .post-body :is(pre, .code-block-wrapper) {
+      margin-inline: -1rem;
+      border-radius: 0;
+    }
+
+    .reference-page .post-body .code-block-wrapper pre {
+      margin-inline: 0;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .post-body h1 {
+      margin: 2.5rem 0 1rem;
+      font-size: 1.5rem;
+    }
+
+    .post-body h2 {
+      margin: 2rem 0 0.75rem;
+      font-size: 1.25rem;
+    }
+
+    .post-body h3 {
+      font-size: 1.125rem;
+    }
+
+    .post-body pre {
+      font-size: 0.875rem;
+    }
+
+    .post-body table {
+      display: table;
+    }
+
+    .post-body :is(th, td) {
+      padding: 0.75rem;
+      white-space: normal;
+    }
+  }
+}

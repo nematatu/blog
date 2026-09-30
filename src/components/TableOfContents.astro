@@ -4,8 +4,6 @@ import TableOfContentsHeading from "./TableOfContentsHeading.astro";
 // https://kld.dev/building-table-of-contents/
 const { headings = [] } = Astro.props as { headings?: Heading[] };
 const toc = buildToc(headings);
-const isLongToc = headings.length > 12;
-const detailsAttrs = isLongToc ? {} : { open: true };
 
 export interface Heading {
   depth: number;
@@ -17,37 +15,21 @@ type TocHeading = Heading & { subheadings: TocHeading[] };
 
 function buildToc(headings: Heading[] = []) {
   const toc: TocHeading[] = [];
-  const parentHeadings = new Map<number, TocHeading>();
-  headings.forEach((h) => {
-    const heading: TocHeading = { ...h, subheadings: [] };
-    parentHeadings.set(heading.depth, heading);
-    if (heading.depth === 2) {
-      toc.push(heading);
-      return;
-    }
-    let parent = parentHeadings.get(heading.depth - 1);
-    if (!parent) {
-      for (let depth = heading.depth - 1; depth >= 2; depth -= 1) {
-        const candidate = parentHeadings.get(depth);
-        if (candidate) {
-          parent = candidate;
-          break;
-        }
-      }
-    }
-    if (parent) {
-      parent.subheadings.push(heading);
-    } else {
-      toc.push(heading);
-    }
-  });
+  const parents: TocHeading[] = [];
+  for (const item of headings) {
+    const heading: TocHeading = { ...item, subheadings: [] };
+    while (parents.length && parents.at(-1)!.depth >= heading.depth)
+      parents.pop();
+    (parents.at(-1)?.subheadings ?? toc).push(heading);
+    parents.push(heading);
+  }
   return toc;
 }
 ---
 
 <details
-  {...detailsAttrs}
-  class="animate group border-y border-[#ebeef2] px-1 py-4 dark:border-white/15"
+  open={headings.length <= 12}
+  class="group border-y border-[#ebeef2] px-1 py-4 dark:border-white/15"
 >
   <summary
     class="cursor-pointer text-sm font-medium text-[#252a30] hover:text-black dark:text-neutral-200 dark:hover:text-white"

@@ -1,4 +1,4 @@
-import type { GalleryPhoto } from "@/data/gallery";
+import { galleryUrl, selectedPhoto } from "@/lib/gallery-url";
 
 const gallery = document.querySelector<HTMLElement>("[data-photo-gallery]");
 if (gallery) initGallery(gallery);
@@ -9,9 +9,19 @@ function initGallery(gallery: HTMLElement) {
     if (!element) throw new Error(`Missing gallery element: ${selector}`);
     return element;
   };
-  const photos: GalleryPhoto[] = JSON.parse(
-    get("[data-gallery-data]").textContent || "[]",
+  const triggers = [
+    ...gallery.querySelectorAll<HTMLAnchorElement>("[data-gallery-open]"),
+  ];
+  const tileImages = triggers.map((trigger) =>
+    trigger.querySelector<HTMLImageElement>("img"),
   );
+  const photos = triggers.flatMap((trigger, index) => {
+    const image = tileImages[index];
+    const { galleryId: id, galleryArticleHref: articleHref } = trigger.dataset;
+    return image && id && articleHref
+      ? [{ id, src: image.src, alt: image.alt, articleHref }]
+      : [];
+  });
   if (!photos.length) return;
 
   const dialog = get<HTMLDialogElement>("[data-gallery-dialog]");
@@ -27,9 +37,6 @@ function initGallery(gallery: HTMLElement) {
   const previous = get<HTMLButtonElement>("[data-gallery-previous]");
   const next = get<HTMLButtonElement>("[data-gallery-next]");
   const strip = get("[data-gallery-thumbnails]");
-  const triggers = [
-    ...gallery.querySelectorAll<HTMLAnchorElement>("[data-gallery-open]"),
-  ];
   const thumbnails = [
     ...gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumbnail]"),
   ];
@@ -38,6 +45,7 @@ function initGallery(gallery: HTMLElement) {
   const layoutTiles = () => {
     layoutFrame = 0;
     const gap = parseFloat(getComputedStyle(grid).columnGap);
+    // Read geometry before writing styles to avoid repeated layout work.
     const spans = triggers.map((tile) =>
       Math.ceil(tile.getBoundingClientRect().height + gap),
     );
@@ -69,23 +77,6 @@ function initGallery(gallery: HTMLElement) {
   let swiped = false;
   const preloaded = new Set<string>();
 
-  // Only visible thumbnails fetch images, even when opening the viewer at the end.
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        const thumbnailImage = entry.target as HTMLImageElement;
-        if (thumbnailImage.dataset.src)
-          thumbnailImage.src = thumbnailImage.dataset.src;
-        observer.unobserve(thumbnailImage);
-      }
-    },
-    { root: strip, rootMargin: "0px 200px" },
-  );
-  strip
-    .querySelectorAll("img")
-    .forEach((thumbnail) => observer.observe(thumbnail));
-
   const tileState = (tileImage: HTMLImageElement) => {
     const error = tileImage
       .closest("[data-gallery-open]")
@@ -102,19 +93,18 @@ function initGallery(gallery: HTMLElement) {
       scheduleLayout();
     }
   };
-  triggers.forEach((trigger) => {
-    const tileImage = trigger.querySelector("img")!;
+  tileImages.forEach((tileImage, index) => {
+    if (!tileImage) return;
     tileImage.addEventListener("load", () => tileState(tileImage));
     tileImage.addEventListener("error", () => tileState(tileImage));
     if (tileImage.complete) tileState(tileImage);
   });
 
-  const urlFor = (index?: number) => {
-    const url = new URL(location.href);
-    if (index === undefined) url.searchParams.delete("photo");
-    else url.searchParams.set("photo", photos[index].id);
-    return url;
-  };
+  const urlFor = (index?: number) =>
+    galleryUrl(
+      location.href,
+      index === undefined ? undefined : photos[index].id,
+    );
 
   const centerThumbnail = () => {
     const thumbnail = thumbnails[current];
@@ -128,7 +118,7 @@ function initGallery(gallery: HTMLElement) {
     });
   };
 
-  const loadPhoto = () => {
+  const loadPhoto = async () => {
     const version = ++request;
     const photo = photos[current];
     image.hidden = true;
@@ -139,8 +129,9 @@ function initGallery(gallery: HTMLElement) {
     message.textContent = "画像を読み込んでいます…";
     frame.setAttribute("aria-busy", "true");
     const loading = new Image();
-    loading.onload = async () => {
-      await loading.decode().catch(() => {});
+    loading.src = photo.src;
+    try {
+      await loading.decode();
       if (version !== request || !dialog.open) return;
       image.src = photo.src;
       image.hidden = false;
@@ -156,14 +147,12 @@ function initGallery(gallery: HTMLElement) {
           preload.src = neighbor;
         }
       }
-    };
-    loading.onerror = () => {
+    } catch {
       if (version !== request || !dialog.open) return;
       frame.setAttribute("aria-busy", "false");
       message.textContent = "画像を読み込めませんでした。";
       retry.hidden = false;
-    };
-    loading.src = photo.src;
+    }
   };
 
   const showPhoto = (
@@ -320,8 +309,7 @@ function initGallery(gallery: HTMLElement) {
   });
 
   const syncUrl = () => {
-    const id = new URL(location.href).searchParams.get("photo");
-    const index = photos.findIndex((photo) => photo.id === id);
+    const { id, index } = selectedPhoto(photos, location.href);
     if (index >= 0) {
       returnFocus ??= triggers[index];
       showPhoto(index, "none");

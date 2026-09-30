@@ -1,53 +1,35 @@
-import { access, mkdir, readdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import translate from "google-translate-api-x";
 import inquirer from "inquirer";
+import { listMarkdownFiles } from "./post-files.mjs";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, "..");
+const rootDir = path.resolve(import.meta.dirname, "..");
 const postsDir = path.join(rootDir, "src", "content", "blog");
 const categories = ["develop", "badminton", "hobby"];
 
 function formatDateTime(date = new Date()) {
+  const two = (value) => String(value).padStart(2, "0");
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
   const offsetMinutes = -date.getTimezoneOffset();
   const offsetSign = offsetMinutes >= 0 ? "+" : "-";
-  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(
-    2,
-    "0",
-  );
-  const offsetRemainder = String(Math.abs(offsetMinutes) % 60).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetRemainder}`;
+  const offset = Math.abs(offsetMinutes);
+  return `${year}-${two(date.getMonth() + 1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}:${two(date.getSeconds())}${offsetSign}${two(Math.floor(offset / 60))}${two(offset % 60)}`;
 }
 
 function sanitizeSlug(raw) {
   const trimmed = raw.trim().replaceAll(" ", "-");
-  if (!trimmed) return "";
-  if (trimmed.includes("..") || trimmed.includes("/") || trimmed.includes("\\"))
-    return "";
-  if (!/^[A-Za-z0-9-]+$/.test(trimmed)) return "";
-  return trimmed;
+  return /^[A-Za-z0-9-]+$/.test(trimmed) ? trimmed : "";
 }
 
 function slugifyEnglishText(text) {
-  const normalized = text
+  return text
     .normalize("NFKD")
     .toLowerCase()
     .replaceAll("&", " and ")
     .replaceAll(/['’]/g, "")
     .replaceAll(/[^a-z0-9]+/g, "-")
-    .replaceAll(/^-+|-+$/g, "")
-    .replaceAll(/-{2,}/g, "-");
-
-  if (normalized) return normalized;
-  return "";
+    .replaceAll(/^-+|-+$/g, "");
 }
 
 function includesJapanese(text) {
@@ -65,9 +47,7 @@ async function translateTitleToEnglish(title) {
 }
 
 async function generateSlugFromTitle(title) {
-  if (!includesJapanese(title)) {
-    return slugifyEnglishText(title);
-  }
+  if (!includesJapanese(title)) return slugifyEnglishText(title);
 
   try {
     const translatedTitle = await translateTitleToEnglish(title);
@@ -78,23 +58,6 @@ async function generateSlugFromTitle(title) {
     );
     return "";
   }
-}
-
-async function listMarkdownFiles(dir) {
-  const entries = await readdir(dir, { withFileTypes: true });
-  const files = [];
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...(await listMarkdownFiles(fullPath)));
-    } else if (
-      entry.isFile() &&
-      (entry.name.endsWith(".md") || entry.name.endsWith(".mdx"))
-    ) {
-      files.push(fullPath);
-    }
-  }
-  return files;
 }
 
 async function promptForPost() {
@@ -138,17 +101,7 @@ async function promptForPost() {
     category,
     slug: sanitizeSlug(rawSlug),
     title: title.trim(),
-    tags: [],
   };
-}
-
-async function ensureNotExists(filePath) {
-  try {
-    await access(filePath);
-    return false;
-  } catch {
-    return true;
-  }
 }
 
 async function findExistingPost(slug) {
@@ -161,38 +114,33 @@ async function findExistingPost(slug) {
 }
 
 async function main() {
-  const { category, slug, title, tags } = await promptForPost();
+  const { category, slug, title } = await promptForPost();
   const publishDate = formatDateTime();
 
   const categoryDir = path.join(postsDir, category);
   const filePath = path.join(categoryDir, `${slug}.md`);
   const existingPost = await findExistingPost(slug);
-  if (existingPost || !(await ensureNotExists(filePath))) {
-    console.error(
-      `既に存在します: ${path.relative(rootDir, existingPost ?? filePath)}`,
-    );
+  if (existingPost) {
+    console.error(`既に存在します: ${path.relative(rootDir, existingPost)}`);
     process.exitCode = 1;
     return;
   }
 
-  const lines = [
-    "---",
-    `title: "${title}"`,
-    `date: "${publishDate}"`,
-    "draft: true",
-  ];
-
-  if (tags.length > 0) {
-    const tagList = tags.map((tag) => `"${tag}"`).join(", ");
-    lines.push(`tags: [${tagList}]`);
-  } else {
-    lines.push("tags: []");
-  }
-
-  lines.push("---", "", "");
-
   await mkdir(categoryDir, { recursive: true });
-  await writeFile(filePath, lines.join("\n"), "utf8");
+  await writeFile(
+    filePath,
+    [
+      "---",
+      `title: ${JSON.stringify(title)}`,
+      `date: "${publishDate}"`,
+      "draft: true",
+      "tags: []",
+      "---",
+      "",
+      "",
+    ].join("\n"),
+    { flag: "wx" },
+  );
 
   console.log(`作成しました: ${path.relative(rootDir, filePath)}`);
 }

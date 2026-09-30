@@ -1,188 +1,113 @@
-function isElement(node) {
-  return !!node && typeof node === "object" && node.type === "element";
-}
+const isElement = (node, tag) =>
+  node?.type === "element" && node.tagName === tag;
+const isWhitespace = (node) => node?.type === "text" && !node.value?.trim();
+const hasText = (nodes) =>
+  nodes.some((node) => node.type === "text" && node.value?.trim());
+const textOnly = (nodes) => nodes.every((node) => node.type === "text");
 
-function isWhitespaceText(node) {
+function isCaption(node) {
+  if (!isElement(node, "p")) return false;
+  const children = node.children ?? [];
   return (
-    !!node &&
-    typeof node === "object" &&
-    node.type === "text" &&
-    String(node.value || "").trim().length === 0
+    children.every(
+      (child) =>
+        child.type === "text" ||
+        (isElement(child, "em") && textOnly(child.children ?? [])),
+    ) &&
+    (hasText(children) ||
+      children.some(
+        (child) => isElement(child, "em") && hasText(child.children ?? []),
+      ))
   );
 }
 
-function isCaptionParagraph(node) {
-  if (!isElement(node) || node.tagName !== "p") return false;
-  let hasText = false;
-
-  for (const child of node.children || []) {
-    if (child.type === "text") {
-      if (String(child.value || "").trim().length > 0) hasText = true;
-      continue;
-    }
-
-    if (isElement(child) && child.tagName === "em") {
-      let emHasText = false;
-      for (const emChild of child.children || []) {
-        if (emChild.type === "text") {
-          if (String(emChild.value || "").trim().length > 0) emHasText = true;
-          continue;
-        }
-        return false;
-      }
-      if (emHasText) hasText = true;
-      continue;
-    }
-
-    return false;
-  }
-
-  return hasText;
+function lazyImage(image) {
+  image.properties ??= {};
+  if (!("loading" in image.properties)) image.properties.loading = "lazy";
+  if (!("decoding" in image.properties)) image.properties.decoding = "async";
 }
 
-function isInlineEmCaption(node) {
-  if (!isElement(node) || node.tagName !== "em") return false;
-  let hasText = false;
-
-  for (const child of node.children || []) {
-    if (child.type === "text") {
-      if (String(child.value || "").trim().length > 0) hasText = true;
-      continue;
-    }
-    return false;
-  }
-
-  return hasText;
-}
-
-function applyLazyImageAttrs(node) {
-  if (!isElement(node) || node.tagName !== "img") return;
-  if (!node.properties) node.properties = {};
-  if (!("loading" in node.properties)) node.properties.loading = "lazy";
-  if (!("decoding" in node.properties)) node.properties.decoding = "async";
-}
-
-function splitParagraphWithInlineCaption(node) {
-  if (!isElement(node) || node.tagName !== "p") return null;
-
-  let imgIndex = -1;
-  for (let i = 0; i < node.children.length; i += 1) {
-    const child = node.children[i];
-    if (isElement(child) && child.tagName === "img") {
-      imgIndex = i;
-      break;
-    }
-  }
-  if (imgIndex === -1) return null;
-
-  let lastMeaningfulIndex = -1;
-  for (let i = node.children.length - 1; i >= 0; i -= 1) {
-    const child = node.children[i];
-    if (isWhitespaceText(child)) continue;
-    lastMeaningfulIndex = i;
-    break;
-  }
-  if (lastMeaningfulIndex === -1) return null;
-
-  const lastMeaningful = node.children[lastMeaningfulIndex];
-  if (!isElement(lastMeaningful) || !isInlineEmCaption(lastMeaningful))
-    return null;
-  if (imgIndex >= lastMeaningfulIndex) return null;
-
-  for (let i = imgIndex + 1; i < lastMeaningfulIndex; i += 1) {
-    if (!isWhitespaceText(node.children[i])) return null;
-  }
-
-  const beforeChildren = node.children
-    .slice(0, imgIndex)
-    .filter((child) => !isWhitespaceText(child));
-
-  const figure = {
+function figure(image, caption) {
+  lazyImage(image);
+  return {
     type: "element",
     tagName: "figure",
-    properties: { className: ["image-caption"] },
+    properties: {
+      className: [
+        "image-caption",
+        "my-8",
+        "flex",
+        "flex-col",
+        "items-center",
+        "gap-2",
+      ],
+    },
     children: [
-      node.children[imgIndex],
+      image,
       {
         type: "element",
         tagName: "figcaption",
-        properties: {},
-        children: lastMeaningful.children,
+        properties: {
+          className: ["text-sm", "text-black/60", "dark:text-white/60"],
+        },
+        children: caption,
       },
     ],
   };
-
-  const result = [];
-  if (beforeChildren.length > 0) {
-    result.push({
-      type: "element",
-      tagName: "p",
-      properties: node.properties || {},
-      children: beforeChildren,
-    });
-  }
-  result.push(figure);
-  return result;
 }
 
-function wrapImageWithCaption(parent) {
-  if (!parent || !Array.isArray(parent.children)) return;
+function splitInlineCaption(paragraph) {
+  const children = paragraph.children ?? [];
+  const imageIndex = children.findIndex((child) => isElement(child, "img"));
+  if (imageIndex < 0) return null;
 
-  for (let i = 0; i < parent.children.length - 1; i += 1) {
-    const node = parent.children[i];
-    const next = parent.children[i + 1];
+  const end = children.findLastIndex((child) => !isWhitespace(child));
+  const caption = children[end];
+  if (
+    end <= imageIndex ||
+    !isElement(caption, "em") ||
+    !textOnly(caption.children ?? []) ||
+    !hasText(caption.children ?? []) ||
+    children.slice(imageIndex + 1, end).some((child) => !isWhitespace(child))
+  ) {
+    return null;
+  }
 
-    if (!isElement(node)) continue;
+  const before = children
+    .slice(0, imageIndex)
+    .filter((child) => !isWhitespace(child));
+  return [
+    ...(before.length ? [{ ...paragraph, children: before }] : []),
+    figure(children[imageIndex], caption.children),
+  ];
+}
 
-    if (node.tagName === "p") {
-      const split = splitParagraphWithInlineCaption(node);
+function decorateImages(parent) {
+  if (!Array.isArray(parent?.children)) return;
+
+  for (let index = 0; index < parent.children.length; index++) {
+    const node = parent.children[index];
+    if (isElement(node, "p")) {
+      const split = splitInlineCaption(node);
       if (split) {
-        for (const item of split) {
-          if (!isElement(item)) continue;
-          if (item.tagName === "figure") {
-            const img = item.children?.[0];
-            if (img && isElement(img)) applyLazyImageAttrs(img);
-          }
-        }
-        parent.children.splice(i, 1, ...split);
-        i += split.length - 1;
+        parent.children.splice(index, 1, ...split);
+        index += split.length - 1;
         continue;
       }
     }
 
-    if (node.tagName === "img" && isElement(next) && isCaptionParagraph(next)) {
-      applyLazyImageAttrs(node);
-      const figure = {
-        type: "element",
-        tagName: "figure",
-        properties: { className: ["image-caption"] },
-        children: [
-          node,
-          {
-            type: "element",
-            tagName: "figcaption",
-            properties: {},
-            children: next.children,
-          },
-        ],
-      };
-
-      parent.children.splice(i, 2, figure);
-      continue;
+    if (isElement(node, "img")) {
+      const next = parent.children[index + 1];
+      if (isCaption(next)) {
+        parent.children.splice(index, 2, figure(node, next.children));
+        continue;
+      }
+      lazyImage(node);
     }
-
-    if (node.tagName === "img") {
-      applyLazyImageAttrs(node);
-    }
-
-    if (Array.isArray(node.children)) {
-      wrapImageWithCaption(node);
-    }
+    decorateImages(node);
   }
 }
 
 export default function rehypeImageCaption() {
-  return (tree) => {
-    wrapImageWithCaption(tree);
-  };
+  return decorateImages;
 }
