@@ -1,8 +1,9 @@
 @import "tailwindcss";
 @import "./article.css";
-@import "./code-and-lightbox.css";
+@import "./shared/lightbox.css";
 @import "./widgets.css";
-@import "./reference.css";
+@import "./v2/reference.css";
+@import "./v2/code.css";
 
 @plugin "@tailwindcss/typography";
 
@@ -18,6 +19,21 @@
   summary
 ) {
   border: 0 !important;
+}
+
+.design-toggle {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d4d4d4 !important;
+  border-radius: 999px;
+  background: #fff;
+  color: #333;
+  box-shadow: 0 2px 8px #0000001a;
+  cursor: pointer;
+  font-size: 0.75rem;
 }
 
 @theme {

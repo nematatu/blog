@@ -1,0 +1,62 @@
+html.design-v1 {
+  --astro-code-foreground: #edf6ff;
+  --astro-code-background: #1a2638;
+  --astro-code-token-comment: #8fa3b8;
+  --astro-code-token-keyword: #ff7b72;
+  --astro-code-token-string: #a5d6ff;
+  --astro-code-token-function: #d2a8ff;
+  --astro-code-token-constant: #79c0ff;
+  --astro-code-token-parameter: #ffa657;
+  --astro-code-token-string-expression: #7ee787;
+  --astro-code-token-punctuation: #c9d1d9;
+  --astro-code-token-link: #a5d6ff;
+}
+
+html.design-v1 .post-body pre {
+  display: flex;
+  margin: 1.3rem 0;
+  overflow-x: auto;
+  border: 0;
+  border-radius: 5px;
+  background-color: #1e293b !important;
+  box-shadow: none;
+  color: #fff !important;
+  line-height: 1.7;
+  text-autospace: no-autospace;
+  word-break: normal;
+  overflow-wrap: normal;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.design-v1 .post-body pre code {
+  display: block;
+  min-width: max-content;
+  margin: 0;
+  padding: 1.1rem;
+  background: transparent;
+  color: inherit;
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 0.95em;
+  font-weight: 400;
+}
+
+html.design-v1 .post-body pre code * {
+  font-weight: 400 !important;
+}
+
+html.design-v1 .code-block-wrapper > pre {
+  margin: 0;
+}
+
+html.design-v1 .code-block-header + pre {
+  border-top-left-radius: 0;
+}
+
+@media (max-width: 639px) {
+  html.design-v1 .post-body pre code {
+    padding: 1rem 0.8rem;
+    font-size: 0.9em;
+  }
+}

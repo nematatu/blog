@@ -2,8 +2,8 @@ import socials from "./data/socials.json";
 import type { Metadata, Site, Socials } from "./types";
 
 export const SITE: Site = {
-  TITLE: "Blog",
-  DESCRIPTION: "Blog",
+  TITLE: "日記ニキ",
+  DESCRIPTION: "日記にき",
 };
 
 export const HOME: Metadata = {

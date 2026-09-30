@@ -1,0 +1,56 @@
+html.design-v2 {
+  --astro-code-foreground: #24292e;
+  --astro-code-background: #f4f4f5;
+  --astro-code-token-comment: #6a737d;
+  --astro-code-token-keyword: #d73a49;
+  --astro-code-token-string: #032f62;
+  --astro-code-token-function: #6f42c1;
+  --astro-code-token-constant: #005cc5;
+  --astro-code-token-parameter: #e36209;
+  --astro-code-token-string-expression: #22863a;
+  --astro-code-token-punctuation: #24292e;
+  --astro-code-token-link: #032f62;
+}
+
+html.design-v2 .post-body pre {
+  display: block;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f4f4f5 !important;
+  color: #24292e !important;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.design-v2 .post-body .code-block-wrapper {
+  margin-block: 1.5rem;
+}
+
+html.design-v2 .code-block-header,
+html.design-v2 .copy-code {
+  display: none;
+}
+
+html.design-v2 .post-body pre code {
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+@media (max-width: 639px) {
+  html.design-v2 .post-body .code-block-wrapper {
+    margin-inline: -1rem;
+  }
+
+  html.design-v2 .post-body pre {
+    border-radius: 0;
+  }
+}

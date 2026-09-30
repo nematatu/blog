@@ -20,7 +20,7 @@ const resolvedDescription = description ?? SITE.DESCRIPTION;
 <!doctype html>
 <html
   lang="ja"
-  class:list={["reference-page", page === "article" && "article-page"]}
+  class:list={["design-v2", page === "article" && "article-page"]}
 >
   <head>
     <Head
@@ -35,7 +35,7 @@ const resolvedDescription = description ?? SITE.DESCRIPTION;
         <Header />
       ) : page === "home" ? (
         <>
-          <div class="classic-only">
+          <div class="classic-only" hidden>
             <Header />
           </div>
           <header class="reference-home-header">
@@ -47,7 +47,7 @@ const resolvedDescription = description ?? SITE.DESCRIPTION;
       ) : (
         <header class="reference-article-header">
           <Container>
-            <a class="classic-brand" href="/">
+            <a class="classic-brand" href="/" hidden>
               {SITE.TITLE}
             </a>
             <a href="/">← 記事一覧へ戻る</a>

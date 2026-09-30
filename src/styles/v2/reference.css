@@ -1,0 +1,347 @@
+@layer utilities {
+  .design-v2 {
+    font-size: 16px;
+    scroll-padding-top: 1rem;
+  }
+
+  .design-v2 body {
+    background: #fff;
+    color: #1a1a1a;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+
+  .design-v2 .site-container {
+    max-width: 720px;
+    padding-inline: 1rem;
+  }
+
+  .design-v2 body > header {
+    position: static;
+    z-index: auto;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0;
+    background: #fff;
+    backdrop-filter: none;
+  }
+
+  .design-v2 body > header > .site-container {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .design-v2 body > main {
+    padding: 0 0 3rem;
+  }
+
+  .design-v2 .reference-site-header > .site-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding-top: 1rem;
+  }
+
+  html.design-v2 .reference-site-header [data-site-brand] {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+
+  html.design-v2 .reference-site-header nav,
+  html.design-v2 .reference-site-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  html.design-v2 .reference-site-header button,
+  html.design-v2 .reference-site-footer button {
+    padding: 0;
+    background: none;
+    color: #2563eb;
+    cursor: pointer;
+  }
+
+  .design-v2 body > footer.reference-site-footer {
+    padding-block: 1.5rem;
+    border: 0;
+  }
+
+  html.design-v2 .reference-site-footer > .site-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  html.design-v2 .reference-site-footer small {
+    color: #666;
+    font-size: 0.75rem;
+  }
+
+  html.design-v2 .site-page-title {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  html.design-v2 .site-back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  html.design-v2 .site-card {
+    margin-block: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+  }
+
+  html.design-v2 .reference-tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  html.design-v2 .reference-tag-card {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    color: #1a1a1a !important;
+    font-size: 0.875rem;
+  }
+
+  html.design-v2 .reference-tag-card span {
+    color: #666;
+    font-size: 0.75rem;
+  }
+
+  html.design-v2 .article-page body > main {
+    animation: article-content-rise 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .design-v2 a {
+    color: #2563eb;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .design-v2 a:hover {
+    opacity: 0.7;
+  }
+
+  html.design-v2 .reference-home-header {
+    padding-block: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  html.design-v2 .reference-home-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  html.design-v2 .reference-post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+  }
+
+  html.design-v2 .reference-post-card {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: start;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    color: inherit !important;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  html.design-v2 .reference-post-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 2px 8px #00000014;
+    opacity: 1 !important;
+  }
+
+  html.design-v2 .reference-post-card h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  html.design-v2 .reference-post-card article {
+    min-width: 0;
+  }
+
+  html.design-v2 .reference-post-card-image {
+    width: 100%;
+    aspect-ratio: 1200 / 630;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  html.design-v2 .reference-post-card time,
+  html.design-v2 .reference-post-date {
+    color: #666;
+    font-size: 0.8rem;
+  }
+
+  html.design-v2 .reference-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.75rem;
+    list-style: none;
+  }
+
+  html.design-v2 .reference-tags li {
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    background: #f4f4f5;
+    color: #666;
+    font-size: 0.7rem;
+    line-height: 1.7;
+  }
+
+  html.design-v2 .reference-tags a {
+    color: inherit;
+  }
+
+  html.design-v2 .reference-article-header {
+    padding-block: 1rem;
+  }
+
+  html.design-v2 .reference-article-header a,
+  html.design-v2 .reference-article-footer a {
+    font-size: 0.875rem;
+  }
+
+  html.design-v2 .reference-post-header {
+    margin-bottom: 1.5rem;
+  }
+
+  html.design-v2 .reference-post-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+  }
+
+  html.design-v2 .reference-post-header h1 {
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  html.design-v2 .reference-article-footer {
+    margin-top: 2rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  @media (min-width: 640px) {
+    .design-v2 .site-container {
+      padding-inline: 1.5rem;
+    }
+
+    .design-v2 body > header,
+    html.design-v2 .reference-post-header {
+      margin-bottom: 2rem;
+    }
+
+    .design-v2 body > header > .site-container {
+      padding-bottom: 1.5rem;
+    }
+
+    .design-v2 .reference-site-header > .site-container {
+      padding-top: 1.5rem;
+    }
+
+    html.design-v2 .site-page-title {
+      margin-bottom: 1.5rem;
+      font-size: 1.75rem;
+    }
+
+    html.design-v2 .site-card {
+      margin-block: 2rem;
+      padding: 1.5rem;
+    }
+
+    html.design-v2 .reference-home-header {
+      padding-block: 3rem 2rem;
+    }
+
+    html.design-v2 .reference-home-header h1 {
+      font-size: 2rem;
+    }
+
+    html.design-v2 .reference-post-list {
+      gap: 1.5rem;
+    }
+
+    html.design-v2 .reference-post-card {
+      grid-template-columns: 9rem minmax(0, 1fr);
+      padding: 1.5rem;
+    }
+
+    html.design-v2 .reference-post-card h2 {
+      font-size: 1.125rem;
+    }
+
+    html.design-v2 .reference-post-card time,
+    html.design-v2 .reference-post-date {
+      font-size: 0.875rem;
+    }
+
+    html.design-v2 .reference-tags {
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    html.design-v2 .reference-tags li {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    html.design-v2 .reference-article-header {
+      padding-block: 1.5rem;
+    }
+
+    html.design-v2 .reference-post-header h1 {
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+    }
+
+    html.design-v2 .reference-article-footer {
+      margin-top: 3rem;
+      padding-block: 2rem;
+    }
+  }
+}

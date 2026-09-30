@@ -1,0 +1,65 @@
+.image-lightbox {
+  @apply fixed inset-0 z-50 grid place-items-center p-4;
+  visibility: hidden;
+  background-color: rgb(0 0 0 / 82%);
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(3px);
+  transition:
+    opacity 220ms ease,
+    visibility 0s linear 220ms !important;
+}
+
+.image-lightbox.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0s !important;
+}
+
+.image-lightbox__image {
+  @apply max-h-[90vh] max-w-[92vw] object-contain;
+  border: 0;
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition:
+    opacity 200ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+  cursor: zoom-out;
+}
+
+.image-lightbox.is-open .image-lightbox__image {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.image-lightbox__close {
+  @apply absolute top-4 right-4 grid size-10 place-content-center bg-black/70 text-2xl leading-none text-white;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 180ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 160ms ease !important;
+}
+
+.image-lightbox.is-open .image-lightbox__close {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.image-lightbox__close:hover {
+  @apply bg-black;
+}
+
+.image-lightbox-open {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-lightbox,
+  .image-lightbox__image,
+  .image-lightbox__close {
+    transition: none !important;
+  }
+}
