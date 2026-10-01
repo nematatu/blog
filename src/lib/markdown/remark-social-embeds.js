@@ -90,7 +90,7 @@ function youtubeEmbed(url) {
     url.searchParams.get("start") ?? url.searchParams.get("t"),
   );
   if (start) embed.searchParams.set("start", String(start));
-  return `<div class="youtube-player my-6 aspect-video w-full overflow-hidden border border-black/15 bg-black dark:border-white/20"><iframe class="block size-full" src="${escapeHtml(embed.toString())}" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+  return `<div class="youtube-player my-6 aspect-video w-full overflow-hidden border border-black/15 bg-black"><iframe class="block size-full" src="${escapeHtml(embed.toString())}" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
 }
 
 export default function remarkSocialEmbeds() {

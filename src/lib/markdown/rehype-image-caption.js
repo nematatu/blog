@@ -48,7 +48,7 @@ function figure(image, caption) {
         type: "element",
         tagName: "figcaption",
         properties: {
-          className: ["text-sm", "text-black/60", "dark:text-white/60"],
+          className: ["text-sm", "text-black/60"],
         },
         children: caption,
       },

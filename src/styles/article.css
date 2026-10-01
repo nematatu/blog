@@ -119,8 +119,7 @@
     font-weight: 600;
   }
 
-  .post-body
-    img:not(.fuki__icon, .external-link-favicon, .image-compare__image) {
+  .post-body img:not(.external-link-favicon) {
     max-width: 100%;
     height: auto;
     cursor: zoom-in;

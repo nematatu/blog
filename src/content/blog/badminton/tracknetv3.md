@@ -123,7 +123,6 @@ mask = torch.from_numpy(mask).float().cuda().unsqueeze(-1)
 
 これはNvidia製GPUの使用を意味するが、M1 MacBookに搭載されていないのでエラーが発生する。
 
-:::fuki
 M1 MacBook Airでも動くように`MPS`に書き換える。
 
 具体的には、
@@ -144,7 +143,6 @@ M1 MacBook Airでも動くように`MPS`に書き換える。
 
 - [Accelerated PyTorch training on Mac - Metal - Apple Developer](https://developer.apple.com/metal/pytorch/?utm_source=chatgpt.com)
 - [MPSバックエンド — PyTorch 2.12ドキュメント](https://docs.pytorch.org/docs/2.12/notes/mps.html?utm_source=chatgpt.com)
-  :::
 
 ## 活用方法
 
@@ -280,7 +278,7 @@ https://www.youtube.com/watch?v=0W7FqDBD7Ts
 
 ## お気持ち
 
-:fuki[AI使ってスマホでシャトル軌道取って、自動で点数数えるやつ作ってる人いたり、俺がやろうとしてることの新規性がないなぁ。]
+AI使ってスマホでシャトル軌道取って、自動で点数数えるやつ作ってる人いたり、俺がやろうとしてることの新規性がないなぁ。
 
 - 「音」とか使えないかな。いい音はスマッシュ速いみたいな。分離がむずい？識別もむずいよね
   - スマッシュモーションと音のタイミングがあってれば、正しいとする？

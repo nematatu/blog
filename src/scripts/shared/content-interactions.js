@@ -1,21 +1,5 @@
 const root = document.documentElement;
-const lightboxImageSelector =
-  "article img:not(.fuki__icon):not([data-no-lightbox])";
-
-const updateImageComparisonAria = (slider) => {
-  const rawValue = Number(slider.value);
-  const value = Math.round(
-    Math.min(100, Math.max(0, Number.isFinite(rawValue) ? rawValue : 50)),
-  );
-  const beforeLabel = slider.dataset.beforeLabel || "変更前";
-  const afterLabel = slider.dataset.afterLabel || "変更後";
-
-  slider.setAttribute("aria-valuenow", String(value));
-  slider.setAttribute(
-    "aria-valuetext",
-    `${beforeLabel} ${value}%、${afterLabel} ${100 - value}%`,
-  );
-};
+const lightboxImageSelector = "article img:not([data-no-lightbox])";
 
 document.addEventListener("click", (event) => {
   const target = event.target.closest?.("a,img");
@@ -33,15 +17,6 @@ for (const image of document.querySelectorAll(lightboxImageSelector)) {
   image.tabIndex = 0;
   image.role = "button";
 }
-
-const sliders = document.querySelectorAll("img-comparison-slider");
-if (sliders.length)
-  void import("img-comparison-slider").then(() => {
-    for (const slider of sliders) {
-      updateImageComparisonAria(slider);
-      slider.addEventListener("slide", () => updateImageComparisonAria(slider));
-    }
-  });
 
 if (document.querySelector(".twitter-tweet")) {
   const script = document.createElement("script");

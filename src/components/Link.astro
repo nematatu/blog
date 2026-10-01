@@ -29,7 +29,7 @@ const opensInNewTab = external ?? isExternalHref(href);
   target={opensInNewTab ? "_blank" : undefined}
   rel={opensInNewTab ? "noopener noreferrer" : undefined}
   class:list={[
-    "inline-block text-current decoration-black/30 hover:text-black hover:decoration-black/50 focus-visible:text-black focus-visible:decoration-black/50 dark:decoration-white/30 dark:hover:text-white dark:hover:decoration-white/50 dark:focus-visible:text-white dark:focus-visible:decoration-white/50",
+    "inline-block text-current decoration-black/30 hover:text-black hover:decoration-black/50 focus-visible:text-black focus-visible:decoration-black/50",
     underline && "underline underline-offset-[3px]",
   ]}
   {...rest}

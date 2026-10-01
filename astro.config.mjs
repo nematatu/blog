@@ -18,8 +18,8 @@ const site = "https://blog.amatatu.com";
 export default defineConfig({
   site,
   prefetch: {
-    prefetchAll: true,
-    defaultStrategy: "viewport",
+    prefetchAll: false,
+    defaultStrategy: "hover",
   },
   integrations: [sitemap(), mdx(), pagefind()],
   vite: {

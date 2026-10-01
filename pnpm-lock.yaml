@@ -41,9 +41,6 @@ importers:
       google-translate-api-x:
         specifier: ^10.7.3
         version: 10.7.3
-      img-comparison-slider:
-        specifier: ^8.0.7
-        version: 8.0.7
       remark-directive:
         specifier: ^4.0.0
         version: 4.0.0
@@ -1987,9 +1984,6 @@ packages:
   iconv-lite@0.7.3:
     resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
-
-  img-comparison-slider@8.0.7:
-    resolution: {integrity: sha512-BALViPtL2FgcCa9K8KkrmhWuyeDkVu6XVwBoRm9pU8Y6P1rjw31zujuEMBWTz2w6W30zzdQZNTccvg7J9Gf/LQ==}
 
   inline-style-parser@0.2.7:
     resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
@@ -5122,8 +5116,6 @@ snapshots:
   iconv-lite@0.7.3:
     dependencies:
       safer-buffer: 2.1.2
-
-  img-comparison-slider@8.0.7: {}
 
   inline-style-parser@0.2.7: {}
 

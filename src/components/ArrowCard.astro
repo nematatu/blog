@@ -16,7 +16,7 @@ const image =
 const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
 ---
 
-<a class="reference-post-card" href={url}>
+<a class="reference-post-card" href={url} data-astro-prefetch="hover">
   <OgImage
     src={image}
     transitionUrl={entry.collection === "blog" ? url : undefined}

@@ -1,4 +1,4 @@
-html.design-v2 {
+html {
   --astro-code-foreground: #24292e;
   --astro-code-background: #f4f4f5;
   --astro-code-token-comment: #6a737d;
@@ -12,9 +12,9 @@ html.design-v2 {
   --astro-code-token-link: #032f62;
 }
 
-html.design-v2 .post-body pre {
+html .post-body pre {
   display: block;
-  margin: 0;
+  margin-block: 1.5rem;
   padding: 1rem;
   border-radius: 8px;
   background: #f4f4f5 !important;
@@ -27,16 +27,7 @@ html.design-v2 .post-body pre {
   -webkit-overflow-scrolling: touch;
 }
 
-html.design-v2 .post-body .code-block-wrapper {
-  margin-block: 1.5rem;
-}
-
-html.design-v2 .code-block-header,
-html.design-v2 .copy-code {
-  display: none;
-}
-
-html.design-v2 .post-body pre code {
+html .post-body pre code {
   min-width: max-content;
   margin: 0;
   padding: 0;
@@ -46,11 +37,8 @@ html.design-v2 .post-body pre code {
 }
 
 @media (max-width: 639px) {
-  html.design-v2 .post-body .code-block-wrapper {
+  html .post-body pre {
     margin-inline: -1rem;
-  }
-
-  html.design-v2 .post-body pre {
     border-radius: 0;
   }
 }
