@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection, render } from "astro:content";
 import Container from "@components/Container.astro";
 import EntryBadges from "@components/EntryBadges.astro";
 import OgImage from "@components/OgImage.astro";
+import ContentInteractions from "@components/ContentInteractions.astro";
 import { SITE } from "@consts";
 import { isVisibleEntry } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
@@ -20,7 +21,7 @@ const post = Astro.props;
 const { Content } = await render(post);
 const tags = post.data.tags ?? [];
 const ogImageVersion = "20260614-og-background";
-const image = post.data.ogImage ?? `/og-image/blog/${post.id}.png`;
+const image = post.data.ogImage;
 const published = new Intl.DateTimeFormat("ja-JP", {
   dateStyle: "long",
   timeZone: "Asia/Tokyo",
@@ -35,21 +36,14 @@ const published = new Intl.DateTimeFormat("ja-JP", {
   page="article"
 >
   <Container>
-    <article>
+    <article data-pagefind-body data-post-transition-url={`/blog/${post.id}`}>
       <header class="reference-post-header">
-        <h1>
-          <span
-            data-post-transition-url={`/blog/${post.id}`}
-            data-post-transition-part="title">{post.data.title}</span
-          >
+        <h1 data-pagefind-meta="title">
+          <span class="post-transition-title">{post.data.title}</span>
           <EntryBadges draft={post.data.draft} />
         </h1>
         <div class="reference-post-date">
-          <time
-            datetime={post.data.date.toISOString()}
-            data-post-transition-url={`/blog/${post.id}`}
-            data-post-transition-part="date">{published}</time
-          >
+          <time datetime={post.data.date.toISOString()}>{published}</time>
         </div>
         {
           tags.length > 0 && (
@@ -63,15 +57,19 @@ const published = new Intl.DateTimeFormat("ja-JP", {
           )
         }
       </header>
-      <OgImage
-        src={image}
-        transitionUrl={`/blog/${post.id}`}
-        sizes="(min-width: 640px) 672px, calc(100vw - 2rem)"
-        class="reference-post-image"
-        loading="eager"
-        fetchpriority="high"
-      />
+      {
+        image && (
+          <OgImage
+            src={image}
+            sizes="(min-width: 640px) 672px, calc(100vw - 2rem)"
+            class="reference-post-image"
+            loading="eager"
+            fetchpriority="high"
+          />
+        )
+      }
       <div class="post-body"><Content /></div>
     </article>
   </Container>
+  <ContentInteractions />
 </Layout>

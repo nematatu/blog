@@ -22,19 +22,11 @@ const { photos } = Astro.props;
           data-gallery-open
           data-gallery-id={photo.id}
           data-gallery-article-href={photo.articleHref}
-          style={
-            photo.width && photo.height
-              ? `--photo-ratio: ${photo.width} / ${photo.height}`
-              : undefined
-          }
-          data-astro-prefetch="false"
           aria-label={`${photo.title}を拡大表示`}
           aria-haspopup="dialog"
         >
           <img
             src={photo.src}
-            width={photo.width}
-            height={photo.height}
             alt={photo.alt}
             loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
@@ -59,12 +51,6 @@ const { photos } = Astro.props;
     data-gallery-dialog
     aria-label="写真ビューア"
   >
-    <div
-      class="photo-gallery__backdrop pointer-events-none absolute -inset-12 bg-cover bg-center opacity-60 blur-[40px] brightness-[0.2]"
-      data-gallery-backdrop
-      aria-hidden="true"
-    >
-    </div>
     <div
       class="photo-gallery__viewer relative grid h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] gap-3"
     >
@@ -138,31 +124,6 @@ const { photos } = Astro.props;
         >
           <span data-gallery-position></span>
         </div>
-        <div
-          class="photo-gallery__thumbnails mx-auto flex w-full max-w-240 [scrollbar-width:thin] gap-2 overflow-x-auto [overscroll-behavior-x:contain] p-[0.3rem]"
-          data-gallery-thumbnails
-          aria-label="写真一覧"
-        >
-          {
-            photos.map((photo, index) => (
-              <button
-                class="photo-gallery__thumbnail h-12 w-18 flex-[0_0_4.5rem] cursor-pointer overflow-hidden bg-[#333] p-0 opacity-50"
-                type="button"
-                data-gallery-thumbnail
-                aria-label={`${index + 1}: ${photo.title}を表示`}
-              >
-                <img
-                  src={photo.src}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                  data-no-lightbox
-                />
-              </button>
-            ))
-          }
-        </div>
       </div>
     </div>
   </dialog>
@@ -173,18 +134,12 @@ const { photos } = Astro.props;
 </script>
 
 <style>
-  .photo-gallery__grid[data-masonry] {
-    grid-auto-rows: 1px;
-    row-gap: 0;
-  }
-
   .photo-gallery__tile {
-    aspect-ratio: var(--photo-ratio, 3 / 2);
+    aspect-ratio: 3 / 2;
     background: #252525;
   }
 
-  .photo-gallery__tile img,
-  .photo-gallery__thumbnail img {
+  .photo-gallery__tile img {
     display: block;
     width: 100%;
     height: 100%;
@@ -268,12 +223,6 @@ const { photos } = Astro.props;
     cursor: pointer;
     pointer-events: auto;
   }
-  .photo-gallery__thumbnail img {
-    object-fit: cover;
-  }
-  .photo-gallery__thumbnail[aria-current="true"] {
-    opacity: 1;
-  }
   .photo-gallery [hidden] {
     display: none;
   }
@@ -305,11 +254,6 @@ const { photos } = Astro.props;
     .photo-gallery__viewer {
       gap: 0.25rem;
       padding-block: 0.5rem;
-    }
-    .photo-gallery__thumbnail {
-      flex-basis: 3.25rem;
-      width: 3.25rem;
-      height: 2.25rem;
     }
     .photo-gallery__status {
       margin-bottom: 0;

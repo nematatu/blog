@@ -119,19 +119,10 @@
     font-weight: 600;
   }
 
-  .post-body img:not(.external-link-favicon) {
+  .post-body img {
     max-width: 100%;
     height: auto;
     cursor: zoom-in;
-  }
-
-  .post-body .external-link-favicon {
-    display: inline-block;
-    width: 1.1em;
-    height: 1.1em;
-    margin-inline-start: 0.35em;
-    vertical-align: -0.15em;
-    object-fit: contain;
   }
 
   .post-body .data-footnote-backref {

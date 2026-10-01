@@ -2,13 +2,10 @@ import path from "node:path";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import { getCollection } from "astro:content";
 import type { ImageMetadata } from "astro";
-import { getGalleryImageDimensions } from "@/lib/gallery-image-dimensions";
 
 export type GalleryPhoto = {
   id: string;
   src: string;
-  width?: number;
-  height?: number;
   alt: string;
   title: string;
   articleHref: string;
@@ -96,8 +93,5 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
       }),
     )
   ).flat();
-  const dimensions = await getGalleryImageDimensions(
-    photos.map((photo) => photo.src),
-  );
-  return photos.map((photo) => ({ ...photo, ...dimensions.get(photo.src) }));
+  return photos;
 }

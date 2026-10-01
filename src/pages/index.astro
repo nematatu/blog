@@ -20,9 +20,9 @@ const entries = sortByPinnedThenDateDesc(
   <Container>
     <ul class="reference-post-list">
       {
-        entries.map((entry, index) => (
+        entries.map((entry) => (
           <li>
-            <ArrowCard entry={entry} loading={index === 0 ? "eager" : "lazy"} />
+            <ArrowCard entry={entry} />
           </li>
         ))
       }

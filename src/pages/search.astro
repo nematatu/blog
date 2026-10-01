@@ -1,0 +1,14 @@
+---
+import Container from "@components/Container.astro";
+import PageFind from "@components/PageFind.astro";
+import Layout from "@layouts/Layout.astro";
+---
+
+<Layout title="Search" description="記事を検索">
+  <Container>
+    <section data-pagefind-ignore>
+      <h1 class="site-page-title">Search</h1>
+      <PageFind />
+    </section>
+  </Container>
+</Layout>

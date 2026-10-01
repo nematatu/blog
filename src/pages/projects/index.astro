@@ -17,12 +17,9 @@ const projects = sortByDateDesc(
       <h1 class="site-page-title">Projects</h1>
       <ul class="reference-post-list">
         {
-          projects.map((project, index) => (
+          projects.map((project) => (
             <li>
-              <ArrowCard
-                entry={project}
-                loading={index === 0 ? "eager" : "lazy"}
-              />
+              <ArrowCard entry={project} />
             </li>
           ))
         }

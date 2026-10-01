@@ -40,7 +40,7 @@
     padding-top: 1rem;
   }
 
-  html .reference-site-header [data-site-brand] {
+  html .reference-site-header > .site-container > a {
     color: #1a1a1a;
     font-weight: 700;
   }
@@ -52,14 +52,6 @@
     align-items: center;
     gap: 0.75rem;
     font-size: 0.875rem;
-  }
-
-  html .reference-site-header button,
-  html .reference-site-footer button {
-    padding: 0;
-    background: none;
-    color: #2563eb;
-    cursor: pointer;
   }
 
   html body > footer.reference-site-footer {
@@ -153,7 +145,6 @@
 
   html .reference-post-card {
     display: grid;
-    grid-template-columns: 6rem minmax(0, 1fr);
     align-items: start;
     gap: 1rem;
     padding: 1rem;
@@ -163,6 +154,10 @@
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
+  }
+
+  html .reference-post-card.has-image {
+    grid-template-columns: 6rem minmax(0, 1fr);
   }
 
   html .reference-post-card:hover {
@@ -299,8 +294,11 @@
     }
 
     html .reference-post-card {
-      grid-template-columns: 9rem minmax(0, 1fr);
       padding: 1.5rem;
+    }
+
+    html .reference-post-card.has-image {
+      grid-template-columns: 9rem minmax(0, 1fr);
     }
 
     html .reference-post-card h2 {

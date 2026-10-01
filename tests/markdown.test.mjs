@@ -1,13 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import rehypeImageCaption from "../src/lib/markdown/rehype-image-caption.js";
+import rehypeExternalLinks from "../src/lib/markdown/rehype-external-links.js";
 import remarkDirectiveWidgets from "../src/lib/markdown/remark-directive-widgets.js";
 import remarkSocialEmbeds from "../src/lib/markdown/remark-social-embeds.js";
 
 const text = (value) => ({ type: "text", value });
 const paragraph = (children, data) => ({ type: "paragraph", children, data });
 
-test("Markdown widgets keep admonitions and GitHub cards", async () => {
+test("Markdown widgets keep admonitions and GitHub cards", () => {
   const admonition = {
     type: "containerDirective",
     name: "warning",
@@ -22,7 +23,7 @@ test("Markdown widgets keep admonitions and GitHub cards", async () => {
     attributes: { repo: "owner/repo", description: "説明" },
     children: [],
   };
-  await remarkDirectiveWidgets()({
+  remarkDirectiveWidgets()({
     type: "root",
     children: [admonition, github],
   });
@@ -44,7 +45,40 @@ test("standalone social links become embeds without changing other links", () =>
     /youtube-nocookie\.com\/embed\/abcdefghijk\?start=90/,
   );
   assert.match(tree.children[1].value, /twitter-tweet/);
+  assert.match(tree.children[0].value, /<template><div class="youtube-player/);
+  assert.match(tree.children[1].value, /<template><blockquote/);
+  assert.match(tree.children[0].value, /YouTubeで開く<\/a>/);
+  assert.match(tree.children[1].value, /Xで開く<\/a>/);
   assert.equal(tree.children[2], ordinary);
+});
+
+test("Markdown rendering keeps external links and GitHub cards without network requests", (t) => {
+  const fetch = t.mock.method(globalThis, "fetch", () => {
+    throw new Error("Markdown rendering must not fetch external resources");
+  });
+  const link = (href) => ({
+    type: "element",
+    tagName: "a",
+    properties: { href },
+    children: [text("リンク")],
+  });
+  const external = link("https://example.com/docs");
+  const internal = link("/blog/post");
+  const mail = link("mailto:hello@example.com");
+  rehypeExternalLinks({ site: "https://blog.amatatu.com" })({
+    type: "root",
+    children: [external, internal, mail],
+  });
+  assert.equal(external.properties.target, "_blank");
+  assert.equal(external.properties.rel, "noopener noreferrer");
+  assert.equal(internal.properties.target, undefined);
+  assert.equal(mail.properties.target, undefined);
+  assert.equal(external.children.length, 1);
+
+  const github = paragraph([text("https://github.com/owner/repo")]);
+  remarkDirectiveWidgets()({ type: "root", children: [github] });
+  assert.match(github.value, /GitHub repository/);
+  assert.equal(fetch.mock.callCount(), 0);
 });
 
 test("image captions keep lazy loading and text", () => {

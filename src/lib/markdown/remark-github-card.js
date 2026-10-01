@@ -1,5 +1,3 @@
-const githubDescriptionCache = new Map();
-
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -7,49 +5,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
-}
-
-async function fetchJson(url) {
-  const headers = {
-    Accept: "application/vnd.github+json",
-    "User-Agent": "blog-build",
-  };
-
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-
-  const response = await fetch(url, { headers });
-  if (!response.ok) return null;
-
-  return response.json();
-}
-
-async function githubDescription(target) {
-  if (target.description) return target.description;
-  const cacheKey = `${target.kind}:${target.path}`;
-  if (!githubDescriptionCache.has(cacheKey)) {
-    githubDescriptionCache.set(
-      cacheKey,
-      (async () => {
-        try {
-          const data = await fetchJson(
-            `https://api.github.com/${target.kind === "repo" ? "repos" : "users"}/${target.path}`,
-          );
-          const values =
-            target.kind === "repo"
-              ? [data?.description]
-              : [data?.bio, data?.name];
-          const description = values.find(
-            (value) => typeof value === "string" && value.trim(),
-          );
-          if (description) return description.trim();
-        } catch {}
-        return target.kind === "repo" ? "GitHub repository" : "GitHub profile";
-      })(),
-    );
-  }
-  return githubDescriptionCache.get(cacheKey);
 }
 
 function githubTarget(kind, path, description = "") {
@@ -91,11 +46,14 @@ export function githubTargetFromUrl(value) {
   }
 }
 
-async function githubCardHtml(target) {
+function githubCardHtml(target) {
   const safeUrl = escapeHtml(target.url);
   const safeImage = escapeHtml(target.image);
   const safeLabel = escapeHtml(target.label);
-  const safeDescription = escapeHtml(await githubDescription(target));
+  const safeDescription = escapeHtml(
+    target.description ||
+      (target.kind === "repo" ? "GitHub repository" : "GitHub profile"),
+  );
 
   return `<div class="github-card not-prose max-w-[85%] py-8 max-[840px]:max-w-full">
     <a class="github-card__link flex min-h-40 items-stretch overflow-hidden border border-black/15 bg-white text-black/80 outline-none hover:border-blue-700/60 hover:text-black focus-visible:border-blue-700/60" href="${safeUrl}" target="_blank" rel="noreferrer">
@@ -109,9 +67,9 @@ async function githubCardHtml(target) {
   </div>`;
 }
 
-export async function renderGithubCard(node, target) {
+export function renderGithubCard(node, target) {
   node.type = "html";
-  node.value = await githubCardHtml(target);
+  node.value = githubCardHtml(target);
   delete node.name;
   delete node.attributes;
   delete node.children;

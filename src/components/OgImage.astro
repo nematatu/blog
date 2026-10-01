@@ -11,7 +11,6 @@ type Props = {
   loading?: "eager" | "lazy";
   fetchpriority?: "high" | "low" | "auto";
   ariaHidden?: boolean;
-  transitionUrl?: string;
 };
 
 const {
@@ -23,25 +22,18 @@ const {
   loading,
   fetchpriority,
   ariaHidden = alt.length === 0,
-  transitionUrl,
 } = Astro.props as Props;
 
-const thumbnail =
-  import.meta.env.DEV && src.startsWith("/og-image/")
-    ? undefined
-    : getOgThumbnailSet(src, fallbackWidth);
+const thumbnail = getOgThumbnailSet(src, fallbackWidth);
 const dimensions = await getOgImageDimensions(src);
-const generated = src.startsWith("/og-image/");
 ---
 
 <img
-  data-post-transition-url={transitionUrl}
-  data-post-transition-part={transitionUrl ? "image" : undefined}
   src={thumbnail?.src ?? src}
   srcset={thumbnail?.srcset}
   sizes={thumbnail ? sizes : undefined}
-  width={dimensions?.width ?? (generated ? 1200 : undefined)}
-  height={dimensions?.height ?? (generated ? 630 : undefined)}
+  width={dimensions?.width}
+  height={dimensions?.height}
   alt={alt}
   class={className}
   loading={loading}

@@ -13,12 +13,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <meta charset="utf-8" />
-<PostTransitions />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/x-icon" href="/icon/favicon.ico" />
 <link rel="apple-touch-icon" href="/icon/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="generator" content={Astro.generator} />
+<PostTransitions />
 <link rel="preconnect" href="https://assets.blog.amatatu.com" crossorigin />
 <link rel="dns-prefetch" href="https://assets.blog.amatatu.com" />
 <link rel="canonical" href={canonicalURL} />
@@ -35,7 +35,3 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 {image && <meta property="twitter:image" content={new URL(image, Astro.url)} />}
-
-<script>
-  import "@/scripts/shared/content-interactions";
-</script>

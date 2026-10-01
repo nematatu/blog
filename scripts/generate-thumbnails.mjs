@@ -4,13 +4,8 @@ import sharp from "sharp";
 
 const IMAGE_PATTERN = /\.(avif|jpe?g|png|webp)$/i;
 const widths = [240, 480, 960, 1200];
-const generatedOgImages = process.argv.includes("--generated");
-const sourceDir = path.resolve(
-  generatedOgImages ? "dist/og-image" : "public/ogp",
-);
-const outputDir = path.resolve(
-  generatedOgImages ? "dist/thumbs/og-image" : "public/thumbs/ogp",
-);
+const sourceDir = path.resolve("public/ogp");
+const outputDir = path.resolve("public/thumbs/ogp");
 
 async function imageFiles(dir, prefix = "") {
   return (

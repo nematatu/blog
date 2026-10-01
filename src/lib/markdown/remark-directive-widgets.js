@@ -43,9 +43,7 @@ function transformAdmonition(node) {
 }
 
 export default function remarkDirectiveWidgets() {
-  return async (tree) => {
-    const pendingCards = [];
-
+  return (tree) => {
     visit(tree, (node) => {
       if (node.type === "paragraph") {
         const child = node.children?.length === 1 && node.children[0];
@@ -55,7 +53,7 @@ export default function remarkDirectiveWidgets() {
             : child?.type === "link"
               ? githubTargetFromUrl(child.url)
               : null;
-        if (target) pendingCards.push({ node, target });
+        if (target) renderGithubCard(node, target);
         return;
       }
 
@@ -72,13 +70,9 @@ export default function remarkDirectiveWidgets() {
         node.name === "github"
       ) {
         const target = githubTargetFromDirective(node);
-        if (target) pendingCards.push({ node, target });
+        if (target) renderGithubCard(node, target);
         return;
       }
     });
-
-    await Promise.all(
-      pendingCards.map(({ node, target }) => renderGithubCard(node, target)),
-    );
   };
 }

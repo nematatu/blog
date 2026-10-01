@@ -27,7 +27,6 @@ function initGallery(gallery: HTMLElement) {
   const dialog = get<HTMLDialogElement>("[data-gallery-dialog]");
   const image = get<HTMLImageElement>("[data-gallery-image]");
   const frame = get("[data-gallery-image-frame]");
-  const backdrop = get("[data-gallery-backdrop]");
   const article = get<HTMLAnchorElement>("[data-gallery-article]");
   const position = get("[data-gallery-position]");
   const message = get("[data-gallery-message]");
@@ -36,37 +35,6 @@ function initGallery(gallery: HTMLElement) {
   const close = get<HTMLButtonElement>("[data-gallery-close]");
   const previous = get<HTMLButtonElement>("[data-gallery-previous]");
   const next = get<HTMLButtonElement>("[data-gallery-next]");
-  const strip = get("[data-gallery-thumbnails]");
-  const thumbnails = [
-    ...gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumbnail]"),
-  ];
-  const grid = get(".photo-gallery__grid");
-  let layoutFrame = 0;
-  const layoutTiles = () => {
-    layoutFrame = 0;
-    const gap = parseFloat(getComputedStyle(grid).columnGap);
-    // Read geometry before writing styles to avoid repeated layout work.
-    const spans = triggers.map((tile) =>
-      Math.ceil(tile.getBoundingClientRect().height + gap),
-    );
-    triggers.forEach((tile, index) => {
-      tile.style.gridRowEnd = `span ${spans[index]}`;
-    });
-    // Sparse row placement preserves source order from top to bottom. Using
-    // dense placement would let later (older) photos jump into earlier gaps.
-    grid.dataset.masonry = "";
-  };
-  const scheduleLayout = () => {
-    if (!layoutFrame) layoutFrame = requestAnimationFrame(layoutTiles);
-  };
-  let gridWidth = 0;
-  const layoutObserver = new ResizeObserver(([entry]) => {
-    if (entry.contentRect.width === gridWidth) return;
-    gridWidth = entry.contentRect.width;
-    scheduleLayout();
-  });
-  layoutObserver.observe(grid);
-  layoutTiles();
   const session = crypto.randomUUID();
   let current = 0;
   let request = 0;
@@ -75,7 +43,6 @@ function initGallery(gallery: HTMLElement) {
   let oldScrollRestoration = history.scrollRestoration;
   let pointer: { id: number; x: number; y: number } | null = null;
   let swiped = false;
-  const preloaded = new Set<string>();
 
   const tileState = (tileImage: HTMLImageElement) => {
     const error = tileImage
@@ -85,15 +52,8 @@ function initGallery(gallery: HTMLElement) {
     const failed = tileImage.complete && tileImage.naturalWidth === 0;
     tileImage.hidden = failed;
     error.hidden = !failed;
-    if (!failed && tileImage.naturalWidth > 0) {
-      tileImage.parentElement?.style.setProperty(
-        "--photo-ratio",
-        `${tileImage.naturalWidth} / ${tileImage.naturalHeight}`,
-      );
-      scheduleLayout();
-    }
   };
-  tileImages.forEach((tileImage, index) => {
+  tileImages.forEach((tileImage) => {
     if (!tileImage) return;
     tileImage.addEventListener("load", () => tileState(tileImage));
     tileImage.addEventListener("error", () => tileState(tileImage));
@@ -106,24 +66,11 @@ function initGallery(gallery: HTMLElement) {
       index === undefined ? undefined : photos[index].id,
     );
 
-  const centerThumbnail = () => {
-    const thumbnail = thumbnails[current];
-    // Scroll only the strip; scrollIntoView can move the underlying page.
-    strip.scrollTo({
-      left:
-        thumbnail.offsetLeft -
-        strip.offsetLeft -
-        (strip.clientWidth - thumbnail.offsetWidth) / 2,
-      behavior: "instant",
-    });
-  };
-
   const loadPhoto = async () => {
     const version = ++request;
     const photo = photos[current];
     image.hidden = true;
     image.alt = photo.alt;
-    backdrop.style.backgroundImage = "";
     feedback.hidden = false;
     retry.hidden = true;
     message.textContent = "画像を読み込んでいます…";
@@ -138,15 +85,6 @@ function initGallery(gallery: HTMLElement) {
       feedback.hidden = true;
       message.textContent = "";
       frame.setAttribute("aria-busy", "false");
-      backdrop.style.backgroundImage = `url(${JSON.stringify(photo.src)})`;
-      for (const index of [current - 1, current + 1]) {
-        const neighbor = photos[index]?.src;
-        if (neighbor && !preloaded.has(neighbor)) {
-          preloaded.add(neighbor);
-          const preload = new Image();
-          preload.src = neighbor;
-        }
-      }
     } catch {
       if (version !== request || !dialog.open) return;
       frame.setAttribute("aria-busy", "false");
@@ -188,11 +126,6 @@ function initGallery(gallery: HTMLElement) {
       (document.activeElement === next && next.disabled)
     )
       close.focus({ preventScroll: true });
-    thumbnails.forEach((thumbnail, index) => {
-      thumbnail.setAttribute("aria-current", String(index === current));
-      thumbnail.tabIndex = index === current ? 0 : -1;
-    });
-    centerThumbnail();
     loadPhoto();
   };
 
@@ -230,9 +163,6 @@ function initGallery(gallery: HTMLElement) {
       showPhoto(index, "push");
     }),
   );
-  thumbnails.forEach((thumbnail, index) =>
-    thumbnail.addEventListener("click", () => showPhoto(index)),
-  );
   previous.addEventListener("click", () => showPhoto(current - 1));
   next.addEventListener("click", () => showPhoto(current + 1));
   retry.addEventListener("click", loadPhoto);
@@ -251,11 +181,7 @@ function initGallery(gallery: HTMLElement) {
     }[event.key];
     if (index === undefined) return;
     event.preventDefault();
-    const thumbnailFocused = (event.target as HTMLElement).matches(
-      "[data-gallery-thumbnail]",
-    );
     showPhoto(index);
-    if (thumbnailFocused) thumbnails[current].focus({ preventScroll: true });
   });
 
   frame.addEventListener("pointerdown", (event) => {

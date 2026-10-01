@@ -7,10 +7,10 @@ const pages = ["gallery", "stats", "projects", "tags"];
 
 <header class="reference-site-header">
   <Container>
-    <a data-site-brand href="/">{SITE.TITLE}</a>
+    <a href="/">{SITE.TITLE}</a>
     <nav aria-label="サイト内リンク">
       {pages.map((page) => <a href={`/${page}`}>{page}</a>)}
-      <button data-open-search type="button">search</button>
+      <a href="/search">search</a>
     </nav>
   </Container>
 </header>

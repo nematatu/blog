@@ -7,41 +7,36 @@ import { dateKey } from "@lib/post-metrics";
 
 type Props = {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
-  loading?: "eager" | "lazy";
 };
-const { entry, loading = "lazy" } = Astro.props;
+const { entry } = Astro.props;
 const url = `/${entry.collection}/${entry.id}`;
-const image =
-  entry.data.ogImage ?? `/og-image/${entry.collection}/${entry.id}.png`;
+const image = entry.data.ogImage;
 const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
 ---
 
-<a class="reference-post-card" href={url} data-astro-prefetch="hover">
-  <OgImage
-    src={image}
-    transitionUrl={entry.collection === "blog" ? url : undefined}
-    sizes="(min-width: 640px) 9rem, 6rem"
-    class="reference-post-card-image"
-    loading={loading}
-    fetchpriority={loading === "eager" ? "high" : "auto"}
-  />
+<a
+  class:list={["reference-post-card", image && "has-image"]}
+  href={url}
+  data-post-transition-url={url}
+>
+  {
+    image && (
+      <OgImage
+        src={image}
+        sizes="(min-width: 640px) 9rem, 6rem"
+        class="reference-post-card-image"
+        loading="lazy"
+      />
+    )
+  }
   <article>
     <h2>
-      <span
-        data-post-transition-url={entry.collection === "blog" ? url : undefined}
-        data-post-transition-part={entry.collection === "blog"
-          ? "title"
-          : undefined}>{entry.data.title}</span
-      >
+      <span class="post-transition-title">{entry.data.title}</span>
       {entry.collection === "blog" && entry.data.pinned && <PinnedIndicator />}
       <EntryBadges draft={entry.data.draft} />
     </h2>
-    <time
-      datetime={entry.data.date.toISOString()}
-      data-post-transition-url={entry.collection === "blog" ? url : undefined}
-      data-post-transition-part={entry.collection === "blog"
-        ? "date"
-        : undefined}>{dateKey(entry.data.date).replaceAll("-", "/")}</time
+    <time datetime={entry.data.date.toISOString()}
+      >{dateKey(entry.data.date).replaceAll("-", "/")}</time
     >
     {
       tags.length > 0 && (
