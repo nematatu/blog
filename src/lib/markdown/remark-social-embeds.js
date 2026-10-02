@@ -59,7 +59,7 @@ function twitterEmbed(url) {
   }
   if (!path) return null;
   const href = escapeHtml(`https://twitter.com/${path}${url.search}`);
-  return `<details class="social-embed" data-social-embed><summary>Xの投稿を表示</summary><p><a href="${href}">Xで開く</a></p><template><blockquote class="twitter-tweet"><a href="${href}"></a></blockquote></template></details>`;
+  return `<blockquote class="twitter-tweet"><a href="${href}">Xで開く</a></blockquote>`;
 }
 
 function startSeconds(value) {
@@ -90,7 +90,7 @@ function youtubeEmbed(url) {
     url.searchParams.get("start") ?? url.searchParams.get("t"),
   );
   if (start) embed.searchParams.set("start", String(start));
-  return `<details class="social-embed" data-social-embed><summary>動画を再生</summary><p><a href="${escapeHtml(url.toString())}">YouTubeで開く</a></p><template><div class="youtube-player my-6 aspect-video w-full overflow-hidden border border-black/15 bg-black"><iframe class="block size-full" src="${escapeHtml(embed.toString())}" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></template></details>`;
+  return `<div class="youtube-player my-6 aspect-video w-full overflow-hidden border border-black/15 bg-black"><iframe class="block size-full" src="${escapeHtml(embed.toString())}" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
 }
 
 export default function remarkSocialEmbeds() {

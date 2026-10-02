@@ -1,91 +1,51 @@
 ---
-import { type CollectionEntry, getCollection, render } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import ArrowCard from "@components/ArrowCard.astro";
 import Container from "@components/Container.astro";
-import EntryBadges from "@components/EntryBadges.astro";
-import OgImage from "@components/OgImage.astro";
-import ContentInteractions from "@components/ContentInteractions.astro";
-import { SITE } from "@consts";
-import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
-import { dateKey } from "@lib/post-metrics";
-import { readingTime } from "@lib/utils";
+import { PROJECTS } from "@consts";
+import { sortByDateDesc } from "@lib/content-sort";
+import EntryLayout from "@layouts/EntryLayout.astro";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
-  const projects = sortByDateDesc(
-    (await getCollection("projects")).filter(isVisibleEntry),
-  );
-  return projects.map((project) => ({
-    params: { id: project.id },
-    props: project,
-  }));
+  if (!import.meta.env.DEV) return [];
+  const projects = sortByDateDesc(await getCollection("projects"));
+  return [
+    { params: { id: undefined }, props: { projects } },
+    ...projects.map((entry) => ({
+      params: { id: entry.id },
+      props: { entry },
+    })),
+  ];
 }
-
-const project = Astro.props as CollectionEntry<"projects">;
-const { Content } = await render(project);
-const image = project.data.ogImage;
+type Props = {
+  entry?: CollectionEntry<"projects">;
+  projects?: CollectionEntry<"projects">[];
+};
+const { entry, projects = [] } = Astro.props;
+const rendered = entry ? await render(entry) : undefined;
+const Content = rendered?.Content;
 ---
 
-<Layout
-  title={project.data.title}
-  description={project.data.description ?? SITE.DESCRIPTION}
-  image={project.data.ogImage ??
-    `/og-image/projects/${project.id}.png?v=20260614-og-background`}
->
-  <Container>
-    <a class="site-back-link" href="/projects">← Projects</a>
-    <article
-      data-pagefind-body
-      data-post-transition-url={`/projects/${project.id}`}
-    >
-      <header class="reference-post-header">
-        <h1 data-pagefind-meta="title">
-          <span class="post-transition-title">{project.data.title}</span>
-          <EntryBadges draft={project.data.draft} />
-        </h1>
-        <div class="reference-post-date">
-          {dateKey(project.data.date)}
-          {project.body && ` · ${readingTime(project.body)}`}
-        </div>
-        {
-          (project.data.demoURL || project.data.repoURL) && (
-            <nav class="reference-tag-grid mt-3">
-              {project.data.demoURL && (
-                <a
-                  class="reference-tag-card"
-                  href={project.data.demoURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  demo
-                </a>
-              )}
-              {project.data.repoURL && (
-                <a
-                  class="reference-tag-card"
-                  href={project.data.repoURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  repo
-                </a>
-              )}
-            </nav>
-          )
-        }
-      </header>
-      {
-        image && (
-          <OgImage
-            src={image}
-            sizes="(min-width: 640px) 672px, calc(100vw - 2rem)"
-            class="reference-post-image"
-            loading="eager"
-            fetchpriority="high"
-          />
-        )
-      }
-      <div class="post-body"><Content /></div>
-    </article>
-  </Container>
-  <ContentInteractions />
-</Layout>
+{
+  entry && Content ? (
+    <EntryLayout entry={entry}>
+      <Content />
+    </EntryLayout>
+  ) : (
+    <Layout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
+      <Container>
+        <section data-pagefind-ignore>
+          <h1 class="site-page-title">Projects</h1>
+          <ul class="reference-post-list">
+            {projects.map((project) => (
+              <li>
+                <ArrowCard entry={project} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </Container>
+    </Layout>
+  )
+}

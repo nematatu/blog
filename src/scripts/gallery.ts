@@ -1,155 +1,72 @@
 import { galleryUrl, selectedPhoto } from "@/lib/gallery-url";
 
 const gallery = document.querySelector<HTMLElement>("[data-photo-gallery]");
-if (gallery) initGallery(gallery);
-
-function initGallery(gallery: HTMLElement) {
-  const get = <T extends HTMLElement>(selector: string) => {
-    const element = gallery.querySelector<T>(selector);
-    if (!element) throw new Error(`Missing gallery element: ${selector}`);
-    return element;
-  };
-  const triggers = [
+if (gallery) {
+  const get = <T extends HTMLElement>(name: string) =>
+    gallery.querySelector<T>(`[data-gallery-${name}]`)!;
+  const tiles = [
     ...gallery.querySelectorAll<HTMLAnchorElement>("[data-gallery-open]"),
   ];
-  const tileImages = triggers.map((trigger) =>
-    trigger.querySelector<HTMLImageElement>("img"),
-  );
-  const photos = triggers.flatMap((trigger, index) => {
-    const image = tileImages[index];
-    const { galleryId: id, galleryArticleHref: articleHref } = trigger.dataset;
-    return image && id && articleHref
-      ? [{ id, src: image.src, alt: image.alt, articleHref }]
-      : [];
-  });
-  if (!photos.length) return;
-
-  const dialog = get<HTMLDialogElement>("[data-gallery-dialog]");
-  const image = get<HTMLImageElement>("[data-gallery-image]");
-  const frame = get("[data-gallery-image-frame]");
-  const article = get<HTMLAnchorElement>("[data-gallery-article]");
-  const position = get("[data-gallery-position]");
-  const message = get("[data-gallery-message]");
-  const feedback = get("[data-gallery-feedback]");
-  const retry = get<HTMLButtonElement>("[data-gallery-retry]");
-  const close = get<HTMLButtonElement>("[data-gallery-close]");
-  const previous = get<HTMLButtonElement>("[data-gallery-previous]");
-  const next = get<HTMLButtonElement>("[data-gallery-next]");
-  const session = crypto.randomUUID();
+  const photos = tiles.map((tile) => ({ id: tile.dataset.galleryId! }));
+  const dialog = get<HTMLDialogElement>("dialog");
+  const image = get<HTMLImageElement>("image");
+  const previous = get<HTMLButtonElement>("previous");
+  const next = get<HTMLButtonElement>("next");
+  const retry = get<HTMLButtonElement>("retry");
+  const message = get("message");
   let current = 0;
-  let request = 0;
-  let returnFocus: HTMLElement | null = null;
-  let scrollPosition = 0;
-  let oldScrollRestoration = history.scrollRestoration;
-  let pointer: { id: number; x: number; y: number } | null = null;
-  let swiped = false;
+  let touch: { x: number; y: number } | null = null;
 
-  const tileState = (tileImage: HTMLImageElement) => {
-    const error = tileImage
-      .closest("[data-gallery-open]")
-      ?.querySelector<HTMLElement>("[data-gallery-tile-error]");
-    if (!error) return;
-    const failed = tileImage.complete && tileImage.naturalWidth === 0;
-    tileImage.hidden = failed;
-    error.hidden = !failed;
-  };
-  tileImages.forEach((tileImage) => {
-    if (!tileImage) return;
-    tileImage.addEventListener("load", () => tileState(tileImage));
-    tileImage.addEventListener("error", () => tileState(tileImage));
-    if (tileImage.complete) tileState(tileImage);
-  });
-
-  const urlFor = (index?: number) =>
-    galleryUrl(
-      location.href,
-      index === undefined ? undefined : photos[index].id,
-    );
-
-  const loadPhoto = async () => {
-    const version = ++request;
-    const photo = photos[current];
+  function load() {
     image.hidden = true;
-    image.alt = photo.alt;
-    feedback.hidden = false;
     retry.hidden = true;
+    image.setAttribute("aria-busy", "true");
     message.textContent = "画像を読み込んでいます…";
-    frame.setAttribute("aria-busy", "true");
-    const loading = new Image();
-    loading.src = photo.src;
-    try {
-      await loading.decode();
-      if (version !== request || !dialog.open) return;
-      image.src = photo.src;
-      image.hidden = false;
-      feedback.hidden = true;
-      message.textContent = "";
-      frame.setAttribute("aria-busy", "false");
-    } catch {
-      if (version !== request || !dialog.open) return;
-      frame.setAttribute("aria-busy", "false");
-      message.textContent = "画像を読み込めませんでした。";
-      retry.hidden = false;
-    }
-  };
+    const source = tiles[current].querySelector("img")!;
+    image.alt = source.alt;
+    image.src = source.src;
+  }
+  image.addEventListener("load", () => {
+    image.hidden = false;
+    image.removeAttribute("aria-busy");
+    message.textContent = "";
+  });
+  image.addEventListener("error", () => {
+    image.removeAttribute("aria-busy");
+    message.textContent = "画像を読み込めませんでした。";
+    retry.hidden = false;
+  });
+  retry.addEventListener("click", load);
 
-  const showPhoto = (
-    index: number,
-    mode: "push" | "replace" | "none" = "replace",
-  ) => {
-    if (index < 0 || index >= photos.length) return;
+  function show(index: number, mode: "push" | "replace" | "none" = "replace") {
+    if (index < 0 || index >= tiles.length) return;
     current = index;
-    const photo = photos[current];
-    if (!dialog.open) {
-      scrollPosition = window.scrollY;
-      oldScrollRestoration = history.scrollRestoration;
-      history.scrollRestoration = "manual";
-      document.documentElement.classList.add("photo-gallery-open");
-      dialog.showModal();
-      close.focus({ preventScroll: true });
-    }
-    if (mode === "push")
-      history.pushState(
-        { ...history.state, photoGallery: session },
+    if (mode !== "none")
+      history[mode === "push" ? "pushState" : "replaceState"](
+        mode === "push"
+          ? { ...history.state, photoGallery: true }
+          : history.state,
         "",
-        urlFor(current),
+        galleryUrl(location.href, photos[index].id),
       );
-    if (mode === "replace")
-      history.replaceState(history.state, "", urlFor(current));
-    article.href = photo.articleHref;
-    position.textContent = `${current + 1} / ${photos.length}`;
-    previous.disabled = current === 0;
-    next.disabled = current === photos.length - 1;
-    // A disabled arrow must not leave keyboard focus on the document body.
+    if (!dialog.open) {
+      tiles[index].focus({ preventScroll: true });
+      dialog.showModal();
+    }
+    get<HTMLAnchorElement>("article").href =
+      tiles[index].dataset.galleryArticleHref!;
+    get("position").textContent = `${index + 1} / ${tiles.length}`;
+    previous.disabled = index === 0;
+    next.disabled = index === tiles.length - 1;
     if (
       (document.activeElement === previous && previous.disabled) ||
       (document.activeElement === next && next.disabled)
     )
-      close.focus({ preventScroll: true });
-    loadPhoto();
-  };
-
-  const finishClose = () => {
-    if (!dialog.open) return;
-    ++request;
-    dialog.close();
-    pointer = null;
-    document.documentElement.classList.remove("photo-gallery-open");
-    history.scrollRestoration = oldScrollRestoration;
-    returnFocus?.focus({ preventScroll: true });
-    window.scrollTo({ top: scrollPosition, behavior: "instant" });
-  };
-
-  const closeGallery = () => {
-    if (!dialog.open) return;
-    const ownsEntry = history.state?.photoGallery === session;
-    finishClose();
-    if (ownsEntry) history.back();
-    else history.replaceState(history.state, "", urlFor());
-  };
-
-  triggers.forEach((trigger, index) =>
-    trigger.addEventListener("click", (event) => {
+      dialog.querySelector("button")!.focus({ preventScroll: true });
+    load();
+  }
+  tiles.forEach((tile, index) =>
+    tile.addEventListener("click", (event) => {
       if (
         event.button !== 0 ||
         event.metaKey ||
@@ -159,17 +76,18 @@ function initGallery(gallery: HTMLElement) {
       )
         return;
       event.preventDefault();
-      returnFocus = trigger;
-      showPhoto(index, "push");
+      show(index, "push");
     }),
   );
-  previous.addEventListener("click", () => showPhoto(current - 1));
-  next.addEventListener("click", () => showPhoto(current + 1));
-  retry.addEventListener("click", loadPhoto);
-  close.addEventListener("click", closeGallery);
-  dialog.addEventListener("cancel", (event) => {
-    event.preventDefault();
-    closeGallery();
+  previous.addEventListener("click", () => show(current - 1));
+  next.addEventListener("click", () => show(current + 1));
+  dialog.addEventListener("close", () => {
+    if (!new URL(location.href).searchParams.has("photo")) return;
+    if (history.state?.photoGallery) history.back();
+    else history.replaceState(history.state, "", galleryUrl(location.href));
+  });
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
   });
   dialog.addEventListener("keydown", (event) => {
     if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -177,76 +95,42 @@ function initGallery(gallery: HTMLElement) {
       ArrowLeft: current - 1,
       ArrowRight: current + 1,
       Home: 0,
-      End: photos.length - 1,
+      End: tiles.length - 1,
     }[event.key];
     if (index === undefined) return;
     event.preventDefault();
-    showPhoto(index);
+    show(index);
   });
-
-  frame.addEventListener("pointerdown", (event) => {
-    swiped = false;
-    if (
-      !event.isPrimary ||
-      event.pointerType === "mouse" ||
-      (event.target as HTMLElement).closest("button")
-    )
-      return;
-    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    frame.setPointerCapture(event.pointerId);
-  });
-  frame.addEventListener("pointerup", (event) => {
-    if (!pointer || pointer.id !== event.pointerId) return;
-    const dx = event.clientX - pointer.x;
-    const dy = event.clientY - pointer.y;
-    pointer = null;
-    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-      swiped = true;
-      showPhoto(current + (dx < 0 ? 1 : -1));
+  image.addEventListener("pointerdown", (event) => {
+    if (event.isPrimary && event.pointerType !== "mouse") {
+      touch = { x: event.clientX, y: event.clientY };
+      image.setPointerCapture(event.pointerId);
     }
   });
-  frame.addEventListener("pointercancel", () => {
-    pointer = null;
-    swiped = false;
+  image.addEventListener("pointerup", (event) => {
+    if (!touch) return;
+    const dx = event.clientX - touch.x;
+    const dy = event.clientY - touch.y;
+    touch = null;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.25)
+      show(current + (dx < 0 ? 1 : -1));
   });
-  frame.addEventListener("click", (event) => {
-    if (swiped) {
-      swiped = false;
-      return;
-    }
-    if (image.hidden || (event.target as HTMLElement).closest("button")) return;
-    // object-fit leaves empty space inside the image element's box.
-    const rect = image.getBoundingClientRect();
-    const scale = Math.min(
-      rect.width / image.naturalWidth,
-      rect.height / image.naturalHeight,
-    );
-    const width = image.naturalWidth * scale;
-    const height = image.naturalHeight * scale;
-    const left = rect.left + (rect.width - width) / 2;
-    const top = rect.top + (rect.height - height) / 2;
-    if (
-      event.clientX < left ||
-      event.clientX > left + width ||
-      event.clientY < top ||
-      event.clientY > top + height
-    )
-      closeGallery();
+  image.addEventListener("pointercancel", () => {
+    touch = null;
   });
 
-  const syncUrl = () => {
+  function sync() {
     const { id, index } = selectedPhoto(photos, location.href);
-    if (index >= 0) {
-      returnFocus ??= triggers[index];
-      showPhoto(index, "none");
-    } else {
-      finishClose();
-      if (id !== null) history.replaceState(history.state, "", urlFor());
+    if (index >= 0) show(index, "none");
+    else {
+      if (id !== null)
+        history.replaceState(history.state, "", galleryUrl(location.href));
+      dialog.close();
     }
-  };
-  addEventListener("popstate", syncUrl);
+  }
+  addEventListener("popstate", sync);
   addEventListener("pageshow", (event) => {
-    if (event.persisted) syncUrl();
+    if (event.persisted) sync();
   });
-  syncUrl();
+  sync();
 }

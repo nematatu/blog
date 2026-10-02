@@ -205,9 +205,7 @@ export async function getStaticPaths() {
   const blog = (await getCollection("blog")).filter(
     (post) => showDrafts || !post.data.draft,
   );
-  const projects = (await getCollection("projects")).filter(
-    (project) => showDrafts || !project.data.draft,
-  );
+  const projects = showDrafts ? await getCollection("projects") : [];
 
   const entries = [
     ...blog.map((entry) => ({ entry, prefix: "blog" })),

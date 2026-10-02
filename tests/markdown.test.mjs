@@ -45,9 +45,11 @@ test("standalone social links become embeds without changing other links", () =>
     /youtube-nocookie\.com\/embed\/abcdefghijk\?start=90/,
   );
   assert.match(tree.children[1].value, /twitter-tweet/);
-  assert.match(tree.children[0].value, /<template><div class="youtube-player/);
-  assert.match(tree.children[1].value, /<template><blockquote/);
-  assert.match(tree.children[0].value, /YouTubeで開く<\/a>/);
+  assert.match(tree.children[0].value, /^<div class="youtube-player/);
+  assert.match(tree.children[1].value, /^<blockquote/);
+  assert.match(tree.children[0].value, /<iframe[^>]+src=/);
+  assert.doesNotMatch(tree.children[0].value, /<details|<template|<summary/);
+  assert.doesNotMatch(tree.children[1].value, /<details|<template|<summary/);
   assert.match(tree.children[1].value, /Xで開く<\/a>/);
   assert.equal(tree.children[2], ordinary);
 });

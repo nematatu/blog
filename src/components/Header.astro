@@ -1,16 +1,22 @@
 ---
 import Container from "@components/Container.astro";
-import { SITE } from "@consts";
-
-const pages = ["gallery", "stats", "projects", "tags"];
+import { SITE, PAGES } from "@consts";
+const isHome = Astro.url.pathname === "/";
 ---
 
-<header class="reference-site-header">
+<header class:list={["reference-site-header", isHome && "home-header"]}>
   <Container>
-    <a href="/">{SITE.TITLE}</a>
-    <nav aria-label="サイト内リンク">
-      {pages.map((page) => <a href={`/${page}`}>{page}</a>)}
-      <a href="/search">search</a>
-    </nav>
+    <a href="/" class="site-brand"
+      >{isHome ? <h1>{SITE.TITLE}</h1> : SITE.TITLE}</a
+    >
+    {
+      !isHome && (
+        <nav aria-label="サイト内リンク">
+          {PAGES.map((page) => (
+            <a href={`/${page}`}>{page}</a>
+          ))}
+        </nav>
+      )
+    }
   </Container>
 </header>

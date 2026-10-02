@@ -5,7 +5,7 @@ import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
 
 export async function GET(context) {
   const blog = (await getCollection("blog")).filter(isVisibleEntry);
-  const projects = (await getCollection("projects")).filter(isVisibleEntry);
+  const projects = import.meta.env.DEV ? await getCollection("projects") : [];
   const items = sortByDateDesc([...blog, ...projects]);
 
   return rss({

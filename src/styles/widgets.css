@@ -1,13 +1,4 @@
 @layer components {
-  .social-embed {
-    margin-block: 1.5rem;
-  }
-
-  .social-embed summary {
-    cursor: pointer;
-    color: #2563eb;
-  }
-
   .image-caption img {
     @apply block;
     margin-block: 0 !important;

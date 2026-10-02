@@ -1,0 +1,96 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Container from "@components/Container.astro";
+import OgImage from "@components/OgImage.astro";
+import ContentInteractions from "@components/ContentInteractions.astro";
+import Layout from "@layouts/Layout.astro";
+
+type Props = { entry: CollectionEntry<"blog"> | CollectionEntry<"projects"> };
+const { entry } = Astro.props;
+const isBlog = entry.collection === "blog";
+const tags = isBlog ? (entry.data.tags ?? []) : [];
+const links =
+  entry.collection === "projects"
+    ? [
+        ["demo", entry.data.demoURL],
+        ["repo", entry.data.repoURL],
+      ]
+    : [];
+const published = new Intl.DateTimeFormat("ja-JP", {
+  dateStyle: "long",
+  timeZone: "Asia/Tokyo",
+}).format(entry.data.date);
+---
+
+<Layout
+  title={entry.data.title}
+  description={entry.data.description}
+  image={entry.data.ogImage ??
+    `/og-image/${entry.collection}/${entry.id}.png?v=20260614-og-background`}
+>
+  <Container>
+    <article
+      data-pagefind-body
+      data-post-transition-url={`/${entry.collection}/${entry.id}`}
+    >
+      <header
+        class:list={[
+          "reference-post-header",
+          entry.data.ogImage && "has-image",
+        ]}
+      >
+        <h1 data-pagefind-meta="title">
+          <span class="post-transition-title">{entry.data.title}</span>
+          {entry.data.draft && <span class="draft-label">(draft)</span>}
+        </h1>
+        <time
+          class="reference-post-date"
+          datetime={entry.data.date.toISOString()}>{published}</time
+        >
+        {
+          tags.length > 0 && (
+            <ul class="reference-tags">
+              {tags.map((tag) => (
+                <li>
+                  <a href={`/tags/${tag}`}>{tag}</a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        {
+          links.some(([, href]) => href) && (
+            <nav class="reference-tag-grid">
+              {links.map(
+                ([label, href]) =>
+                  href && (
+                    <a
+                      class="reference-tag-card"
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {label}
+                    </a>
+                  ),
+              )}
+            </nav>
+          )
+        }
+      </header>
+      {
+        entry.data.ogImage && (
+          <OgImage
+            src={entry.data.ogImage}
+            sizes="(min-width: 720px) 688px, calc(100vw - 2rem)"
+            class="reference-post-image"
+            loading="eager"
+            fetchpriority="high"
+          />
+        )
+      }
+      <div class="post-body"><slot /></div>
+    </article>
+  </Container>
+  <ContentInteractions />
+</Layout>

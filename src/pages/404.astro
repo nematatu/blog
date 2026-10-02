@@ -1,5 +1,4 @@
 ---
-import BackToPrevious from "@components/BackToPrevious.astro";
 import Container from "@components/Container.astro";
 import { SITE } from "@consts";
 import Layout from "@layouts/Layout.astro";
@@ -10,7 +9,7 @@ import Layout from "@layouts/Layout.astro";
     <div class="site-card mt-16 grid place-items-center gap-3">
       <h1 class="site-page-title">404: Page not found</h1>
       <span>
-        <BackToPrevious href="/">Go to home page</BackToPrevious>
+        <a href="/">記事一覧へ戻る</a>
       </span>
     </div>
   </Container>

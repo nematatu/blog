@@ -1,6 +1,6 @@
-<dialog class="image-lightbox" aria-label="画像を拡大表示">
+<dialog class="image-viewer image-lightbox" aria-label="画像を拡大表示">
   <form method="dialog">
-    <button type="submit" aria-label="画像を閉じる">×</button>
+    <button aria-label="画像を閉じる" autofocus>×</button>
   </form>
   <img alt="" />
 </dialog>
@@ -8,44 +8,3 @@
 <script>
   import "@/scripts/shared/content-interactions";
 </script>
-
-<style is:global>
-  .image-lightbox {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    max-width: none;
-    height: 100dvh;
-    max-height: none;
-    margin: 0;
-    padding: 1rem;
-    border: 0;
-    background: rgb(0 0 0 / 85%);
-  }
-
-  .image-lightbox[open] {
-    display: grid;
-    place-items: center;
-  }
-
-  .image-lightbox > img {
-    max-width: 100%;
-    max-height: 90dvh;
-    object-fit: contain;
-  }
-
-  .image-lightbox button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.25rem 0.75rem;
-    color: #fff;
-    background: #222;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
-  html:has(.image-lightbox[open]) {
-    overflow: hidden;
-  }
-</style>

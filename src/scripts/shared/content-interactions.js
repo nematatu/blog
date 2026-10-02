@@ -33,21 +33,9 @@ dialog.addEventListener("click", (event) => {
   if (event.target === dialog) dialog.close();
 });
 
-let twitterReady;
-for (const embed of document.querySelectorAll("[data-social-embed]")) {
-  embed.addEventListener("toggle", () => {
-    const template = embed.querySelector("template");
-    if (!embed.open || !template) return;
-    embed.append(template.content.cloneNode(true));
-    template.remove();
-    if (!embed.querySelector(".twitter-tweet")) return;
-    twitterReady ??= new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://platform.twitter.com/widgets.js";
-      script.async = true;
-      script.onload = resolve;
-      document.head.append(script);
-    });
-    twitterReady.then(() => window.twttr?.widgets.load(embed));
-  });
+if (document.querySelector(".twitter-tweet")) {
+  const script = document.createElement("script");
+  script.src = "https://platform.twitter.com/widgets.js";
+  script.async = true;
+  document.head.append(script);
 }

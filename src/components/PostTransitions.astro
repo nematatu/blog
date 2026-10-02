@@ -1,47 +1,41 @@
-<!-- Register before the first render so incoming snapshots can be prepared. -->
+<!-- Inline in the head so both documents can prepare their snapshots. -->
 <script is:inline>
   (() => {
     const pathOf = (url) =>
       new URL(url, location.href).pathname.replace(/\/$/, "");
     const isList = (path) =>
-      path === "" || path === "/projects" || path.startsWith("/tags/");
-    const isPost = (path) => /^\/(blog|projects)\/.+/.test(path);
-
+      path === "" || path === "/projects" || path?.startsWith("/tags/");
     function prepare(transition, from, to) {
       if (!transition) return;
+      const fromPath = from && pathOf(from);
+      const toPath = to && pathOf(to);
+      const postPath = isList(fromPath)
+        ? toPath
+        : isList(toPath)
+          ? fromPath
+          : null;
+      const post = [
+        ...document.querySelectorAll("[data-post-transition-url]"),
+      ].find(
+        (element) => pathOf(element.dataset.postTransitionUrl) === postPath,
+      );
       if (
         !from ||
         !to ||
+        !post ||
         matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
         transition.skipTransition();
         return;
       }
-      const fromPath = pathOf(from);
-      const toPath = pathOf(to);
-      const postPath =
-        isList(fromPath) && isPost(toPath)
-          ? toPath
-          : isPost(fromPath) && isList(toPath)
-            ? fromPath
-            : null;
-      const post = [
-        ...document.querySelectorAll("[data-post-transition-url]"),
-      ].find((element) => element.dataset.postTransitionUrl === postPath);
-      if (!post) {
-        transition.skipTransition();
-        return;
-      }
-
       const selected = [];
-      for (const [part, selector] of Object.entries({
+      for (const [name, selector] of Object.entries({
         title: ".post-transition-title",
-        date: ".reference-post-date, time",
         image: ".reference-post-card-image, .reference-post-image",
       })) {
         const element = post.querySelector(selector);
         if (!element) continue;
-        element.style.viewTransitionName = `post-${part}`;
+        element.style.viewTransitionName = `post-${name}`;
         selected.push(element);
       }
       const clear = () =>
@@ -50,21 +44,20 @@
         );
       transition.finished.then(clear, clear);
     }
-
-    addEventListener("pageswap", (event) => {
+    addEventListener("pageswap", (event) =>
       prepare(
         event.viewTransition,
         location.href,
         event.activation?.entry?.url,
-      );
-    });
-    addEventListener("pagereveal", (event) => {
+      ),
+    );
+    addEventListener("pagereveal", (event) =>
       prepare(
         event.viewTransition,
         window.navigation?.activation?.from?.url,
         location.href,
-      );
-    });
+      ),
+    );
   })();
 </script>
 
@@ -72,39 +65,26 @@
   @view-transition {
     navigation: auto;
   }
-
   ::view-transition-group(*) {
     animation-duration: 320ms;
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
-
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 160ms;
   }
-
-  .post-transition-title {
-    display: inline-block;
-    max-width: 100%;
-  }
-
-  /* Move one text snapshot instead of blending two different font sizes. */
   ::view-transition-old(post-title) {
-    display: none;
-  }
-
-  ::view-transition-new(post-title) {
     animation: none;
-    height: 100%;
     mix-blend-mode: normal;
   }
-
+  ::view-transition-new(post-title) {
+    display: none;
+  }
   ::view-transition-old(post-image),
   ::view-transition-new(post-image) {
     height: 100%;
     object-fit: contain;
   }
-
   @media (prefers-reduced-motion: reduce) {
     @view-transition {
       navigation: none;

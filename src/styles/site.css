@@ -1,337 +1,277 @@
-@layer utilities {
+@layer components {
   html {
     font-size: 16px;
     scroll-padding-top: 1rem;
   }
-
-  html body {
+  body {
     background: #fff;
     color: #1a1a1a;
   }
-
-  html .site-container {
+  .site-container {
+    --thumbnail-width: 6rem;
+    width: 100%;
     max-width: 720px;
+    margin-inline: auto;
     padding-inline: 1rem;
   }
-
-  html body > header {
-    position: static;
-    z-index: auto;
-    margin-bottom: 1.5rem;
-    padding: 2.5rem 0 0;
-    background: #fff;
+  body > header {
+    margin-bottom: 2rem;
+    padding-top: 2rem;
   }
-
-  html body > header > .site-container {
+  body > main {
+    padding-bottom: 3rem;
+  }
+  .reference-site-header > .site-container,
+  .reference-site-footer > .site-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .reference-site-header > .site-container {
     padding-bottom: 1rem;
     border-bottom: 1px solid #e5e5e5;
   }
-
-  html body > main {
-    padding: 0 0 3rem;
-  }
-
-  html .reference-site-header > .site-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem 1.5rem;
+  .reference-site-footer > .site-container {
     padding-top: 1rem;
+    border-top: 1px solid #e5e5e5;
   }
-
-  html .reference-site-header > .site-container > a {
-    color: #1a1a1a;
+  .reference-site-header > .site-container > a {
+    color: inherit;
     font-weight: 700;
   }
-
-  html .reference-site-header nav,
-  html .reference-site-footer nav {
+  .home-header > .site-container {
+    justify-content: center;
+    padding-block: 0 1rem;
+    text-align: center;
+  }
+  .home-header .site-brand {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  nav {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     gap: 0.75rem;
     font-size: 0.875rem;
   }
-
-  html body > footer.reference-site-footer {
-    padding-block: 1.5rem;
-    border: 0;
-  }
-
-  html .reference-site-footer > .site-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e5e5;
-  }
-
-  html .reference-site-footer small {
+  small,
+  time {
     color: #666;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
-
-  html .site-page-title {
-    margin-bottom: 1rem;
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .site-page-title {
+    margin-bottom: 1.5rem;
     font-size: 1.5rem;
     font-weight: 700;
-    line-height: 1.3;
   }
-
-  html .site-back-link {
+  .site-back-link {
     display: inline-block;
     margin-bottom: 1.5rem;
     font-size: 0.875rem;
   }
-
-  html .site-card {
+  .site-card {
     margin-block: 1.5rem;
     padding: 1rem;
     border: 1px solid #e5e5e5;
-    border-radius: 8px;
+    border-radius: 4px;
   }
-
-  html .reference-tag-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .reference-tag-grid {
+    margin-top: 1rem;
   }
-
-  html .reference-tag-card {
+  .reference-tag-card {
     display: inline-flex;
     gap: 0.4rem;
-    align-items: center;
     padding: 0.35rem 0.6rem;
     border: 1px solid #e5e5e5;
     border-radius: 4px;
-    color: #1a1a1a !important;
-    font-size: 0.875rem;
   }
-
-  html .reference-tag-card span {
+  .reference-tag-card span {
     color: #666;
-    font-size: 0.75rem;
   }
-
-  html a {
-    color: #2563eb;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-  }
-
-  html a:hover {
-    opacity: 0.7;
-  }
-
-  html .reference-home-header {
-    padding-block: 2rem 1.5rem;
-    text-align: center;
-  }
-
-  html .reference-home-header h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.3;
-  }
-
-  html .reference-post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .tag-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 0.75rem;
     list-style: none;
   }
-
-  html .reference-post-card {
+  .tag-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+    padding: 1rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    color: inherit;
+  }
+  .tag-list a:hover {
+    background: #f4f4f5;
+    text-decoration: none;
+  }
+  .tag-list a:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 3px;
+  }
+  .tag-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-wrap: anywhere;
+    font-weight: 700;
+  }
+  .tag-count {
+    flex: none;
+    color: #666;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .reference-post-list {
+    list-style: none;
+  }
+  .reference-post-card {
     display: grid;
     align-items: start;
     gap: 1rem;
-    padding: 1rem;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    color: inherit !important;
-    transition:
-      border-color 0.2s,
-      box-shadow 0.2s;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+    color: inherit;
   }
-
-  html .reference-post-card.has-image {
-    grid-template-columns: 6rem minmax(0, 1fr);
+  .reference-post-card.has-image {
+    grid-template-columns: var(--thumbnail-width) minmax(0, 1fr);
   }
-
-  html .reference-post-card:hover {
-    border-color: #2563eb;
-    box-shadow: 0 2px 8px #00000014;
-    opacity: 1 !important;
-  }
-
-  html .reference-post-card h2 {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.3;
-    overflow-wrap: anywhere;
-  }
-
-  html .reference-post-card article {
+  .post-card-content {
     min-width: 0;
   }
-
-  html .reference-post-card-image {
-    width: 100%;
-    aspect-ratio: 1200 / 630;
+  .reference-post-card:hover {
+    text-decoration: none;
+  }
+  .reference-post-card h2,
+  .reference-post-header h1 {
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  .post-transition-title {
+    display: inline-block;
+    max-width: 100%;
+  }
+  .draft-label {
+    color: #2563eb;
+    font-size: 0.875rem;
+  }
+  .reference-post-card-image {
+    width: var(--thumbnail-width);
+    height: auto;
+    flex: none;
     border-radius: 4px;
-    object-fit: cover;
   }
-
-  html .reference-post-card time,
-  html .reference-post-date {
-    color: #666;
-    font-size: 0.8rem;
-  }
-
-  html .reference-tags {
+  .reference-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.375rem;
     margin-top: 0.75rem;
     list-style: none;
   }
-
-  html .reference-tags li {
+  .reference-tags li {
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     background: #f4f4f5;
     color: #666;
-    font-size: 0.7rem;
-    line-height: 1.7;
+    font-size: 0.75rem;
   }
-
-  html .reference-tags a {
+  .reference-tags a {
     color: inherit;
   }
-
-  html .reference-article-header {
-    padding-block: 1rem;
-  }
-
-  html .reference-article-header a,
-  html .reference-article-footer a {
-    font-size: 0.875rem;
-  }
-
-  html .reference-post-header {
+  .reference-post-header {
     margin-bottom: 1.5rem;
   }
-
-  html .reference-post-image {
+  .reference-post-header.has-image h1 {
+    max-width: calc(100% - var(--thumbnail-width) - 1rem);
+  }
+  .reference-post-image {
     display: block;
     width: 100%;
     height: auto;
     margin-bottom: 2rem;
-    border-radius: 8px;
+    border-radius: 4px;
   }
-
-  html .reference-post-header h1 {
-    margin-bottom: 0.75rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-  }
-
-  html .reference-article-footer {
-    margin-top: 2rem;
-    padding-block: 1.5rem;
-    border-top: 1px solid #e5e5e5;
-  }
-
-  @media (min-width: 1024px) {
-    html body > header {
-      padding-top: 1.5rem;
-    }
-  }
-
   @media (min-width: 640px) {
-    html .site-container {
-      padding-inline: 1.5rem;
+    .site-container {
+      --thumbnail-width: 9rem;
     }
-
-    html body > header,
-    html .reference-post-header {
-      margin-bottom: 2rem;
-    }
-
-    html body > header > .site-container {
-      padding-bottom: 1.5rem;
-    }
-
-    html .reference-site-header > .site-container {
-      padding-top: 1.5rem;
-    }
-
-    html .site-page-title {
-      margin-bottom: 1.5rem;
-      font-size: 1.75rem;
-    }
-
-    html .site-card {
-      margin-block: 2rem;
-      padding: 1.5rem;
-    }
-
-    html .reference-home-header {
-      padding-block: 3rem 2rem;
-    }
-
-    html .reference-home-header h1 {
+    .home-header .site-brand {
       font-size: 2rem;
     }
-
-    html .reference-post-list {
-      gap: 1.5rem;
-    }
-
-    html .reference-post-card {
-      padding: 1.5rem;
-    }
-
-    html .reference-post-card.has-image {
-      grid-template-columns: 9rem minmax(0, 1fr);
-    }
-
-    html .reference-post-card h2 {
-      font-size: 1.125rem;
-    }
-
-    html .reference-post-card time,
-    html .reference-post-date {
-      font-size: 0.875rem;
-    }
-
-    html .reference-tags {
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    html .reference-tags li {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
-    }
-
-    html .reference-article-header {
-      padding-block: 1.5rem;
-    }
-
-    html .reference-post-header h1 {
-      margin-bottom: 1rem;
-      font-size: 1.75rem;
-    }
-
-    html .reference-article-footer {
-      margin-top: 3rem;
-      padding-block: 2rem;
+    .home-header {
+      padding-top: 3rem;
     }
   }
+}
+
+.image-viewer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem;
+  border: 0;
+  color: white;
+  background: #080808;
+}
+.image-viewer[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 1rem;
+}
+.image-viewer form {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+.image-viewer > img {
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  align-self: center;
+  justify-self: center;
+  object-fit: contain;
+}
+.image-viewer button {
+  padding: 0.5rem 0.75rem;
+  color: inherit;
+  background: #252525;
+  cursor: pointer;
+}
+.image-viewer button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.image-viewer a {
+  color: #ddd;
+}
+.image-viewer [hidden] {
+  display: none;
+}
+.image-viewer :is(a, button):focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+html:has(.image-viewer[open]) {
+  overflow: hidden;
 }

@@ -2,18 +2,10 @@
 import Footer from "@components/Footer.astro";
 import Head from "@components/Head.astro";
 import Header from "@components/Header.astro";
-import Container from "@components/Container.astro";
 import { SITE } from "@consts";
 
-type Props = {
-  title: string;
-  description?: string;
-  image?: string;
-  page?: "default" | "home" | "article";
-};
-
-const { title, description, image, page = "default" } = Astro.props;
-const resolvedDescription = description ?? SITE.DESCRIPTION;
+type Props = { title: string; description?: string; image?: string };
+const { title, description = SITE.DESCRIPTION, image } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,41 +13,13 @@ const resolvedDescription = description ?? SITE.DESCRIPTION;
   <head>
     <Head
       title={`${title} | ${SITE.TITLE}`}
-      description={resolvedDescription}
+      description={description}
       image={image}
     />
   </head>
   <body>
-    {
-      page === "default" ? (
-        <Header />
-      ) : page === "home" ? (
-        <header class="reference-home-header">
-          <Container>
-            <h1>{SITE.TITLE}</h1>
-          </Container>
-        </header>
-      ) : (
-        <header class="reference-article-header">
-          <Container>
-            <a href="/">← 記事一覧へ戻る</a>
-          </Container>
-        </header>
-      )
-    }
-    <main>
-      <slot />
-    </main>
-    {
-      page === "article" ? (
-        <footer class="reference-article-footer">
-          <Container>
-            <a href="/">← 記事一覧へ戻る</a>
-          </Container>
-        </footer>
-      ) : (
-        <Footer />
-      )
-    }
+    <Header />
+    <main><slot /></main>
+    <Footer />
   </body>
 </html>

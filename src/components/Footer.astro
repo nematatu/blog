@@ -1,15 +1,13 @@
 ---
 import Container from "@components/Container.astro";
-import { SITE, SOCIALS } from "@consts";
-
-const pages = ["gallery", "stats", "projects", "tags"];
+import { SITE, SOCIALS, PAGES } from "@consts";
 ---
 
 <footer class="reference-site-footer">
   <Container>
     <nav aria-label="フッターリンク">
-      <a href="/">記事一覧</a>
-      {pages.map((page) => <a href={`/${page}`}>{page}</a>)}
+      {Astro.url.pathname !== "/" && <a href="/">記事一覧</a>}
+      {PAGES.map((page) => <a href={`/${page}`}>{page}</a>)}
       {
         SOCIALS.map((social) => (
           <a
@@ -21,7 +19,6 @@ const pages = ["gallery", "stats", "projects", "tags"];
           </a>
         ))
       }
-      <a href="/search">search</a>
     </nav>
     <small>© {new Date().getFullYear()} {SITE.TITLE}</small>
   </Container>

@@ -1,37 +1,38 @@
 ---
-import { getOgThumbnailSet } from "@lib/thumbnails";
-import { getOgImageDimensions } from "@lib/og-image-dimensions";
+import path from "node:path";
+import sharp from "sharp";
 
 type Props = {
   src: string;
   alt?: string;
   class?: string;
   sizes: string;
-  fallbackWidth?: number;
   loading?: "eager" | "lazy";
   fetchpriority?: "high" | "low" | "auto";
-  ariaHidden?: boolean;
 };
-
 const {
   src,
   alt = "",
   class: className,
   sizes,
-  fallbackWidth,
   loading,
   fetchpriority,
-  ariaHidden = alt.length === 0,
-} = Astro.props as Props;
-
-const thumbnail = getOgThumbnailSet(src, fallbackWidth);
-const dimensions = await getOgImageDimensions(src);
+} = Astro.props;
+const name = src.match(/^\/ogp\/([^/]+)\.(?:avif|jpe?g|png|webp)$/i)?.[1];
+const dimensions = name
+  ? await sharp(path.resolve("public", src.slice(1))).metadata()
+  : undefined;
+const thumbnail = (width: number) => `/thumbs/ogp/${name}-${width}.webp`;
 ---
 
 <img
-  src={thumbnail?.src ?? src}
-  srcset={thumbnail?.srcset}
-  sizes={thumbnail ? sizes : undefined}
+  src={name ? thumbnail(480) : src}
+  srcset={name
+    ? [240, 480, 960, 1200]
+        .map((width) => `${thumbnail(width)} ${width}w`)
+        .join(", ")
+    : undefined}
+  sizes={name ? sizes : undefined}
   width={dimensions?.width}
   height={dimensions?.height}
   alt={alt}
@@ -39,5 +40,5 @@ const dimensions = await getOgImageDimensions(src);
   loading={loading}
   decoding="async"
   fetchpriority={fetchpriority}
-  aria-hidden={ariaHidden ? "true" : undefined}
+  aria-hidden={alt ? undefined : "true"}
 />

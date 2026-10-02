@@ -1,39 +1,40 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import EntryBadges from "@components/EntryBadges.astro";
 import OgImage from "@components/OgImage.astro";
-import PinnedIndicator from "@components/PinnedIndicator.astro";
 import { dateKey } from "@lib/post-metrics";
 
-type Props = {
-  entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
-};
+type Props = { entry: CollectionEntry<"blog"> | CollectionEntry<"projects"> };
 const { entry } = Astro.props;
 const url = `/${entry.collection}/${entry.id}`;
-const image = entry.data.ogImage;
 const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
 ---
 
 <a
-  class:list={["reference-post-card", image && "has-image"]}
+  class:list={["reference-post-card", entry.data.ogImage && "has-image"]}
   href={url}
   data-post-transition-url={url}
 >
   {
-    image && (
+    entry.data.ogImage && (
       <OgImage
-        src={image}
+        src={entry.data.ogImage}
         sizes="(min-width: 640px) 9rem, 6rem"
         class="reference-post-card-image"
         loading="lazy"
       />
     )
   }
-  <article>
+  <div class="post-card-content">
     <h2>
       <span class="post-transition-title">{entry.data.title}</span>
-      {entry.collection === "blog" && entry.data.pinned && <PinnedIndicator />}
-      <EntryBadges draft={entry.data.draft} />
+      {
+        entry.collection === "blog" && entry.data.pinned && (
+          <span aria-label="固定記事" title="固定記事">
+            📌
+          </span>
+        )
+      }
+      {entry.data.draft && <span class="draft-label">(draft)</span>}
     </h2>
     <time datetime={entry.data.date.toISOString()}
       >{dateKey(entry.data.date).replaceAll("-", "/")}</time
@@ -47,5 +48,5 @@ const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
         </ul>
       )
     }
-  </article>
+  </div>
 </a>
