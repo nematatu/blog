@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import Container from "@components/Container.astro";
 import Layout from "@layouts/Layout.astro";
-import { tagEmoji } from "@lib/tag-emoji";
 
 const showDrafts = import.meta.env.DEV;
 const posts = await getCollection(
@@ -29,10 +28,7 @@ const tags = [...counts].sort(
           tags.map(([tag, count]) => (
             <li>
               <a href={`/tags/${encodeURIComponent(tag)}`}>
-                <span class="tag-name">
-                  <span aria-hidden="true">{tagEmoji(tag)}</span>
-                  {tag}
-                </span>
+                <span class="tag-name">{tag}</span>
                 <span class="tag-count">{count}記事</span>
               </a>
             </li>

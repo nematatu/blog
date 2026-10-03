@@ -12,7 +12,7 @@ export type GalleryPhoto = {
 };
 
 const localImages = import.meta.glob<ImageMetadata>(
-  "/src/content/**/*.{avif,gif,jpg,jpeg,png,webp,JPG,PNG}",
+  "/src/content/blog/**/*.{avif,gif,jpg,jpeg,png,webp,JPG,PNG}",
   { eager: true, import: "default" },
 );
 

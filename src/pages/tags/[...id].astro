@@ -4,7 +4,6 @@ import ArrowCard from "@components/ArrowCard.astro";
 import Container from "@components/Container.astro";
 import Layout from "@layouts/Layout.astro";
 import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
-import { tagEmoji } from "@lib/tag-emoji";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog")).filter(isVisibleEntry);
@@ -31,9 +30,7 @@ const sortedPosts = sortByPinnedThenDateDesc(posts);
   <Container>
     <section data-pagefind-ignore>
       <a class="site-back-link" href="/tags">← タグ一覧</a>
-      <h1 class="site-page-title">
-        {tagEmoji(id)} "{id}" の記事
-      </h1>
+      <h1 class="site-page-title">"{id}" の記事</h1>
       <ul class="reference-post-list">
         {
           sortedPosts.map((post) => (

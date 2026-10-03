@@ -1,7 +1,6 @@
 import { getCollection } from "astro:content";
 import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
 import { dateKey, getTextStats } from "@lib/post-metrics";
-import { tagEmoji } from "@lib/tag-emoji";
 
 export const prerender = true;
 
@@ -35,7 +34,6 @@ export async function GET() {
       date,
       dateKey: date,
       tags,
-      tagsWithEmoji: tags.map((tag) => `${tagEmoji(tag)} #${tag}`),
       url: withBase(`blog/${post.id}`),
       ogImage,
       fallbackImage,

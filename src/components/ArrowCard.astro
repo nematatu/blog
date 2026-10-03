@@ -36,17 +36,19 @@ const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
       }
       {entry.data.draft && <span class="draft-label">(draft)</span>}
     </h2>
-    <time datetime={entry.data.date.toISOString()}
-      >{dateKey(entry.data.date).replaceAll("-", "/")}</time
-    >
-    {
-      tags.length > 0 && (
-        <ul class="reference-tags">
-          {tags.map((tag) => (
-            <li>{tag}</li>
-          ))}
-        </ul>
-      )
-    }
+    <div class="post-card-meta">
+      {
+        tags.length > 0 && (
+          <ul class="reference-tags">
+            {tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+      <time datetime={entry.data.date.toISOString()}
+        >{dateKey(entry.data.date).replaceAll("-", "/")}</time
+      >
+    </div>
   </div>
 </a>

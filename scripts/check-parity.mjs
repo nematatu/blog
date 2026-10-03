@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import "./check-private-projects.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const dist = path.join(root, "dist");
@@ -28,32 +29,6 @@ async function routes(dir = dist, prefix = "") {
 
 async function snapshot() {
   const pageRoutes = (await routes()).sort();
-  for (const directory of ["projects", "og-image/projects"]) {
-    assert.equal(
-      await stat(path.join(dist, directory)).then(
-        () => true,
-        (error) => {
-          if (error.code === "ENOENT") return false;
-          throw error;
-        },
-      ),
-      false,
-      `Private projects leaked into dist/${directory}`,
-    );
-  }
-  const publicFiles = [
-    ...pageRoutes,
-    "rss.xml",
-    "search.json",
-    "sitemap-0.xml",
-  ];
-  for (const file of publicFiles) {
-    assert.doesNotMatch(
-      await readFile(path.join(dist, file), "utf8"),
-      /(?:href=["'][^"']*|<link>[^<]*|<loc>[^<]*|"url"\s*:\s*")[/]projects(?:[/"'<]|$)/,
-      `Private project link in ${file}`,
-    );
-  }
   const files = Object.fromEntries(
     await Promise.all(
       hashedFiles.map(async (file) => [

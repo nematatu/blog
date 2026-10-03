@@ -123,9 +123,6 @@
     outline-offset: 3px;
   }
   .tag-name {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     overflow-wrap: anywhere;
     font-weight: 700;
   }
@@ -151,6 +148,21 @@
   }
   .post-card-content {
     min-width: 0;
+  }
+  .post-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .post-card-meta .reference-tags {
+    min-width: 0;
+    margin-top: 0;
+  }
+  .post-card-meta time {
+    flex: none;
+    margin-left: auto;
+    white-space: nowrap;
   }
   .reference-post-card:hover {
     text-decoration: none;
