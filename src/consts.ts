@@ -24,7 +24,6 @@ export const PROJECTS: Metadata = {
 
 export const SOCIALS = socials as Socials;
 export const PAGES = [
-  "gallery",
   "stats",
   ...(import.meta.env.DEV ? ["projects"] : []),
   "tags",

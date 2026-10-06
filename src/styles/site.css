@@ -247,14 +247,13 @@
 }
 .image-viewer[open] {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 1rem;
 }
 .image-viewer form {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 1rem;
 }
 .image-viewer > img {
   min-height: 0;
@@ -270,17 +269,7 @@
   background: #252525;
   cursor: pointer;
 }
-.image-viewer button:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-.image-viewer a {
-  color: #ddd;
-}
-.image-viewer [hidden] {
-  display: none;
-}
-.image-viewer :is(a, button):focus-visible {
+.image-viewer button:focus-visible {
   outline: 2px solid white;
   outline-offset: 3px;
 }

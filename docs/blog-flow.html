@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>このブログが表示されるまで</title>
+  <style>
+    :root{--paper:#f6f7f3;--ink:#223331;--sub:#62716d;--line:#dce4dc;--green:#24664f;--tint:#eaf2e9;--white:#fff;--blue:#edf2fa;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.85 system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif}button,select{font:inherit}button{cursor:pointer}a{color:var(--green);text-underline-offset:4px}button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #df9c35;outline-offset:4px}main{max-width:1060px;margin:auto;padding:44px 32px 64px}.eyebrow{color:var(--green);font-size:12px;font-weight:750;letter-spacing:.13em}h1{font-size:clamp(26px,4vw,40px);line-height:1.45;letter-spacing:-.04em;margin:12px 0}h2{font-size:22px;line-height:1.5;margin:0 0 10px}h3{font-size:19px;margin:12px 0 8px}p{margin:8px 0 16px}.intro{max-width:760px;color:var(--sub);font-size:16px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.badge{font-size:11px;padding:4px 10px;border:1px solid var(--line);border-radius:20px;color:var(--sub)}.overview{border-left:4px solid var(--green);background:var(--tint);padding:18px 22px;margin:24px 0 34px;border-radius:0 12px 12px 0}.overview p{margin:0}.overview strong{color:var(--green)}section{margin-top:38px}.section-heading{display:flex;gap:12px;align-items:baseline}.section-num{font:14px var(--mono);color:var(--green)}.help{color:var(--sub);font-size:13px;margin:8px 0 18px}.phase-switch{display:flex;gap:6px;background:#e8ede6;padding:5px;border-radius:12px;max-width:430px;margin:20px 0}.phase-switch button{flex:1;background:transparent;border:0;border-radius:8px;padding:10px 8px;color:var(--sub);font-weight:650}.phase-switch button[aria-pressed="true"]{background:#fff;color:var(--green);box-shadow:0 2px 5px #2233310c}.phase-summary{font-size:14px}.timeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;margin:20px 0}.timeline.visit{grid-template-columns:repeat(4,minmax(0,1fr))}.step{position:relative;text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px 12px;min-height:114px;color:var(--ink)}.step:not(:last-child)::after{content:'→';position:absolute;right:-16px;top:44px;color:#93a697;font-size:16px}.step[aria-pressed="true"]{border-color:var(--green);box-shadow:0 0 0 1px var(--green);background:var(--tint)}.step .number{display:block;color:var(--green);font:12px var(--mono);margin-bottom:9px}.step strong{display:block;font-size:15px}.step small{display:block;font-size:11px;color:var(--sub);margin-top:4px}.detail{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}.detail-bar{background:#fafcf8;border-bottom:1px solid var(--line);padding:11px 22px;display:flex;justify-content:space-between;align-items:center;font-size:12px;gap:10px}.timing{color:var(--green);font-weight:650}.detail-body{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:24px}.detail p{font-size:14px}.detail-label{font-size:11px;color:var(--sub);letter-spacing:.05em}.detail-path{display:block;font:12px/1.7 var(--mono);word-break:break-word;background:var(--paper);padding:9px 12px;border-radius:7px;margin:8px 0 16px}.result{border-left:3px solid #b4cfb0;padding-left:14px;color:var(--sub);margin-top:20px}.code-head{font:11px var(--mono);color:#b1c8bb;background:#263e35;padding:10px 15px;border-radius:10px 10px 0 0;overflow-wrap:anywhere}pre{margin:0;background:#1c3029;color:#dceade;font:12px/1.9 var(--mono);padding:16px;overflow:auto;border-radius:0 0 10px 10px;tab-size:2}.code-note{font-size:12px!important;color:var(--sub);margin-top:12px!important}.detail-controls{display:flex;justify-content:space-between;align-items:center;padding:0 24px 20px;gap:10px}.nav-button{background:#fff;border:1px solid var(--line);color:var(--green);border-radius:8px;padding:6px 12px;font-size:12px}.nav-button:disabled{cursor:default;color:#a5ada5;background:#fafbf8}.progress{font:12px var(--mono);color:var(--sub)}.route-demo{display:grid;grid-template-columns:1fr 1fr;gap:24px;background:#fff;padding:24px;border:1px solid var(--line);border-radius:14px}.route-options{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 18px}.pill{border:1px solid var(--line);background:#fff;color:var(--sub);border-radius:7px;padding:6px 12px;font:12px var(--mono)}.pill[aria-pressed="true"]{background:var(--tint);color:var(--green);border-color:var(--green)}.route-path{font:12px var(--mono);display:block;overflow-wrap:anywhere}.tree{background:#f4f6f0;color:var(--ink);padding:16px;border-radius:10px;font:12px/2 var(--mono);white-space:pre-wrap}.window{border:1px solid var(--line);border-radius:11px;overflow:hidden;align-self:start}.address{background:#f0f3ee;border-bottom:1px solid var(--line);padding:8px 12px;display:flex;align-items:center;gap:10px}.dots{color:#b0bdb1;font-size:12px}.address code{font:10px var(--mono);overflow-wrap:anywhere}.mock{padding:20px}.mock-brand{font-size:12px;color:var(--sub);padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:18px}.mock-title{font-size:21px;line-height:1.6;font-weight:700;margin-bottom:8px}.mock-date{font-size:10px;color:var(--sub)}.mock-card{padding:12px 0;border-bottom:1px solid var(--line)}.mock-card strong{font-size:13px}.mock-line{height:7px;background:#e6ebe2;border-radius:4px;margin-top:14px;width:95%}.mock-line.short{width:70%}.mock-photo{height:75px;border-radius:6px;background:linear-gradient(155deg,#e7edda,#b4c4a2);margin-top:16px;display:flex;align-items:center;justify-content:center;color:#49604b;font-size:11px}.mock-search{border:1px solid var(--line);border-radius:5px;padding:7px 10px;font-size:11px;color:var(--sub);margin:12px 0}.mock-note{font-size:11px;color:var(--sub);margin-top:12px}.map{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;grid-template-columns:220px 1fr;gap:26px}.map label{display:block;font-size:13px;margin-bottom:8px;font-weight:650}select{width:100%;color:var(--ink);background:#f7f9f4;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px}.map-content h3{margin-top:0;font-size:17px}.map-content code{font:12px var(--mono);background:var(--tint);padding:5px 8px;border-radius:5px;display:inline-block;margin:0 5px 6px 0;overflow-wrap:anywhere;max-width:100%}.map-content p{font-size:13px;margin-bottom:0}.tech-table{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:13px 17px;vertical-align:top;border-bottom:1px solid #e8eee4}th{background:#eef3eb;font-size:11px;color:var(--sub)}tr:last-child td{border-bottom:0}td:first-child{width:29%;font-weight:650}td:last-child{width:21%;color:var(--sub);font-size:11px}.commands{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.command{padding:15px;border:1px solid var(--line);border-radius:10px;background:#fff}.command code{font:13px var(--mono);color:var(--green)}.command p{font-size:12px;margin:5px 0 0;color:var(--sub)}details{border-top:1px solid var(--line);margin-top:20px;padding-top:14px}summary{cursor:pointer;font-size:13px;font-weight:650}details p{font-size:13px;color:var(--sub)}.unknown{background:var(--blue);border-radius:10px;padding:17px 20px;font-size:12px;color:#4c5b74;margin-top:22px}.unknown p{margin:0}.footer{margin-top:36px;border-top:1px solid var(--line);padding-top:20px;color:var(--sub);font-size:11px}.footer a{margin-right:15px}.anchor-links{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;font-size:12px}
+    @media(max-width:720px){main{padding:24px 18px 40px}.topline{align-items:flex-start}.badge{display:none}.timeline,.timeline.visit{grid-template-columns:1fr;gap:12px}.step{min-height:0;padding:10px 14px;display:grid;grid-template-columns:26px 1fr;align-items:center}.step .number{grid-row:span 2;margin:0}.step small{grid-column:2}.step:not(:last-child)::after{content:'↓';right:16px;top:auto;bottom:-16px;font-size:12px}.detail-body,.route-demo,.map{grid-template-columns:1fr;gap:20px}.detail-body{padding:20px}.detail-controls{padding:0 20px 18px}.commands{grid-template-columns:1fr}td,th{padding:10px}td:last-child,th:last-child{display:none}.intro{font-size:14px}section{margin-top:32px}}
+    @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+    @media print{body{background:#fff}main{max-width:none;padding:0}.step,.detail,.map,.route-demo{break-inside:avoid}.nav-button{display:none}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="topline"><span class="eyebrow">BLOG / CODE GUIDE</span><span class="badge">このリポジトリのコードに沿った解説</span></div>
+    <h1>このブログが表示されるまで</h1>
+    <p class="intro">記事を書いてから、読者の画面に届くまで。処理の流れとファイルの役割を、自分のブログの例で確認できます。</p>
+    <nav class="anchor-links" aria-label="この解説の目次"><a href="#flow">表示までの流れ</a><a href="#routes">URLとページ</a><a href="#edit">改修の起点</a><a href="#tech">使っている技術</a></nav>
+  </header>
+  <div class="overview"><p><strong>Astroが、公開する前に記事をHTMLへ変換します。</strong><br>読者がアクセスすると、公開先が生成済みのHTML・CSS・JavaScriptを配信します。この構成を「静的サイト生成（SSG）」と呼びます。</p></div>
+
+  <section id="flow" aria-labelledby="flow-title">
+    <div class="section-heading"><span class="section-num">01</span><h2 id="flow-title">公開するまで／読者が見るとき</h2></div>
+    <p class="help">2つの場面を切り替え、各ステップを押して中身を確認してください。</p>
+    <div class="phase-switch" role="group" aria-label="説明する場面"><button type="button" data-phase="publish" aria-pressed="true">① 公開するまで</button><button type="button" data-phase="visit" aria-pressed="false">② 読者が見るとき</button></div>
+    <p id="phase-summary" class="phase-summary"></p>
+    <div id="timeline" class="timeline" role="group" aria-label="処理のステップ"></div>
+    <div class="detail">
+      <div class="detail-bar"><span id="detail-count"></span><span id="detail-timing" class="timing"></span></div>
+      <div class="detail-body" aria-live="polite" aria-atomic="true">
+        <div><span id="detail-label" class="detail-label"></span><h3 id="detail-title"></h3><p id="detail-text"></p><span class="detail-label">関係するファイル・場所</span><code id="detail-path" class="detail-path"></code><p id="detail-result" class="result"></p></div>
+        <div><div id="code-head" class="code-head"></div><pre><code id="detail-code"></code></pre><p id="code-note" class="code-note"></p></div>
+      </div>
+      <div class="detail-controls"><button type="button" id="prev" class="nav-button">← 前へ</button><span id="progress" class="progress"></span><button type="button" id="next" class="nav-button">次へ →</button></div>
+    </div>
+    <noscript><p>ステップの切り替えにはJavaScriptを有効にしてください。記事 → src/pages/ → レイアウト → ビルド → 公開 → ブラウザで表示、の順に処理されます。</p></noscript>
+  </section>
+
+  <section id="routes" aria-labelledby="routes-title">
+    <div class="section-heading"><span class="section-num">02</span><h2 id="routes-title">表示の入口は、URLに対応するファイル</h2></div>
+    <p class="help">Astroは src/pages/ 内のファイルからURLを作ります。URLを選ぶと、その画面を組み立てる順序がわかります。</p>
+    <div class="route-demo">
+      <div><div class="route-options" role="group" aria-label="表示するURL"><button type="button" class="pill" data-route="home" aria-pressed="true">/</button><button type="button" class="pill" data-route="post" aria-pressed="false">/blog/記事ID</button><button type="button" class="pill" data-route="search" aria-pressed="false">/search</button></div><pre id="route-tree" class="tree"></pre><p id="route-explain" class="code-note" aria-live="polite"></p></div>
+      <div><div class="window"><div class="address"><span class="dots" aria-hidden="true">● ● ●</span><code id="mock-url"></code></div><div id="mock-screen" class="mock"></div></div><p class="mock-note">構造を説明するための簡略図です。実際のデザインとは異なります。</p></div>
+    </div>
+    <details><summary>.astroの「---」と「&lt;slot /&gt;」って何？</summary><p><strong>---で囲まれた先頭部分</strong>には、記事の取得や変数の準備を書きます。このブログの本番用HTMLを作るときは、ビルド側で実行されます。開発中は開発サーバーで処理されます。</p><p><strong>&lt;slot /&gt;</strong>は、呼び出し元が渡した中身を差し込む場所です。Layout.astroは全体の枠を用意し、そこへトップページの一覧や記事ページの内容を受け取ります。</p><p>ブラウザに届くのは生成されたHTMLです。明示的に書いた&lt;script&gt;などのJavaScriptは、ブラウザ側で動きます。</p></details>
+  </section>
+
+  <section id="edit" aria-labelledby="edit-title">
+    <div class="section-heading"><span class="section-num">03</span><h2 id="edit-title">改修したいとき、どこから読む？</h2></div>
+    <p class="help">変更したいことを選んでください。まず役割を持つファイルを読み、そこから呼び出している部品やCSSへ進みます。</p>
+    <div class="map"><div><label for="edit-select">変更したいこと</label><select id="edit-select"><option value="list">記事一覧の並び順</option><option value="card">一覧のカードの見た目</option><option value="post">記事のタイトル・日付・タグ</option><option value="shared">全ページのヘッダー・枠</option><option value="style">文字・色・余白</option><option value="interaction">画像をクリックしたとき</option><option value="markdown">Markdownの独自記法</option><option value="search">検索画面</option></select></div><div id="edit-result" class="map-content" aria-live="polite"></div></div>
+  </section>
+
+  <section id="tech" aria-labelledby="tech-title">
+    <div class="section-heading"><span class="section-num">04</span><h2 id="tech-title">技術とライブラリの役割</h2></div>
+    <p class="help">フレームワークは全体の仕組みを担当し、ライブラリは検索や画像処理など特定の仕事を担当します。バージョンはリポジトリの依存関係に基づきます。</p>
+    <div class="tech-table"><table><thead><tr><th scope="col">技術・ライブラリ</th><th scope="col">このブログで担当すること</th><th scope="col">主に動く場所</th></tr></thead><tbody>
+      <tr><td>Astro 7.3.5</td><td>ページのURLを決め、記事や部品を組み合わせてHTMLを生成する。</td><td>開発・ビルド</td></tr>
+      <tr><td>TypeScript / JavaScript</td><td>記事データの処理や型チェック、画像拡大などの操作を書く。</td><td>ビルド／ブラウザ</td></tr>
+      <tr><td>Markdown / MDX</td><td>記事を書く形式。見出し・リンク・画像などを記述する。MDXにも対応。</td><td>執筆 → ビルドで変換</td></tr>
+      <tr><td>Tailwind CSS 4.3.3<br>独自CSS</td><td>見た目を定義する。global.cssがsite.css・article.cssなどを読み込む。</td><td>ビルド → ブラウザ</td></tr>
+      <tr><td>remark / rehype / Shiki</td><td>MarkdownをHTMLへ変換する途中で、埋め込み・画像キャプション・コードの色付けなどを行う。</td><td>ビルド</td></tr>
+      <tr><td>Pagefind</td><td>生成したページから検索データを作る。読者の検索はブラウザで処理する。</td><td>ビルド／ブラウザ</td></tr>
+      <tr><td>Sharp</td><td>一覧や記事に使う画像のサムネイルを作る。</td><td>ビルドの前処理など</td></tr>
+      <tr><td>Satori / Resvg / BudouX</td><td>SNS共有用の画像を生成する。日本語タイトルの改行も調整する。</td><td>ビルド</td></tr>
+      <tr><td>pnpm / Vite</td><td>pnpmは依存関係とコマンドを管理する。ViteはAstroの開発やCSS・JSのビルドを支える。</td><td>開発・ビルド</td></tr>
+    </tbody></table></div>
+    <details><summary>技術の設定はどこにある？</summary><p><strong>package.json</strong>にはライブラリと実行コマンド、<strong>pnpm-lock.yaml</strong>には解決されたバージョンがあります。<strong>astro.config.mjs</strong>にはAstroの拡張、Tailwind連携、Markdown変換などの設定があります。<strong>tsconfig.json</strong>には型チェックと、@components/などのパス省略の設定があります。</p></details>
+  </section>
+
+  <section aria-labelledby="local-title">
+    <div class="section-heading"><span class="section-num">05</span><h2 id="local-title">手元で流れを確認する</h2></div>
+    <div class="commands"><div class="command"><code>pnpm dev</code><p>編集しながら表示を確認する。開発中は下書きも表示する。</p></div><div class="command"><code>pnpm build</code><p>画像の前処理、型チェック、HTMLなどの生成、非公開ページの検査。</p></div><div class="command"><code>pnpm preview</code><p>ビルドしたdist/のサイトを、手元で確認する。</p></div></div>
+    <div class="unknown"><p><strong>公開先について確認できた範囲</strong><br>設定上のURLは blog.amatatu.com。記事画像には assets.blog.amatatu.com も使われています。ホスティングサービス、自動デプロイ、DNSの設定は、このリポジトリ内では確認できませんでした。Gitにpushしたあと何が動くかは、公開先の設定で確認します。</p></div>
+  </section>
+  <footer class="footer"><p>このリポジトリのコードに沿った説明です。コード例は理解しやすいように抜粋・簡略化しています。</p><a href="https://docs.astro.build/en/basics/project-structure/" target="_blank" rel="noopener noreferrer">Astro公式：ファイル構成 ↗</a><a href="https://docs.astro.build/en/guides/on-demand-rendering/" target="_blank" rel="noopener noreferrer">Astro公式：事前生成とサーバー描画 ↗</a></footer>
+</main>
+<script>
+  const phases = {
+    publish: {
+      summary: '編集した記事とコードから、配信できるファイルを作って公開します。',
+      steps: [
+        {name:'記事を書く',sub:'Markdown・記事データ',timing:'執筆 → ビルドで読み込み',title:'Markdownが記事の元データ',text:'先頭の設定欄（frontmatter）にタイトル・日付・タグなどを書き、その下に本文を書きます。content.config.tsが記事フォルダを読み込み、データの形式を検証します。',path:'src/content/blog/hobby/kyoto-photo.md\nsrc/content.config.ts',result:'次に渡るもの：記事ID、タイトルなどのデータ、本文。',head:'kyoto-photo.md（抜粋）',code:'---\ntitle: "京都で撮ってきた"\ndate: "2026-01-19"\ndraft: false\ntags: ["写真"]\n---\n\nハッカソン帰りに撮ったやつ\n![](https://assets.blog.amatatu.com/...)',note:'frontmatterは記事の情報です。本文はMarkdownとしてHTMLへ変換されます。'},
+        {name:'URLを決める',sub:'src/pages/ が入口',timing:'ビルド時',title:'どの記事を、どのURLに置くか',text:'記事ページのgetStaticPaths()が全記事を読み、記事IDごとのURLを列挙します。[...id]は、hobby/kyoto-photoのように / を含むIDも受け取れる名前です。',path:'src/pages/blog/[...id].astro',result:'例：この記事のページは /blog/hobby/kyoto-photo に生成されます。',head:'blog/[...id].astro（簡略化）',code:'export async function getStaticPaths() {\n  const entries = await getCollection("blog");\n  return entries\n    .filter(isVisibleEntry)\n    .map(entry => ({\n      params: { id: entry.id },\n      props: entry,\n    }));\n}',note:'本番用の生成ではdraft: trueの記事を除外します。トップページの入口はsrc/pages/index.astroです。'},
+        {name:'画面を組む',sub:'本文＋レイアウト＋部品',timing:'ビルド時',title:'記事本文に、共通の枠を付ける',text:'render(entry)で本文をContentに変換します。EntryLayoutがタイトル・日付・タグを付け、Layoutがヘッダー・フッターやHTML全体を組み立てます。CSSやブラウザ用スクリプトもここから読み込みます。',path:'src/layouts/EntryLayout.astro\nsrc/layouts/Layout.astro\nsrc/components/Head.astro',result:'次に渡るもの：記事と共通パーツを組み合わせたHTML、読み込むCSS・JS。',head:'記事ページとLayout（簡略化）',code:'// 記事ページ\nconst { Content } = await render(entry);\n\n<EntryLayout entry={entry}>\n  <Content />\n</EntryLayout>\n\n<!-- Layoutの枠 -->\n<Header />\n<main><slot /></main>\n<Footer />',note:'<slot />には呼び出し元の中身が入ります。Head.astroがglobal.cssを読み込みます。'},
+        {name:'ファイル生成',sub:'pnpm build → dist/',timing:'ビルド時',title:'ブラウザに配るファイルができる',text:'pnpm buildは前処理でサムネイルを作り、Astroで型チェックと静的ファイル生成を行います。検索データや共有用画像も生成し、最後に非公開のプロジェクトページが混ざっていないか検査します。',path:'package.json\nastro.config.mjs\ndist/（生成先）',result:'生成物：HTML、CSS、JavaScript、画像、検索データなど。',head:'生成されるファイルの例',code:'dist/\n├─ index.html\n├─ blog/\n│  └─ hobby/kyoto-photo/index.html\n├─ search/index.html\n├─ _astro/       # CSS・JSなど\n├─ pagefind/     # 検索データ\n└─ og-image/     # SNS共有用画像',note:'dist/はビルド結果です。改修はsrc/などの元ファイルに行い、ビルドし直します。'},
+        {name:'公開する',sub:'生成物を配信先へ',timing:'デプロイ時',title:'生成済みファイルをWebへ置く',text:'生成したサイトを公開先へ配置します。読者がblog.amatatu.comへアクセスすると、そのURLに対応するファイルを配信できる状態になります。公開作業をデプロイと呼びます。',path:'公開先のホスティング設定\nDNS・自動デプロイ設定',result:'次は「② 読者が見るとき」へ。ファイルが届いてから画面に表示される流れを確認できます。',head:'公開までの関係',code:'記事・コードを変更\n  ↓\nビルドして生成物を作る\n  ↓\n生成物を公開先へ配置\n  ↓\nhttps://blog.amatatu.com\nから配信できる状態になる',note:'公開先のサービスやGit push後の自動実行は、リポジトリ内では確認できていません。'}
+      ]
+    },
+    visit: {
+      summary:'ブラウザは生成済みのファイルを受け取り、見た目を描画して、必要な操作を動かします。',
+      steps:[
+        {name:'アクセス',sub:'URLから配信先へ',timing:'読者のブラウザ → 公開先',title:'URLを入力するとリクエストが届く',text:'ブラウザはURLのドメインからDNSで接続先を調べ、HTTPSでアクセスします。公開先はURLのパスに対応するページを探します。',path:'URL：/blog/hobby/kyoto-photo\n公開先の配信設定',result:'求めるもの：京都の記事ページのHTML。',head:'URLを分けて見る',code:'https://blog.amatatu.com/blog/hobby/kyoto-photo\n\nhttps                → 通信方式\nblog.amatatu.com     → ドメイン\n/blog/hobby/kyoto-photo\n                     → ページのパス',note:'コードを探すときは、このパスに対応するsrc/pages/内のファイルを起点にします。'},
+        {name:'ファイル取得',sub:'HTML・CSS・JS・画像',timing:'公開先 → ブラウザ',title:'HTMLと、そこから参照するファイルを読む',text:'公開先はビルドで生成したHTMLを返します。ブラウザはHTMLの中の参照をたどり、CSS・JavaScript・画像なども取得します。記事本文の画像はassets.blog.amatatu.comから取得する例があります。',path:'dist/から配信するファイル\nassets.blog.amatatu.com の記事画像',result:'ブラウザに届くもの：ページの構造、見た目のルール、画像、操作用のコード。',head:'取得するファイル（概念図）',code:'HTML\n├─ CSS      → 色・余白・文字・配置\n├─ 画像     → サムネイル・本文の写真\n└─ JS       → 画像拡大・画面遷移など\n\n※ ファイルの取得や実行は\n   並行して進むこともあります。',note:'検索ページではPagefindのスクリプトや検索データも読み込みます。'},
+        {name:'画面を表示',sub:'HTML＋CSSを描画',timing:'ブラウザ',title:'構造と見た目を合わせて画面にする',text:'ブラウザはHTMLから要素の構造を作り、CSSを読み、文字や画像の大きさと位置を計算して画面に描画します。記事の文字やタイトルは、すでにHTMLの中に入っています。',path:'src/styles/global.css\nsrc/styles/site.css\nsrc/styles/article.css',result:'表示されるもの：サイト名、記事タイトル、日付、本文、写真。',head:'HTMLとCSSの役割（例）',code:'<!-- HTML：何を表示するか -->\n<h1>京都で撮ってきた</h1>\n<p>ハッカソン帰りに撮ったやつ</p>\n\n/* CSS：どのように見せるか */\nh1 {\n  font-size: 2rem;\n  line-height: 1.5;\n}',note:'このCSSは説明用の例です。実際のクラス名と指定は各レイアウト・CSSを参照します。'},
+        {name:'操作が動く',sub:'JavaScriptが反応',timing:'ブラウザ',title:'クリックや検索にJavaScriptが反応する',text:'記事の写真を押すとJavaScriptが画像ビューアーを開きます。検索画面はPagefindが検索データを使って結果を表示します。ページ間の移動では、対応ブラウザでタイトルや画像の遷移アニメーションも動きます。',path:'src/scripts/shared/content-interactions.js\nsrc/components/PageFind.astro\nsrc/components/PostTransitions.astro',result:'改修時は、表示のコードと操作のコードをそれぞれ追えるようになります。',head:'content-interactions.js（抜粋）',code:'document.addEventListener("click", event => {\n  if (event.target instanceof HTMLImageElement) {\n    openImage(event.target);\n  }\n});\n\n// openImage内では\npreview.src = image.currentSrc || image.src;\ndialog.showModal();',note:'検索用のデータはビルド時に用意し、実際の検索処理は読者のブラウザで行います。'}
+      ]
+    }
+  };
+  let phase='publish', index=0;
+  const byId=id=>document.getElementById(id);
+  function renderStep(){
+    const steps=phases[phase].steps, step=steps[index];
+    document.querySelectorAll('[data-phase]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.phase===phase)));
+    byId('phase-summary').textContent=phases[phase].summary;
+    const timeline=byId('timeline'); timeline.className='timeline'+(phase==='visit'?' visit':'');
+    if(timeline.dataset.phase!==phase){
+      timeline.replaceChildren();
+      steps.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.className='step';b.dataset.index=i;const number=document.createElement('span');number.className='number';number.textContent=String(i+1).padStart(2,'0');const name=document.createElement('strong');name.textContent=s.name;const sub=document.createElement('small');sub.textContent=s.sub;b.append(number,name,sub);b.addEventListener('click',()=>{index=i;renderStep()});timeline.append(b)});
+      timeline.dataset.phase=phase;
+    }
+    timeline.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
+    byId('detail-count').textContent=(phase==='publish'?'公開まで':'閲覧時')+' / ステップ '+(index+1);
+    byId('detail-timing').textContent=step.timing;
+    byId('detail-label').textContent=step.name;
+    byId('detail-title').textContent=step.title;
+    byId('detail-text').textContent=step.text;
+    byId('detail-path').textContent=step.path;
+    byId('detail-path').style.whiteSpace='pre-line';
+    byId('detail-result').textContent=step.result;
+    byId('code-head').textContent=step.head;
+    byId('detail-code').textContent=step.code;
+    byId('code-note').textContent=step.note;
+    byId('progress').textContent=(index+1)+' / '+steps.length;
+    byId('prev').disabled=index===0&&phase==='publish';
+    byId('next').disabled=index===steps.length-1&&phase==='visit';
+    byId('next').textContent=index===steps.length-1&&phase==='publish'?'閲覧時へ →':'次へ →';
+    byId('prev').textContent=index===0&&phase==='visit'?'← 公開までへ':'← 前へ';
+  }
+  document.querySelectorAll('[data-phase]').forEach(b=>b.addEventListener('click',()=>{phase=b.dataset.phase;index=0;renderStep()}));
+  byId('prev').addEventListener('click',()=>{if(index>0)index--;else if(phase==='visit'){phase='publish';index=phases.publish.steps.length-1}renderStep()});
+  byId('next').addEventListener('click',()=>{if(index<phases[phase].steps.length-1)index++;else if(phase==='publish'){phase='visit';index=0}renderStep()});
+  const routes={
+    home:{url:'blog.amatatu.com/',tree:'src/pages/index.astro\n  ├─ 記事を取得して並べる\n  └─ Layout.astro\n      ├─ Header.astro\n      ├─ ArrowCard.astro × 記事数\n      └─ Footer.astro',explain:'一覧のデータ処理はindex.astro、各カードの表示はArrowCard.astro。共通の枠はLayout.astroが担当します。',html:'<div class="mock-brand">amatatuのブログ</div><div class="mock-card"><strong>京都で撮ってきた</strong><div class="mock-date">写真 · 2026/01/19</div></div><div class="mock-card"><strong>ブログの記事</strong><div class="mock-date">開発 · 記事の日付</div></div><div class="mock-card"><strong>別の記事</strong><div class="mock-date">趣味 · 記事の日付</div></div>'},
+    post:{url:'blog.amatatu.com/blog/hobby/kyoto-photo',tree:'src/pages/blog/[...id].astro\n  ├─ URLごとの記事を選ぶ\n  └─ EntryLayout.astro\n      └─ Layout.astro\n          ├─ Header.astro\n          ├─ タイトル・日付・タグ\n          ├─ 本文（Content）\n          └─ Footer.astro',explain:'タイトルや日付の配置はEntryLayout.astro。本文の元データはsrc/content/blog/hobby/kyoto-photo.mdです。',html:'<div class="mock-brand">amatatuのブログ</div><div class="mock-title">京都で撮ってきた</div><div class="mock-date">2026年1月19日 · 写真</div><p style="font-size:12px;margin-top:20px">ハッカソン帰りに撮ったやつ</p><div class="mock-photo">本文の写真</div>'},
+    search:{url:'blog.amatatu.com/search',tree:'src/pages/search.astro\n  └─ Layout.astro\n      ├─ Header.astro\n      ├─ PageFind.astro\n      │   └─ 検索UIとスクリプト\n      └─ Footer.astro',explain:'検索の枠はsearch.astro、検索UIの設定はPageFind.astro。Pagefindは生成済みの検索データをブラウザで使います。',html:'<div class="mock-brand">amatatuのブログ</div><div class="mock-title">Search</div><div class="mock-search">⌕ 記事を検索</div><div class="mock-date">検索結果をここに表示</div><div class="mock-line"></div><div class="mock-line short"></div>'}
+  };
+  function renderRoute(key){const r=routes[key];document.querySelectorAll('[data-route]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.route===key)));byId('route-tree').textContent=r.tree;byId('route-explain').textContent=r.explain;byId('mock-url').textContent=r.url;byId('mock-screen').innerHTML=r.html}
+  document.querySelectorAll('[data-route]').forEach(b=>b.addEventListener('click',()=>renderRoute(b.dataset.route)));
+  const edits={
+    list:{title:'記事を取得するページから、並び替えの関数へ',files:['src/pages/index.astro','src/lib/content-sort.ts'],text:'index.astroでgetCollection("blog")の結果を確認します。sortByPinnedThenDateDescが固定記事を先に、同じ条件なら新しい記事を先に並べています。'},
+    card:{title:'カードのHTMLと、そのクラス名を追う',files:['src/components/ArrowCard.astro','src/styles/site.css'],text:'タイトル・タグ・日付・画像の構造をArrowCard.astroで確認します。reference-post-cardなどのクラス名をCSSで検索すると、配置や大きさの指定にたどれます。'},
+    post:{title:'記事用レイアウトで、タイトルまわりを確認',files:['src/layouts/EntryLayout.astro','src/styles/article.css'],text:'タイトル・日付・タグや本文の差し込みはEntryLayout.astroにあります。見た目を変える場合は、要素のクラス名をsrc/styles/全体で検索してください。'},
+    shared:{title:'全体の枠から、共通パーツへ',files:['src/layouts/Layout.astro','src/components/Header.astro','src/components/Footer.astro'],text:'Layout.astroがヘッダー・メイン・フッターを並べます。サイト名やナビゲーションはHeader.astro、その設定値はsrc/consts.tsも確認します。'},
+    style:{title:'CSSの読み込み順と、対象要素のクラスを確認',files:['src/components/Head.astro','src/styles/global.css','src/styles/site.css','src/styles/article.css'],text:'Head.astro → global.css → 各CSSの順に読み込みます。要素のクラス名で検索し、余白・文字・色の指定を探します。Tailwindのクラスが要素に直接付く場合もあります。'},
+    interaction:{title:'イベントを受け取るJavaScriptを確認',files:['src/components/ContentInteractions.astro','src/scripts/shared/content-interactions.js'],text:'ContentInteractions.astroが画像ビューアーの枠とスクリプトを読み込みます。JavaScriptのclickイベントからopenImage、dialog.showModal()へ追うと動作を理解できます。'},
+    markdown:{title:'設定に登録された変換処理へ進む',files:['astro.config.mjs','src/lib/markdown/'],text:'remarkPlugins・rehypePluginsの登録を確認します。画像キャプション、外部リンク、埋め込み、コードのファイル名などは、このフォルダの処理が担当します。'},
+    search:{title:'検索ページから、検索UIの設定へ',files:['src/pages/search.astro','src/components/PageFind.astro','astro.config.mjs'],text:'PageFind.astroで検索UIの見た目や設定を確認します。検索対象の本文にはdata-pagefind-bodyが付き、ビルド時にastro-pagefindが検索データを生成します。'}
+  };
+  function renderEdit(){const e=edits[byId('edit-select').value],root=byId('edit-result');root.replaceChildren();const h=document.createElement('h3');h.textContent=e.title;root.append(h);for(const f of e.files){const c=document.createElement('code');c.textContent=f;root.append(c)}const p=document.createElement('p');p.textContent=e.text;root.append(p)}
+  byId('edit-select').addEventListener('change',renderEdit);
+  renderStep();renderRoute('home');renderEdit();
+</script>
+</body>
+</html>
