@@ -64,7 +64,7 @@ importers:
         version: 5.1.0
     devDependencies:
       '@tailwindcss/typography':
-        specifier: ^0.5.20
+        specifier: 0.5.20
         version: 0.5.20(tailwindcss@4.3.3)
       husky:
         specifier: ^9.1.7
