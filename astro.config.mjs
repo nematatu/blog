@@ -17,6 +17,11 @@ const site = "https://blog.amatatu.com";
 // https://astro.build/config
 export default defineConfig({
   site,
+  trailingSlash: "always",
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   integrations: [
     sitemap(),
     mdx(),

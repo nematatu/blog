@@ -1,0 +1,17 @@
+<!-- Prepare likely articles, including their CSS and images, before navigation. -->
+<script is:inline type="speculationrules">
+  {
+    "prerender": [
+      {
+        "where": {
+          "and": [
+            { "href_matches": "/blog/*/" },
+            { "selector_matches": "a.reference-post-card" },
+            { "not": { "selector_matches": "[target], [download]" } }
+          ]
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
+</script>

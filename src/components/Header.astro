@@ -13,7 +13,7 @@ const isHome = Astro.url.pathname === "/";
       !isHome && (
         <nav aria-label="サイト内リンク">
           {PAGES.map((page) => (
-            <a href={`/${page}`}>{page}</a>
+            <a href={`/${page}/`}>{page}</a>
           ))}
         </nav>
       )

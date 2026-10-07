@@ -1,5 +1,27 @@
-/*
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=604800
+# Keep Cache-Control rules disjoint: Pages joins headers from matching rules.
+/
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/blog/*
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/tags/*
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/stats/
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/search/
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/search.json
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/rss.xml
+  Cache-Control: public, max-age=60, s-maxage=86400, stale-while-revalidate=300
+
+/thumbs/*
+  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

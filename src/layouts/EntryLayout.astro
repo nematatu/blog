@@ -52,7 +52,7 @@ const published = new Intl.DateTimeFormat("ja-JP", {
             <ul class="reference-tags">
               {tags.map((tag) => (
                 <li>
-                  <a href={`/tags/${tag}`}>{tag}</a>
+                  <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>
                 </li>
               ))}
             </ul>

@@ -34,7 +34,7 @@ export async function GET() {
       date,
       dateKey: date,
       tags,
-      url: withBase(`blog/${post.id}`),
+      url: withBase(`blog/${post.id}/`),
       ogImage,
       fallbackImage,
       wordCount: stats.wordCount,

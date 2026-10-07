@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import PostTransitions from "@components/PostTransitions.astro";
+import NavigationPrefetch from "@components/NavigationPrefetch.astro";
 
 interface Props {
   title: string;
@@ -19,6 +20,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="generator" content={Astro.generator} />
 <PostTransitions />
+<NavigationPrefetch />
 <link rel="preconnect" href="https://assets.blog.amatatu.com" crossorigin />
 <link rel="dns-prefetch" href="https://assets.blog.amatatu.com" />
 <link rel="canonical" href={canonicalURL} />

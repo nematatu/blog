@@ -5,13 +5,14 @@ import { dateKey } from "@lib/post-metrics";
 
 type Props = { entry: CollectionEntry<"blog"> | CollectionEntry<"projects"> };
 const { entry } = Astro.props;
-const url = `/${entry.collection}/${entry.id}`;
+const url = `/${entry.collection}/${entry.id}/`;
 const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
 ---
 
 <a
   class:list={["reference-post-card", entry.data.ogImage && "has-image"]}
   href={url}
+  data-astro-prefetch="viewport"
   data-post-transition-url={url}
 >
   {
