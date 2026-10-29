@@ -5,4 +5,5 @@ draft: true
 tags: []
 ---
 
-どうせならRust学びながらgpuiで作ってみようかな〜
+
+どうせならRust学びながらgpuiで作ってみようかな〜っｆ
