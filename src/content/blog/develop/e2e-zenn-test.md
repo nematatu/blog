@@ -1,17 +1,13 @@
 ---
-title: "Zennエディタ検証記事"
-emoji: "⚡"
+title: "更新後のZennエディタタイトル"
+emoji: "🚀"
 date: "2026-10-29T19:00:00+09:00"
-draft: true
-tags: ["Zenn", "テスト"]
+draft: false
+tags: ["Zenn", "更新"]
 ---
 
-# Zennエディタの検証
+# 更新後のタイトル
 
-:::message
-これは情報メッセージです。
-:::
-
-:::details 折りたたみ
-詳細内容
+:::message alert
+警告メッセージ
 :::
