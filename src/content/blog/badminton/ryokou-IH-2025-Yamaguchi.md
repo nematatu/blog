@@ -8,6 +8,7 @@ ogImage: /ogp/interhigh-2025.png
 pinned: true
 ---
 
+
 ## 何枚か
 
 ![](https://assets.blog.amatatu.com/paste-images/20260619011432.avif)
@@ -29,7 +30,7 @@ pinned: true
 
 お祭りやってた
 
-![](https://assets.blog.amatatu.com/posts/ryokou-ih-2025-yamaguchi/maturi.jpg)
+![1.01](https://assets.blog.amatatu.com/posts/ryokou-ih-2025-yamaguchi/maturi.jpg)
 
 カプセルホテルに宿泊
 ![](https://assets.blog.amatatu.com/posts/ryokou-ih-2025-yamaguchi/hotel.jpg)
@@ -130,13 +131,13 @@ pinned: true
 あと、試合動画撮る選手というか、保護者多くて意外だったな
 みんな撮ってるんだ。
 
-![](https://assets.blog.amatatu.com/posts/ryokou-ih-2025-yamaguchi/seien.jpg)
+![1.00](https://assets.blog.amatatu.com/posts/ryokou-ih-2025-yamaguchi/seien.jpg)
 
-- 北越のスーパーレシーブ
+* 北越のスーパーレシーブ
 
-- 増田草ノ瀬 vs 増田宮下
+* 増田草ノ瀬 vs 増田宮下
 
-- 澤田石井 vs 石原内村
+* 澤田石井 vs 石原内村
 
 この試合は特にテンション上がったな〜
 
