@@ -5,7 +5,6 @@ draft: true
 tags: ["趣味"]
 ---
 
-
 ## 気をつけること
 
 * スライドに書いてる文章、そのまま読んでいる
@@ -14,7 +13,7 @@ tags: ["趣味"]
 
 [京大のプレゼン講座](https://repository.kulib.kyoto-u.ac.jp/server/api/core/bitstreams/9da147c7-5bab-41a2-8fe4-9dcb0958f1ad/content)
 
-* 内容をすぐ忘れる(相手が)
+- 内容をすぐ忘れる(相手が)
 
 ### プレゼン発表の目的は
 
@@ -24,12 +23,12 @@ tags: ["趣味"]
 ⭕️ <mark>紹介して理解してもらい、学んでもらう</mark>
 :::
 
-* 文字より図
-* 端っこの人もわかるように
-  * 下の部分が見えなかったりする
-* 用語の説明
-* 一発で理解できるように
-  * スラッスラ理解できると気持ちいよね
+- 文字より図
+- 端っこの人もわかるように
+  - 下の部分が見えなかったりする
+- 用語の説明
+- 一発で理解できるように
+  - スラッスラ理解できると気持ちいよね
 
 :::note
 見出しや強調部はゴシック、長文は明朝体にするとわかりやすい
@@ -38,13 +37,13 @@ tags: ["趣味"]
 
 Wordとかで使えるテクニック
 
-> ["｢見る｣要素の文字には、ゴシック体とサンセリフ体"](https://tsutawarudesign.com/yomiyasuku1.html#:~\:text=%EF%BD%A2%E8%A6%8B%E3%82%8B%EF%BD%A3%E8%A6%81%E7%B4%A0%E3%81%AE%E6%96%87%E5%AD%97%E3%81%AB%E3%81%AF%E3%80%81%E3%82%B4%E3%82%B7%E3%83%83%E3%82%AF%E4%BD%93%E3%81%A8%E3%82%B5%E3%83%B3%E3%82%BB%E3%83%AA%E3%83%95%E4%BD%93)
+> ["｢見る｣要素の文字には、ゴシック体とサンセリフ体"](https://tsutawarudesign.com/yomiyasuku1.html#:~:text=%EF%BD%A2%E8%A6%8B%E3%82%8B%EF%BD%A3%E8%A6%81%E7%B4%A0%E3%81%AE%E6%96%87%E5%AD%97%E3%81%AB%E3%81%AF%E3%80%81%E3%82%B4%E3%82%B7%E3%83%83%E3%82%AF%E4%BD%93%E3%81%A8%E3%82%B5%E3%83%B3%E3%82%BB%E3%83%AA%E3%83%95%E4%BD%93)
 :::
 
 * 1行を長くするより、短く複数行のほうが良いらしい
 * 左揃え
 * 結局メイリオ+Segoe
-  * ArialはSegoeより文字の余白が狭くて視認性が少し落ちる
+    * ArialはSegoeより文字の余白が狭くて視認性が少し落ちる
 * 記号は時間を詰める(約物)
 * 小見出しは**bold**+サイズアップが良いかも
 * 文字色変更>**bold** 情報が散乱しない
@@ -59,24 +58,23 @@ Wordとかで使えるテクニック
 
 [表とグラフ](https://tsutawarudesign.com/miyasuku1.html)
 
-* まとまり、アイキャッチ
+- まとまり、アイキャッチ
 
 ### スライドマスター
 
-* ページ番号
-* フォント管理
-* 今の位置
+- ページ番号
+- フォント管理
+- 今の位置
 
 ## フォント
-
 ### NotoSans JP
 
 PDF出力時にthinになる
 
-* 読みやすい
-* no more tofu
-* 権利周りも安心
-* Webフォント
+- 読みやすい
+- no more tofu
+- 権利周りも安心
+- Webフォント
 
 しかし、PDF出力が怖い
 
@@ -92,8 +90,8 @@ JP の英数字は読みにくいから(gとか1とか)、`font-family: "Noto Sa
 
 上にズレるように設計されてる
 
-* 図形の上の余白を1mm大きく、下の余白を1mm小さくする
-* 行間を1.3倍にする
+- 図形の上の余白を1mm大きく、下の余白を1mm小さくする
+- 行間を1.3倍にする
 
 [なぜメイリオは上にズレるのか？ パワポでメイリオをキレイに上下中央配置するコツ ｜プレゼンデザイン](https://ppt.design4u.jp/best-practice-meiryo-centering/)
 
@@ -110,16 +108,16 @@ JP の英数字は読みにくいから(gとか1とか)、`font-family: "Noto Sa
 
 258D
 
-<https://ppt.design4u.jp/symbol/>
+https://ppt.design4u.jp/symbol/
 
 色反転でアイキャッチは挟むやつとか
 
-<https://ppt.design4u.jp/storytelling-with-arranged-layouts/>
+https://ppt.design4u.jp/storytelling-with-arranged-layouts/
 
 マジわかりやすい
 数値は右揃えとか、長文は両端揃えが良いとか
 
-<https://ppt.design4u.jp/alignment/>
+https://ppt.design4u.jp/alignment/
 
 ## スライドマスター
 
