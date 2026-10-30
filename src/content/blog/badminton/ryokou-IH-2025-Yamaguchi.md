@@ -1,18 +1,20 @@
 ---
 title: "山口へインハイ旅行"
 description: "インハイ2025行ってきた"
-date: "2026-01-19"
+date: "2026-03-19T09:00:00+09:00"
 draft: false
 tags: ["バドミントン", "写真"]
 ogImage: /ogp/interhigh-2025.png
 pinned: true
 ---
 
-
 ## 何枚か
 
 ![](https://assets.blog.amatatu.com/paste-images/20260619011432.avif)
 ![](https://assets.blog.amatatu.com/paste-images/IMG_9247.JPG)
+
+<br />
+
 ![](https://assets.blog.amatatu.com/paste-images/IMG_9248.JPG)
 ![](https://assets.blog.amatatu.com/paste-images/IMG_9249.JPG)
 
@@ -124,6 +126,10 @@ pinned: true
 これぞインターハイだろ！って感じ
 
 有名な選手も見れてテンション上がったし、あんな強い選手でも1,2回戦から本気というか、余裕は無いんだなって、全国のレベルの高さ感じた
+
+<br />
+
+<br />
 
 有名な高校のユニフォーム見れてテンション上がるし、人もめっちゃ多くて、席は絶対座れない。立ち見も難しくて、なんとか人と人の間を潜って手すりにありついて、澤田石井の試合見れた。
 場所離れるとき真後ろにインスタで有名なあいつがいてビビった。
