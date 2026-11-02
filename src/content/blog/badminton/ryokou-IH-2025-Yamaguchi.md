@@ -1,10 +1,10 @@
 ---
-title: "テスト投稿（削除予定）"
+title: "山口へインハイ旅行"
 description: "インハイ2025行ってきた"
 date: "2026-03-19T09:00:00+09:00"
 draft: false
 tags: ["バドミントン", "写真"]
-ogImage: "https://assets.blog.amatatu.com/blog/98b70a29-00dd-456b-82c2-63e76ac8a3ef.png"
+ogImage: /ogp/interhigh-2025.png
 pinned: true
 ---
 
