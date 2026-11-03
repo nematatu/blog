@@ -102,3 +102,22 @@ test("image captions keep lazy loading and text", () => {
   assert.equal(tree.children[0].children[0].properties.loading, "lazy");
   assert.equal(tree.children[0].children[1].children[0].value, "説明");
 });
+
+test("Markdown widgets size images wrapped in an image directive", () => {
+  const sized = (size) => ({
+    type: "containerDirective",
+    name: "image",
+    attributes: { size },
+    children: [paragraph([{ type: "image", url: "/photo.png", alt: "" }])],
+  });
+  const small = sized("small");
+  const medium = sized("medium");
+  remarkDirectiveWidgets()({ type: "root", children: [small, medium] });
+  assert.equal(small.data.hName, "div");
+  assert.deepEqual(small.data.hProperties.className, [
+    "image-size",
+    "mx-auto w-1/2",
+  ]);
+  assert.equal(medium.data.hProperties.dataImageSize, "medium");
+  assert.equal(small.children[0].children[0].url, "/photo.png");
+});

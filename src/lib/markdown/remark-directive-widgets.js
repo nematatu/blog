@@ -42,6 +42,23 @@ function transformAdmonition(node) {
   }
 }
 
+// :::image{size="small"} で囲まれた画像の表示幅。全幅はディレクティブなしの通常の画像。
+const IMAGE_SIZE_CLASSES = {
+  small: "mx-auto w-1/2",
+  medium: "mx-auto w-3/4",
+};
+
+function transformImageSize(node) {
+  const size = node.attributes?.size;
+  node.data = {
+    hName: "div",
+    hProperties: {
+      className: ["image-size", IMAGE_SIZE_CLASSES[size] ?? ""],
+      dataImageSize: size,
+    },
+  };
+}
+
 export default function remarkDirectiveWidgets() {
   return (tree) => {
     visit(tree, (node) => {
@@ -54,6 +71,11 @@ export default function remarkDirectiveWidgets() {
               ? githubTargetFromUrl(child.url)
               : null;
         if (target) renderGithubCard(node, target);
+        return;
+      }
+
+      if (node.type === "containerDirective" && node.name === "image") {
+        transformImageSize(node);
         return;
       }
 
