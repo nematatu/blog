@@ -219,6 +219,33 @@
     margin-bottom: 2rem;
     border-radius: 4px;
   }
+  .post-toc {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+  .post-toc summary {
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .post-toc nav {
+    display: block;
+    margin-top: 0.5rem;
+  }
+  .post-toc ol {
+    display: grid;
+    gap: 0.375rem;
+    list-style: none;
+  }
+  .post-toc a {
+    color: inherit;
+    overflow-wrap: anywhere;
+  }
+  .post-toc-sub {
+    padding-inline-start: 1rem;
+  }
   .post-nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -328,6 +355,7 @@ main:focus {
   .reference-site-header nav,
   .reference-site-footer,
   .post-nav,
+  .post-toc,
   .code-copy,
   .image-viewer {
     display: none !important;

@@ -363,3 +363,44 @@ test("記事: 読了時間の目安が表示される", async () => {
   );
   await page.context().close();
 });
+
+test("目次: 開くと見出しへ移動でき、リンク先が本文に実在する", async () => {
+  const page = await open("/");
+  let checked = 0;
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const toc = page.locator("details.post-toc");
+    if (!(await toc.count())) continue;
+    checked++;
+    const missing = await toc
+      .locator("a")
+      .evaluateAll((anchors) =>
+        anchors
+          .map((a) => decodeURIComponent(a.getAttribute("href").slice(1)))
+          .filter(
+            (id) =>
+              !document
+                .querySelector(".post-body")
+                ?.querySelector(`[id="${CSS.escape(id)}"]`),
+          ),
+      );
+    assert.deepEqual(missing, [], `${pathname}: 行き先のない目次項目`);
+    if (checked === 1) {
+      assert.equal(
+        await toc.evaluate((el) => el.open),
+        false,
+        "初期は閉じている",
+      );
+      await toc.locator("summary").click();
+      const link = toc.locator("a").last();
+      await link.click();
+      const id = decodeURIComponent((await link.getAttribute("href")).slice(1));
+      assert.equal(
+        await page.evaluate(() => decodeURIComponent(location.hash.slice(1))),
+        id,
+      );
+    }
+  }
+  assert.ok(checked > 0, "目次のある記事が 1 つ以上ある");
+  await page.context().close();
+});

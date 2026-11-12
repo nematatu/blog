@@ -11,8 +11,15 @@ type Props = {
   // 記事末尾に出す、日付順で隣り合う記事。
   newer?: CollectionEntry<"blog">;
   older?: CollectionEntry<"blog">;
+  headings?: { depth: number; slug: string; text: string }[];
 };
-const { entry, newer, older } = Astro.props;
+const { entry, newer, older, headings = [] } = Astro.props;
+// 見出しが少ない記事では目次を出さない。
+const MIN_TOC_HEADINGS = 3;
+const tocHeadings = headings.filter(
+  (heading) => heading.depth === 2 || heading.depth === 3,
+);
+const showToc = tocHeadings.length >= MIN_TOC_HEADINGS;
 const neighbors = [
   { label: "← 新しい記事", post: newer, className: "post-nav-newer" },
   { label: "古い記事 →", post: older, className: "post-nav-older" },
@@ -112,6 +119,22 @@ const published = new Intl.DateTimeFormat("ja-JP", {
             loading="eager"
             fetchpriority="high"
           />
+        )
+      }
+      {
+        showToc && (
+          <details class="post-toc" data-pagefind-ignore>
+            <summary>目次</summary>
+            <nav aria-label="目次">
+              <ol>
+                {tocHeadings.map((heading) => (
+                  <li class:list={[heading.depth === 3 && "post-toc-sub"]}>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </details>
         )
       }
       <div class="post-body"><slot /></div>
