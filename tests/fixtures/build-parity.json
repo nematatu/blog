@@ -28,6 +28,7 @@
     "blog/hobby/koregaii/index.html",
     "blog/hobby/kyoto-photo/index.html",
     "blog/hobby/o-giri-reason-macos-mustle/index.html",
+    "blog/hobby/post-2026-10-29/index.html",
     "blog/hobby/reason-make-blog/index.html",
     "index.html",
     "offline.html",
@@ -41,8 +42,8 @@
     "tags/開発/index.html"
   ],
   "files": {
-    "search.json": "43e5e2dc1393ad9d29dd6dd726fd65c7e8035fd9258247a4e228a5e1bc043357",
-    "rss.xml": "0accfb1d6bbd33a0b9334fd3bec745b05e7cddf3db1b0b85ffd103875228a84b",
+    "search.json": "b4d31c3467ca4cc96a7d4ada310792fabaf361e3633c03c82d3b6d29eb9b1b23",
+    "rss.xml": "9ca5ee74b50b5f7e30a9ba079969dce45850fd1f3a72e70d24451dc1ea0346da",
     "og-image/blog/develop/oneliner-avifenc.png": "985fcc0ba620f6efbdd5e8c1b4e58e3afad7ce3ae293e6411f9c3f0112108b54"
   },
   "articles": {
@@ -52,10 +53,10 @@
     "blog/badminton/in-high-player-racket-survey/index.html": "688f6312d2d07397bce13fba37b4f3cf3609b5e9419802918cbd13e9a543ed11",
     "blog/badminton/junior-sougou/index.html": "93622ac79d6d3cb86aaf1786b07901e2d3908dd5e0305af591bd22c0814d055c",
     "blog/badminton/national-team-2026-yosou/index.html": "3a235e1f9464b9960be8cb6732a8b2ff872e9743d344acf8c199e8c4ada61e9c",
-    "blog/badminton/ryokou-ih-2025-yamaguchi/index.html": "c6d9e18e69f35f0ecc186f52a7202a9cfe2e980550948534a4a65f5e6c31422f",
+    "blog/badminton/ryokou-ih-2025-yamaguchi/index.html": "aef3eb065bd191067de71d33c4f790b64e7c20cc85bf640baa920d27fc6b4041",
     "blog/badminton/teinei-hassin/index.html": "c1ae4cee7ea4fccdde90377e31114c35f680cf8ef87d4628f79baaae1fbd8ea8",
-    "blog/develop/cannnot-connect-localsend/index.html": "6111eb44ce137385715b06947b6bd8b9e1c8a8343cbce187398981b111d48c3d",
-    "blog/develop/check-ip-address/index.html": "ccd6440e70959bc8d2cc929362125f997d8c5d67d3351766f1e4f78631e3e17d",
+    "blog/develop/cannnot-connect-localsend/index.html": "15202548cdbf07222b9fae62cd68571abb64ea5e4cd028a916f280445c49fdbf",
+    "blog/develop/check-ip-address/index.html": "2047739d6be1a3550b52ad6f42d07c19429bd307be015e05f20e8eda39024889",
     "blog/develop/default-gateway/index.html": "3ff92bd6cd33d3b589f067964bfcff10b5160d4b63c98c084fd644f227528470",
     "blog/develop/drizzle-npm/index.html": "430311bb575b6ae4a33b814ab762a2ce484f9f3e14c96812181de6903f20f9f2",
     "blog/develop/emit-vimscript/index.html": "e4be80bc0654676512d1da934233bbc5da78f3ab09d477e729002957620e6d58",
@@ -66,13 +67,14 @@
     "blog/develop/oneliner-avifenc/index.html": "e964b75a9768d3852a8b2586238c48a10ee9f074a5422b7fb44e917c8342ce51",
     "blog/develop/pitcms/index.html": "4d8aa51b013b838d75d28fdcc8202f550274a2adcbc571c71e77dafcd8de68bd",
     "blog/develop/rustdesk/index.html": "cb5698ef1884b3da03251a92e98b52a23254c3abf47958b4c567646a83295776",
-    "blog/develop/search-keybind-macos/index.html": "01881c65581d90316b4a2030a9d081352f7de9dc8ccdebb91a29e38b2f3a9074",
+    "blog/develop/search-keybind-macos/index.html": "d72bc3a8180177ab4f608671613e4715986cd44f13aee0433c70908f6d7706e0",
     "blog/develop/vim-image-popup/index.html": "87df715620999199c86e72745edcb866e016f7a6ac27db2461d7c6d3d7ab0ca6",
     "blog/hobby/fav-song/index.html": "76bb3b12d2e7aa7c7f94baad00b17af33d2d683769479acc2cbfe52c3cad4a37",
-    "blog/hobby/kisei-marathon/index.html": "645d581805d232573824f486a3d70d113899847cc9dd2ff99253e2371617ff43",
+    "blog/hobby/kisei-marathon/index.html": "a2b60c6720f67dbd06bb02c86bee279e902d15fe9e17b14c4cd3c457a29f1b73",
     "blog/hobby/koregaii/index.html": "bc94bc69e5df58a073a0e1e8730c03b721e9adb230ccbaf650b5aa1e27af5465",
     "blog/hobby/kyoto-photo/index.html": "b02819b273f398031d4e269f6c2ff03c087469d5b6ef16a248d46854e6b763f3",
     "blog/hobby/o-giri-reason-macos-mustle/index.html": "b6776bee39a7c7975f98b98115da380bed5492a741dc5267c73cb9f6e8b2c201",
+    "blog/hobby/post-2026-10-29/index.html": "daf3d81c9a39de4b5cb6734a286520291d5ea4059f7e8da01990f99333324cb4",
     "blog/hobby/reason-make-blog/index.html": "d7509820ce3dd7e09e32d35c2cce3baea1b3c347ba7e9683050d0e6f850b1e90"
   }
 }
