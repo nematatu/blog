@@ -1,0 +1,257 @@
+// ビルド済みサイトを実ブラウザで開き、レンダリング後の DOM と計算済みスタイルを検証する。
+// 静的解析では分からない「実際にどう読み込まれ、どう動くか」を確認するためのテスト。
+// 事前に `pnpm build` が必要。`pnpm test:browser` で実行する。
+import assert from "node:assert/strict";
+import { existsSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { after, before, test } from "node:test";
+import { chromium } from "playwright";
+import { serveDist } from "./static-server.mjs";
+
+const dist = path.resolve("dist");
+const MOBILE = { width: 390, height: 844 };
+const DESKTOP = { width: 1280, height: 800 };
+// 外部画像の代わりに返す 1x1 PNG。ネットワークに依存させない。
+const PIXEL = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==",
+  "base64",
+);
+
+let browser;
+let site;
+
+before(async () => {
+  assert.ok(
+    existsSync(path.join(dist, "index.html")),
+    "dist/ がありません。先に `pnpm build` を実行してください。",
+  );
+  site = await serveDist(dist);
+  browser = await chromium.launch();
+});
+
+after(async () => {
+  await browser?.close();
+  await site?.close();
+});
+
+async function open(pathname, options = {}) {
+  const context = await browser.newContext({ viewport: MOBILE, ...options });
+  await context.route(
+    (url) => url.origin !== site.origin,
+    (route) =>
+      route.request().resourceType() === "image"
+        ? route.fulfill({ contentType: "image/png", body: PIXEL })
+        : route.abort(),
+  );
+  const page = await context.newPage();
+  await page.goto(site.origin + pathname, { waitUntil: "load" });
+  return page;
+}
+
+const images = (page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("main img")].map((image) => {
+      const rect = image.getBoundingClientRect();
+      return {
+        src: image.getAttribute("src"),
+        className: image.className,
+        loading: image.getAttribute("loading"),
+        fetchpriority: image.getAttribute("fetchpriority"),
+        inViewport: rect.top < innerHeight && rect.bottom > 0,
+        inPostBody: Boolean(image.closest(".post-body")),
+      };
+    }),
+  );
+
+function postPaths() {
+  const root = path.join(dist, "blog");
+  return readdirSync(root, { recursive: true })
+    .filter((file) => path.basename(file) === "index.html")
+    .map((file) => `/blog/${path.dirname(file).split(path.sep).join("/")}/`)
+    .sort();
+}
+
+test("記事一覧: 初期ビューポートのサムネイルは遅延読み込みせず、画面外は遅延読み込みする", async () => {
+  for (const viewport of [MOBILE, DESKTOP]) {
+    const page = await open("/", { viewport });
+    const all = await images(page);
+    const visible = all.filter((image) => image.inViewport);
+    const hidden = all.filter((image) => !image.inViewport);
+    assert.ok(visible.length > 0, "初期ビューポートにサムネイルがある");
+    assert.deepEqual(
+      visible.filter((image) => image.loading === "lazy"),
+      [],
+      `${viewport.width}px: 初期ビューポートの画像が lazy になっている`,
+    );
+    assert.ok(hidden.length > 0, "画面外にもサムネイルがある");
+    // 先頭の数件は余裕を持って eager にしているので、十分下にあるものだけを見る。
+    assert.equal(hidden.at(-1).loading, "lazy");
+    await page.context().close();
+  }
+});
+
+test("全記事: 優先度の高い画像は 1 枚までで、遅延読み込みと併用しない", async () => {
+  const page = await open("/");
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const high = (await images(page)).filter(
+      (image) => image.fetchpriority === "high",
+    );
+    assert.ok(high.length <= 1, `${pathname}: fetchpriority=high が複数ある`);
+    for (const image of high) {
+      assert.notEqual(
+        image.loading,
+        "lazy",
+        `${pathname}: high と lazy を併用している`,
+      );
+      assert.ok(image.inViewport, `${pathname}: 画面外の画像が high`);
+    }
+  }
+  await page.context().close();
+});
+
+test("記事: ヒーロー画像が LCP 候補として優先され、本文の画像は遅延読み込みされる", async () => {
+  const page = await open("/");
+  let checked = 0;
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const all = await images(page);
+    const hero = all.find((image) =>
+      image.className.includes("reference-post-image"),
+    );
+    if (!hero) continue;
+    checked++;
+    assert.equal(hero.loading, "eager", pathname);
+    assert.equal(hero.fetchpriority, "high", pathname);
+    for (const image of all.filter((image) => image.inPostBody)) {
+      assert.equal(image.loading, "lazy", `${pathname}: ${image.src}`);
+    }
+  }
+  assert.ok(checked > 0, "ヒーロー画像のある記事が 1 つ以上ある");
+  await page.context().close();
+});
+
+test("記事: ヒーロー画像がなく冒頭に画像がある場合、その画像を優先して読み込む", async () => {
+  const page = await open("/");
+  let checked = 0;
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const body = (await images(page)).filter((image) => image.inPostBody);
+    const lead = body.find((image) => image.fetchpriority === "high");
+    if (!lead) continue;
+    checked++;
+    assert.equal(lead, body[0], `${pathname}: 最初の画像ではない`);
+    assert.equal(lead.loading, "eager", pathname);
+    for (const image of body.slice(1)) {
+      assert.equal(image.loading, "lazy", `${pathname}: ${image.src}`);
+    }
+  }
+  assert.ok(checked > 0, "冒頭画像を優先する記事が 1 つ以上ある");
+  await page.context().close();
+});
+
+// スクロールできる長さがあり、リンクで包まれていない本文画像を持つ記事を探す。
+async function findLongPostWithImage(page) {
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "load" });
+    const ok = await page.evaluate(
+      () =>
+        document.documentElement.scrollHeight > innerHeight * 2 &&
+        [...document.querySelectorAll(".post-body img")].some(
+          (image) => !image.closest("a"),
+        ),
+    );
+    if (ok) return pathname;
+  }
+  assert.fail("検証に使える記事がありません");
+}
+
+test("読了位置バー: スクロール駆動アニメーションで進み、JS なしで動く", async () => {
+  const page = await open("/", { javaScriptEnabled: false });
+  await findLongPostWithImage(page);
+  const bar = page.locator(".reading-progress");
+  const scaleX = () =>
+    bar.evaluate((element) => {
+      const scale = getComputedStyle(element).scale;
+      return scale === "none" ? 1 : Number.parseFloat(scale);
+    });
+  assert.match(
+    await bar.evaluate(
+      (element) => getComputedStyle(element).animationTimeline,
+    ),
+    /^scroll\(/,
+  );
+  assert.equal(await scaleX(), 0);
+  await page.evaluate(() =>
+    scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "instant",
+    }),
+  );
+  // アニメーションの進行は次の描画フレームで反映される。
+  // JS を無効にしているのでページ内では待てず、テスト側で読み直す。
+  let scale = await scaleX();
+  for (let retry = 0; retry < 50 && Math.abs(scale - 1) >= 0.01; retry++) {
+    await page.waitForTimeout(100);
+    scale = await scaleX();
+  }
+  assert.ok(Math.abs(scale - 1) < 0.01, `末尾で 100% になる (実際: ${scale})`);
+  await page.context().close();
+});
+
+test("読了位置バー: 動きを減らす設定では表示しない", async () => {
+  const page = await open("/", { reducedMotion: "reduce" });
+  await findLongPostWithImage(page);
+  assert.equal(
+    await page
+      .locator(".reading-progress")
+      .evaluate((element) => getComputedStyle(element).display),
+    "none",
+  );
+  await page.context().close();
+});
+
+test("画像ビューア: クリックとキーボードで開き、Esc と背景クリックで閉じる", async () => {
+  const page = await open("/", { viewport: DESKTOP });
+  await findLongPostWithImage(page);
+  const dialog = page.locator("dialog.image-lightbox");
+  const isOpen = () => dialog.evaluate((element) => element.open);
+  const image = page.locator(".post-body img:not(a img)").first();
+
+  await image.scrollIntoViewIfNeeded();
+  await image.click();
+  assert.equal(await isOpen(), true, "クリックで開く");
+  assert.equal(
+    await dialog.evaluate((element) => element.matches(":modal")),
+    true,
+    "モーダルとして最上位レイヤーに表示される",
+  );
+  await page.keyboard.press("Escape");
+  assert.equal(await isOpen(), false, "Esc で閉じる");
+
+  await image.focus();
+  await page.keyboard.press("Enter");
+  assert.equal(await isOpen(), true, "Enter で開く");
+  await page.mouse.click(5, DESKTOP.height / 2);
+  assert.equal(await isOpen(), false, "背景クリックで閉じる");
+  await page.context().close();
+});
+
+test("統計: グラフの数値がツールチップなしでも読める", async () => {
+  const page = await open("/stats/");
+  const heatmap = page.getByRole("img", { name: /ヒートマップ/ });
+  assert.equal(await heatmap.count(), 1);
+  const titles = await page
+    .locator("[title$='件']:not([data-heatmap-day])")
+    .evaluateAll((bars) =>
+      bars.map((bar) => ({
+        title: bar.title,
+        label: bar.previousElementSibling?.textContent.replace(/\s+/g, ""),
+      })),
+    );
+  assert.ok(titles.length > 0);
+  for (const { title, label } of titles) {
+    assert.equal(label, title.split(": ")[1], "棒の上に件数が表示されている");
+  }
+  await page.context().close();
+});

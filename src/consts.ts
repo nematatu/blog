@@ -29,3 +29,6 @@ export const PAGES = [
   "tags",
   "search",
 ];
+
+// 一覧の先頭でこの件数までは初期ビューポートに入るとみなし、サムネイルを遅延読み込みしない。
+export const EAGER_CARD_COUNT = 6;

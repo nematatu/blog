@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\"",
     "check": "prettier --check \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\"",
     "test": "node --test tests/*.test.mjs",
+    "test:browser": "node --test tests/browser/*.test.mjs",
     "parity": "node scripts/check-parity.mjs",
     "scripts:draft": "node scripts/list-drafts.mjs",
     "scripts:new-post": "node scripts/create-post.mjs"
@@ -39,6 +40,7 @@
     "husky": "^9.1.7",
     "inquirer": "^13.4.3",
     "pagefind": "^1.5.2",
+    "playwright": "1.63.0",
     "prettier": "^3.9.9",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.1"

@@ -28,6 +28,8 @@ const published = new Intl.DateTimeFormat("ja-JP", {
   image={entry.data.ogImage ??
     `/og-image/${entry.collection}/${entry.id}.png?v=20260614-og-background`}
 >
+  <!-- 読了位置。CSS のスクロール駆動アニメーションだけで動く (site.css)。 -->
+  <div class="reading-progress" aria-hidden="true"></div>
   <Container>
     <article
       data-pagefind-body

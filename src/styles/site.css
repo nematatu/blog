@@ -232,6 +232,40 @@
   }
 }
 
+/* 記事の読了位置。スクロールイベントを使わず、スクロール駆動アニメーションで
+   コンポジタ上だけで動かす。未対応ブラウザと動きを減らす設定では表示しない。 */
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .reading-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 10;
+      height: 2px;
+      background: #2563eb;
+      pointer-events: none;
+      transform-origin: 0 50%;
+      /* スクロールできない短いページではタイムラインが無効になり、0 のまま見えない。 */
+      scale: 0 1;
+      /* animation ショートハンドは使わない。ビルド時の CSS 圧縮がタイムラインを
+         ショートハンドへまとめてしまい、ブラウザが解釈できなくなる。 */
+      animation-name: reading-progress;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+@keyframes reading-progress {
+  to {
+    scale: 1 1;
+  }
+}
+
 .image-viewer {
   position: fixed;
   inset: 0;
