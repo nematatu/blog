@@ -1,6 +1,8 @@
 {
-	"name": "",
-	"short_name": "",
+	"name": "日記ニキ",
+	"short_name": "日記ニキ",
+	"lang": "ja",
+	"start_url": "/",
 	"icons": [
 		{
 			"src": "/icon/android-chrome-192x192.png",

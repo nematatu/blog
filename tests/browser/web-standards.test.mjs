@@ -255,3 +255,19 @@ test("統計: グラフの数値がツールチップなしでも読める", asy
   }
   await page.context().close();
 });
+
+test("スキップリンク: 最初の Tab で現れ、本文へ移動できる", async () => {
+  const page = await open("/");
+  const link = page.locator(".skip-link");
+  const top = () => link.evaluate((el) => el.getBoundingClientRect().bottom);
+  assert.ok((await top()) <= 0, "通常は画面外にある");
+  await page.keyboard.press("Tab");
+  assert.equal(
+    await page.evaluate(() => document.activeElement.className),
+    "skip-link",
+  );
+  assert.ok((await top()) > 0, "フォーカスすると見える");
+  await page.keyboard.press("Enter");
+  assert.equal(await page.evaluate(() => document.activeElement.id), "main");
+  await page.context().close();
+});

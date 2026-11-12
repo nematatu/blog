@@ -24,8 +24,9 @@ const { title, description = SITE.DESCRIPTION, image, article } = Astro.props;
     />
   </head>
   <body>
+    <a class="skip-link" href="#main">本文へスキップ</a>
     <Header />
-    <main><slot /></main>
+    <main id="main" tabindex="-1"><slot /></main>
     <Footer />
   </body>
 </html>

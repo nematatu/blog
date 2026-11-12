@@ -232,6 +232,25 @@
   }
 }
 
+/* キーボード操作で最初にフォーカスが当たったときだけ見える、本文へのリンク。 */
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 20;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 0 0 2px #2563eb;
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+main:focus {
+  outline: none;
+}
+
 /* 記事の読了位置。スクロールイベントを使わず、スクロール駆動アニメーションで
    コンポジタ上だけで動かす。未対応ブラウザと動きを減らす設定では表示しない。 */
 .reading-progress {
