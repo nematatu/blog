@@ -219,6 +219,40 @@
     margin-bottom: 2rem;
     border-radius: 4px;
   }
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+    font-size: 0.875rem;
+  }
+  .post-nav a {
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+    min-width: 0;
+    color: inherit;
+  }
+  .post-nav a:hover {
+    text-decoration: none;
+  }
+  .post-nav a:hover .post-nav-title {
+    text-decoration: underline;
+  }
+  .post-nav-older {
+    grid-column: 2;
+    text-align: end;
+  }
+  .post-nav-label {
+    color: #666;
+    font-size: 0.8rem;
+  }
+  .post-nav-title {
+    overflow-wrap: anywhere;
+    font-weight: 700;
+  }
   @media (min-width: 640px) {
     .site-container {
       --thumbnail-width: 9rem;

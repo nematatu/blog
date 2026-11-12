@@ -6,8 +6,17 @@ import ContentInteractions from "@components/ContentInteractions.astro";
 import Layout from "@layouts/Layout.astro";
 import { getExcerpt } from "@lib/post-metrics";
 
-type Props = { entry: CollectionEntry<"blog"> | CollectionEntry<"projects"> };
-const { entry } = Astro.props;
+type Props = {
+  entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
+  // 記事末尾に出す、日付順で隣り合う記事。
+  newer?: CollectionEntry<"blog">;
+  older?: CollectionEntry<"blog">;
+};
+const { entry, newer, older } = Astro.props;
+const neighbors = [
+  { label: "← 新しい記事", post: newer, className: "post-nav-newer" },
+  { label: "古い記事 →", post: older, className: "post-nav-older" },
+];
 const isBlog = entry.collection === "blog";
 const tags = isBlog ? (entry.data.tags ?? []) : [];
 const links =
@@ -97,6 +106,21 @@ const published = new Intl.DateTimeFormat("ja-JP", {
       }
       <div class="post-body"><slot /></div>
     </article>
+    {
+      (newer || older) && (
+        <nav class="post-nav" aria-label="前後の記事" data-pagefind-ignore>
+          {neighbors.map(
+            ({ label, post, className }) =>
+              post && (
+                <a class={className} href={`/blog/${post.id}/`}>
+                  <span class="post-nav-label">{label}</span>
+                  <span class="post-nav-title">{post.data.title}</span>
+                </a>
+              ),
+          )}
+        </nav>
+      )
+    }
   </Container>
   <ContentInteractions />
 </Layout>

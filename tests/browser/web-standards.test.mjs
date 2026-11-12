@@ -308,3 +308,25 @@ test("本文画像: 実寸が分かる画像は読み込み前から表示領域
   assert.ok(sized > 0, "寸法つきの本文画像が 1 枚以上ある");
   await page.context().close();
 });
+
+test("記事末尾: 前後の記事へ移動でき、行き先が実在する", async () => {
+  const page = await open("/");
+  const paths = postPaths();
+  let links = 0;
+  for (const pathname of paths) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const hrefs = await page
+      .getByRole("navigation", { name: "前後の記事" })
+      .locator("a")
+      .evaluateAll((anchors) => anchors.map((a) => a.getAttribute("href")));
+    assert.ok(hrefs.length >= 1, `${pathname}: 前後どちらかはある`);
+    for (const href of hrefs) {
+      assert.ok(paths.includes(href), `${pathname}: ${href} が存在しない`);
+      assert.notEqual(href, pathname);
+    }
+    links += hrefs.length;
+  }
+  // 両端の記事は片側だけなので、全体では記事数 x 2 - 2 本になる。
+  assert.equal(links, paths.length * 2 - 2);
+  await page.context().close();
+});

@@ -1,16 +1,22 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
-import { isVisibleEntry } from "@lib/content-sort";
+import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
 import EntryLayout from "@layouts/EntryLayout.astro";
 
+type Post = CollectionEntry<"blog">;
+type Props = { entry: Post; newer?: Post; older?: Post };
+
 export async function getStaticPaths() {
-  return (await getCollection("blog")).filter(isVisibleEntry).map((entry) => ({
+  const posts = sortByDateDesc(
+    (await getCollection("blog")).filter(isVisibleEntry),
+  );
+  return posts.map((entry, index) => ({
     params: { id: entry.id },
-    props: entry,
+    props: { entry, newer: posts[index - 1], older: posts[index + 1] },
   }));
 }
-const entry = Astro.props as CollectionEntry<"blog">;
+const { entry, newer, older } = Astro.props as Props;
 const { Content } = await render(entry);
 ---
 
-<EntryLayout entry={entry}><Content /></EntryLayout>
+<EntryLayout entry={entry} newer={newer} older={older}><Content /></EntryLayout>
