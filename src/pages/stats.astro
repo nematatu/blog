@@ -102,6 +102,7 @@ const monthlyBars = months.map((month, index) => {
 
   return {
     label: month.label,
+    total,
     title: `${month.label}: ${total.toLocaleString("ja-JP")}件`,
     style: `height:${(total / maxTagTotal) * 100}%;background:linear-gradient(to top,${segments.join(",")})`,
   };
@@ -196,6 +197,10 @@ const topPosts = entries
           {
             monthlyBars.map((bar) => (
               <div class="flex h-full flex-1 flex-col justify-end gap-2">
+                <span class="text-center text-xs text-black/50 tabular-nums">
+                  {bar.total.toLocaleString("ja-JP")}
+                  <span class="sr-only">件</span>
+                </span>
                 <div
                   class="w-full overflow-hidden"
                   title={bar.title}
