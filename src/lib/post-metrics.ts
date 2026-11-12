@@ -31,3 +31,24 @@ const dateFormatter = new Intl.DateTimeFormat("en-CA", {
 });
 
 export const dateKey = (date: Date) => dateFormatter.format(date);
+
+// description のない記事で、meta description や構造化データに使う本文の抜粋。
+export const getExcerpt = (value: string, maxLength = 120) => {
+  const text = value
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
+    .replace(/^\s*\[\^[^\]]+]:.*$/gm, " ")
+    .replace(/\[\^[^\]]+]:?/g, "")
+    .replace(/\[([^\]]*)]\([^)]*\)/g, "$1")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/^:{2,}.*$/gm, " ")
+    .replace(/^\s*(?:#{1,6}|>|[-*+]|\d+\.)\s+/gm, "")
+    .replace(/[*_~`]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const chars = [...text];
+  return chars.length > maxLength
+    ? `${chars.slice(0, maxLength).join("").trimEnd()}…`
+    : text;
+};

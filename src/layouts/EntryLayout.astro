@@ -4,6 +4,7 @@ import Container from "@components/Container.astro";
 import OgImage from "@components/OgImage.astro";
 import ContentInteractions from "@components/ContentInteractions.astro";
 import Layout from "@layouts/Layout.astro";
+import { getExcerpt } from "@lib/post-metrics";
 
 type Props = { entry: CollectionEntry<"blog"> | CollectionEntry<"projects"> };
 const { entry } = Astro.props;
@@ -24,9 +25,12 @@ const published = new Intl.DateTimeFormat("ja-JP", {
 
 <Layout
   title={entry.data.title}
-  description={entry.data.description}
+  description={entry.data.description ||
+    getExcerpt(entry.body ?? "") ||
+    undefined}
   image={entry.data.ogImage ??
     `/og-image/${entry.collection}/${entry.id}.png?v=20260614-og-background`}
+  article={isBlog ? { publishedTime: entry.data.date, tags } : undefined}
 >
   <!-- 読了位置。CSS のスクロール駆動アニメーションだけで動く (site.css)。 -->
   <div class="reading-progress" aria-hidden="true"></div>

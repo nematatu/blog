@@ -4,8 +4,13 @@ import Head from "@components/Head.astro";
 import Header from "@components/Header.astro";
 import { SITE } from "@consts";
 
-type Props = { title: string; description?: string; image?: string };
-const { title, description = SITE.DESCRIPTION, image } = Astro.props;
+type Props = {
+  title: string;
+  description?: string;
+  image?: string;
+  article?: { publishedTime: Date; tags?: string[] };
+};
+const { title, description = SITE.DESCRIPTION, image, article } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,6 +20,7 @@ const { title, description = SITE.DESCRIPTION, image } = Astro.props;
       title={`${title} | ${SITE.TITLE}`}
       description={description}
       image={image}
+      article={article && { ...article, headline: title }}
     />
   </head>
   <body>
