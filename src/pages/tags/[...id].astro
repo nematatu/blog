@@ -27,11 +27,11 @@ const { posts } = Astro.props;
 const sortedPosts = sortByPinnedThenDateDesc(posts);
 ---
 
-<Layout title={`Tag: ${id}`} description={`Posts with the tag: ${id}`}>
+<Layout title={`「${id}」の記事`} description={`タグ「${id}」の記事一覧。`}>
   <Container>
     <section data-pagefind-ignore>
       <a class="site-back-link" href="/tags/">← タグ一覧</a>
-      <h1 class="site-page-title">"{id}" の記事</h1>
+      <h1 class="site-page-title">「{id}」の記事</h1>
       <ul class="reference-post-list">
         {
           sortedPosts.map((post, index) => (

@@ -330,3 +330,36 @@ test("記事末尾: 前後の記事へ移動でき、行き先が実在する", 
   assert.equal(links, paths.length * 2 - 2);
   await page.context().close();
 });
+
+test("コードブロック: コピーボタンでコードをクリップボードに入れられる", async () => {
+  const page = await open("/", { viewport: DESKTOP });
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "load" });
+    if (await page.locator(".post-body pre").count()) break;
+  }
+  const frame = page.locator(".code-frame").first();
+  const button = frame.getByRole("button", { name: "コードをコピー" });
+  await frame.scrollIntoViewIfNeeded();
+  await button.focus();
+  assert.equal(
+    await button.evaluate((element) => getComputedStyle(element).opacity),
+    "1",
+    "キーボードフォーカスで見える",
+  );
+  await button.click();
+  const code = await frame.locator("code").evaluate((el) => el.innerText);
+  assert.ok(code.trim().length > 0);
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), code);
+  assert.equal(await button.textContent(), "コピーしました");
+  await page.context().close();
+});
+
+test("記事: 読了時間の目安が表示される", async () => {
+  const page = await open(postPaths()[0]);
+  assert.match(
+    await page.locator(".reference-post-reading-time").textContent(),
+    /約\d+分で読めます/,
+  );
+  await page.context().close();
+});

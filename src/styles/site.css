@@ -285,6 +285,63 @@ main:focus {
   outline: none;
 }
 
+.reference-post-reading-time {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.code-frame {
+  position: relative;
+}
+.code-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #fff;
+  color: #444;
+  font-size: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px #d4d4d8;
+  opacity: 0;
+}
+/* マウスでは枠に乗せたときだけ、キーボードとタッチでは常に操作できるようにする。 */
+.code-frame:hover .code-copy,
+.code-copy:focus-visible {
+  opacity: 1;
+}
+@media (hover: none) {
+  .code-copy {
+    opacity: 1;
+  }
+}
+@media (max-width: 639px) {
+  .code-copy {
+    right: -0.5rem;
+  }
+}
+
+@media print {
+  .skip-link,
+  .reading-progress,
+  .reference-site-header nav,
+  .reference-site-footer,
+  .post-nav,
+  .code-copy,
+  .image-viewer {
+    display: none !important;
+  }
+  .post-body a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    overflow-wrap: anywhere;
+  }
+  .post-body :is(pre, figure, img, table) {
+    break-inside: avoid;
+  }
+}
+
 /* 記事の読了位置。スクロールイベントを使わず、スクロール駆動アニメーションで
    コンポジタ上だけで動かす。未対応ブラウザと動きを減らす設定では表示しない。 */
 .reading-progress {

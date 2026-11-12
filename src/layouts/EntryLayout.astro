@@ -4,7 +4,7 @@ import Container from "@components/Container.astro";
 import OgImage from "@components/OgImage.astro";
 import ContentInteractions from "@components/ContentInteractions.astro";
 import Layout from "@layouts/Layout.astro";
-import { getExcerpt } from "@lib/post-metrics";
+import { getExcerpt, getTextStats } from "@lib/post-metrics";
 
 type Props = {
   entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
@@ -18,6 +18,9 @@ const neighbors = [
   { label: "古い記事 →", post: older, className: "post-nav-older" },
 ];
 const isBlog = entry.collection === "blog";
+const readingMinutes = isBlog
+  ? getTextStats(entry.body ?? "").readingMinutes
+  : undefined;
 const tags = isBlog ? (entry.data.tags ?? []) : [];
 const links =
   entry.collection === "projects"
@@ -62,6 +65,13 @@ const published = new Intl.DateTimeFormat("ja-JP", {
           class="reference-post-date"
           datetime={entry.data.date.toISOString()}>{published}</time
         >
+        {
+          readingMinutes && (
+            <span class="reference-post-reading-time">
+              ・約{readingMinutes}分で読めます
+            </span>
+          )
+        }
         {
           tags.length > 0 && (
             <ul class="reference-tags">
