@@ -12,6 +12,7 @@ Astro 製の個人ブログ。静的サイトとして出力し、Cloudflare Pag
 | `pnpm test:browser` | 実ブラウザでの検証 (事前に `pnpm build` が必要)     |
 | `pnpm check`        | Prettier の整形チェック (pre-commit でも実行される) |
 
+- `pnpm parity` はリファクタリングの前後で出力が変わっていないことを確かめる道具。記事を更新するとフィクスチャとずれるので、作業前に `pnpm build && node scripts/check-parity.mjs --record` で記録し直し、作業後に `pnpm parity` で比べる。出力を意図して変えたときは記録し直してコミットする。
 - 記事 (`src/content/**`) は Prettier で整形し直さない。整形するのは変更したファイルだけにする。
 - Markdown プラグインを変えたのにビルド結果が変わらないときは、`.astro/` と `node_modules/.astro/` のキャッシュを消す。
 

@@ -2,6 +2,7 @@ import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
 import { SITE } from "@consts";
 import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
+import { getExcerpt } from "@lib/post-metrics";
 
 export async function GET(context) {
   const blog = (await getCollection("blog")).filter(isVisibleEntry);
@@ -12,9 +13,14 @@ export async function GET(context) {
     title: SITE.TITLE,
     description: SITE.DESCRIPTION,
     site: context.site,
+    customData: "<language>ja</language>",
     items: items.map((item) => ({
       title: item.data.title,
-      description: item.data.description ?? SITE.DESCRIPTION,
+      description:
+        item.data.description ||
+        getExcerpt(item.body ?? "") ||
+        SITE.DESCRIPTION,
+      categories: item.data.tags,
       pubDate: item.data.date,
       link: `/${item.collection}/${item.id}/`,
     })),
