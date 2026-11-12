@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { imageUrls } from "../scripts/image-sizes.mjs";
+import rehypeImageSize from "../src/lib/markdown/rehype-image-size.js";
 import rehypeImageCaption from "../src/lib/markdown/rehype-image-caption.js";
 import rehypeLcpImage, {
   LCP_CONTENT_BUDGET,
@@ -185,4 +187,37 @@ test("images that are not LCP candidates stay lazy", () => {
   lcp([block(card), block(afterCard)]);
   assert.equal(card.properties.fetchpriority, undefined);
   assert.equal(afterCard.properties.fetchpriority, undefined);
+});
+
+test("known image sizes are embedded so the layout does not shift", () => {
+  const known = image("https://assets.blog.amatatu.com/a.avif");
+  const unknown = image("https://assets.blog.amatatu.com/b.avif");
+  const sized = image("https://assets.blog.amatatu.com/a.avif", { width: 10 });
+  rehypeImageSize({
+    sizes: { "https://assets.blog.amatatu.com/a.avif": [800, 600] },
+  })({ type: "root", children: [block(known), block(unknown), block(sized)] });
+  assert.equal(known.properties.width, 800);
+  assert.equal(known.properties.height, 600);
+  assert.equal(unknown.properties.width, undefined);
+  assert.equal(sized.properties.width, 10);
+  assert.equal(sized.properties.height, undefined);
+});
+
+test("only images on the blog's own asset host are measured", () => {
+  assert.deepEqual(
+    imageUrls(
+      [
+        "![](https://assets.blog.amatatu.com/a.avif)",
+        '![説明](https://assets.blog.amatatu.com/b.jpg "title")',
+        "![](https://example.com/c.png)",
+        "![](/local.png)",
+        "[リンク](https://assets.blog.amatatu.com/d.png)",
+        "![](https://assets.blog.amatatu.com/a.avif)",
+      ].join("\n"),
+    ),
+    [
+      "https://assets.blog.amatatu.com/a.avif",
+      "https://assets.blog.amatatu.com/b.jpg",
+    ],
+  );
 });

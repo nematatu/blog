@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev --open",
-    "prebuild": "node scripts/generate-thumbnails.mjs",
+    "prebuild": "node scripts/generate-thumbnails.mjs && node scripts/fetch-image-sizes.mjs",
     "build": "astro check && astro build && node scripts/check-private-projects.mjs",
     "preview": "astro preview",
     "format": "prettier --write \"src/**/*.{astro,js,jsx,ts,tsx,md,mdx,json,css}\"",

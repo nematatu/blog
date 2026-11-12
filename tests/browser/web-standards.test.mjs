@@ -271,3 +271,40 @@ test("スキップリンク: 最初の Tab で現れ、本文へ移動できる"
   assert.equal(await page.evaluate(() => document.activeElement.id), "main");
   await page.context().close();
 });
+
+test("本文画像: 実寸が分かる画像は読み込み前から表示領域を確保する", async () => {
+  const page = await open("/");
+  // 画像を読み込ませず、読み込み前の状態 (属性だけで領域が決まる状態) を確かめる。
+  await page.route(
+    (url) => url.origin !== site.origin,
+    (route) => route.abort(),
+  );
+  let sized = 0;
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const bad = await page.evaluate(() =>
+      [...document.querySelectorAll(".post-body img[width][height]")]
+        .map((image) => {
+          const rect = image.getBoundingClientRect();
+          const expected = image.width / image.height;
+          return {
+            src: image.getAttribute("src"),
+            ok:
+              rect.height > 0 &&
+              Math.abs(rect.width / rect.height - expected) / expected < 0.02 &&
+              rect.width <=
+                image.parentElement.getBoundingClientRect().width + 1,
+          };
+        })
+        .concat([{ ok: true, count: true }]),
+    );
+    sized += bad.length - 1;
+    assert.deepEqual(
+      bad.filter((image) => !image.ok),
+      [],
+      `${pathname}: 縦横比が崩れているか、はみ出している`,
+    );
+  }
+  assert.ok(sized > 0, "寸法つきの本文画像が 1 枚以上ある");
+  await page.context().close();
+});
