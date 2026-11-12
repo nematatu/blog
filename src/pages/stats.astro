@@ -180,7 +180,7 @@ const topPosts = entries
         >
           <div>
             <div class="text-sm font-semibold text-black/70">執筆文字数</div>
-            <div class="mt-1 text-xs text-black/40">直近6か月の集計結果</div>
+            <div class="mt-1 text-xs text-black/60">直近6か月の集計結果</div>
           </div>
           <div class="text-2xl font-semibold text-black sm:text-right">
             {periodCharTotal.toLocaleString("ja-JP")} 字
@@ -197,7 +197,7 @@ const topPosts = entries
           {
             monthlyBars.map((bar) => (
               <div class="flex h-full flex-1 flex-col justify-end gap-2">
-                <span class="text-center text-xs text-black/50 tabular-nums">
+                <span class="text-center text-xs text-black/60 tabular-nums">
                   {bar.total.toLocaleString("ja-JP")}
                   <span class="sr-only">件</span>
                 </span>
@@ -206,7 +206,7 @@ const topPosts = entries
                   title={bar.title}
                   style={bar.style}
                 />
-                <span class="text-center text-xs text-black/50">
+                <span class="text-center text-xs text-black/60">
                   {bar.label}
                 </span>
               </div>
@@ -236,7 +236,7 @@ const topPosts = entries
                   <div class="truncate font-semibold text-black">
                     {post.title}
                   </div>
-                  <div class="mt-1 text-xs text-black/40">
+                  <div class="mt-1 text-xs text-black/60">
                     {post.date}に公開
                   </div>
                 </div>
