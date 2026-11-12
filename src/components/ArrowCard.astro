@@ -3,8 +3,12 @@ import type { CollectionEntry } from "astro:content";
 import OgImage from "@components/OgImage.astro";
 import { dateKey } from "@lib/post-metrics";
 
-type Props = { entry: CollectionEntry<"blog"> | CollectionEntry<"projects"> };
-const { entry } = Astro.props;
+type Props = {
+  entry: CollectionEntry<"blog"> | CollectionEntry<"projects">;
+  // 初期ビューポートに入るカードは true にして、サムネイルを遅延読み込みから外す。
+  eager?: boolean;
+};
+const { entry, eager = false } = Astro.props;
 const url = `/${entry.collection}/${entry.id}/`;
 const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
 ---
@@ -21,7 +25,7 @@ const tags = entry.collection === "blog" ? (entry.data.tags ?? []) : [];
         src={entry.data.ogImage}
         sizes="(min-width: 640px) 9rem, 6rem"
         class="reference-post-card-image"
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
       />
     )
   }

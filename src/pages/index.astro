@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Container from "@components/Container.astro";
 import ArrowCard from "@components/ArrowCard.astro";
-import { HOME } from "@consts";
+import { EAGER_CARD_COUNT, HOME } from "@consts";
 import { isVisibleEntry, sortByPinnedThenDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
 
@@ -15,9 +15,9 @@ const entries = sortByPinnedThenDateDesc(
   <Container>
     <ul class="reference-post-list">
       {
-        entries.map((entry) => (
+        entries.map((entry, index) => (
           <li>
-            <ArrowCard entry={entry} />
+            <ArrowCard entry={entry} eager={index < EAGER_CARD_COUNT} />
           </li>
         ))
       }

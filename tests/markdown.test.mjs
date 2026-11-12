@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import rehypeImageCaption from "../src/lib/markdown/rehype-image-caption.js";
+import rehypeLcpImage, {
+  LCP_CONTENT_BUDGET,
+} from "../src/lib/markdown/rehype-lcp-image.js";
 import rehypeExternalLinks from "../src/lib/markdown/rehype-external-links.js";
 import remarkDirectiveWidgets from "../src/lib/markdown/remark-directive-widgets.js";
 import remarkSocialEmbeds from "../src/lib/markdown/remark-social-embeds.js";
@@ -120,4 +123,66 @@ test("Markdown widgets size images wrapped in an image directive", () => {
   ]);
   assert.equal(medium.data.hProperties.dataImageSize, "medium");
   assert.equal(small.children[0].children[0].url, "/photo.png");
+});
+
+const image = (src, properties = {}) => ({
+  type: "element",
+  tagName: "img",
+  properties: { src, ...properties },
+  children: [],
+});
+const block = (...children) => ({
+  type: "element",
+  tagName: "p",
+  properties: {},
+  children,
+});
+const lcp = (children, frontmatter = {}) => {
+  const tree = { type: "root", children };
+  rehypeLcpImage()(tree, { data: { astro: { frontmatter } } });
+  rehypeImageCaption()(tree);
+  return tree;
+};
+
+test("the lead image of a post without a hero is loaded with high priority", () => {
+  const lead = image("/lead.png");
+  const later = image("/later.png");
+  lcp([block(text("短い導入")), block(lead), block(later)]);
+  assert.equal(lead.properties.loading, "eager");
+  assert.equal(lead.properties.fetchpriority, "high");
+  assert.equal(later.properties.loading, "lazy");
+  assert.equal(later.properties.fetchpriority, undefined);
+});
+
+test("images that are not LCP candidates stay lazy", () => {
+  const withHero = image("/body.png");
+  lcp([block(withHero)], { ogImage: "/ogp/hero.png" });
+  assert.equal(withHero.properties.loading, "lazy");
+  assert.equal(withHero.properties.fetchpriority, undefined);
+
+  const belowFold = image("/far.png");
+  lcp([block(text("あ".repeat(LCP_CONTENT_BUDGET + 1))), block(belowFold)]);
+  assert.equal(belowFold.properties.loading, "lazy");
+  assert.equal(belowFold.properties.fetchpriority, undefined);
+
+  const afterEmbed = image("/embed.png");
+  lcp([
+    { type: "raw", value: '<blockquote class="twitter-tweet"></blockquote>' },
+    block(afterEmbed),
+  ]);
+  assert.equal(afterEmbed.properties.loading, "lazy");
+  assert.equal(afterEmbed.properties.fetchpriority, undefined);
+
+  const afterTable = image("/table.png");
+  lcp([
+    { type: "element", tagName: "table", properties: {}, children: [] },
+    block(afterTable),
+  ]);
+  assert.equal(afterTable.properties.fetchpriority, undefined);
+
+  const card = image("/card.png", { loading: "lazy" });
+  const afterCard = image("/after.png");
+  lcp([block(card), block(afterCard)]);
+  assert.equal(card.properties.fetchpriority, undefined);
+  assert.equal(afterCard.properties.fetchpriority, undefined);
 });
