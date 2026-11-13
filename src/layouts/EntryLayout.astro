@@ -4,6 +4,7 @@ import Container from "@components/Container.astro";
 import OgImage from "@components/OgImage.astro";
 import ContentInteractions from "@components/ContentInteractions.astro";
 import Layout from "@layouts/Layout.astro";
+import { socialImage } from "@lib/og-image";
 import { getExcerpt, getTextStats } from "@lib/post-metrics";
 
 type Props = {
@@ -47,7 +48,7 @@ const published = new Intl.DateTimeFormat("ja-JP", {
   description={entry.data.description ||
     getExcerpt(entry.body ?? "") ||
     undefined}
-  image={entry.data.ogImage ??
+  image={(entry.data.ogImage && socialImage(entry.data.ogImage)) ??
     `/og-image/${entry.collection}/${entry.id}.png?v=20260614-og-background`}
   article={isBlog ? { publishedTime: entry.data.date, tags } : undefined}
 >

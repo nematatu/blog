@@ -1,6 +1,7 @@
 ---
 import path from "node:path";
 import sharp from "sharp";
+import { ogImageName } from "@lib/og-image";
 
 type Props = {
   src: string;
@@ -18,7 +19,7 @@ const {
   loading,
   fetchpriority,
 } = Astro.props;
-const name = src.match(/^\/ogp\/([^/]+)\.(?:avif|jpe?g|png|webp)$/i)?.[1];
+const name = ogImageName(src);
 const dimensions = name
   ? await sharp(path.resolve("public", src.slice(1))).metadata()
   : undefined;

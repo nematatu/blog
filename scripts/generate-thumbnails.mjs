@@ -27,10 +27,14 @@ async function imageFiles(dir, prefix = "") {
 const sources = await imageFiles(sourceDir);
 const thumbnailName = (source, width) =>
   path.join(path.dirname(source), `${path.parse(source).name}-${width}.webp`);
+// SNS のカード (og:image) 用。元画像は数 MB〜24MB あり、X (5MB) などの上限を超える。
+const socialName = (source) =>
+  path.join(path.dirname(source), `${path.parse(source).name}-social.jpg`);
 const expected = new Set(
-  sources.flatMap((source) =>
-    widths.map((width) => thumbnailName(source, width)),
-  ),
+  sources.flatMap((source) => [
+    ...widths.map((width) => thumbnailName(source, width)),
+    socialName(source),
+  ]),
 );
 const existing = await imageFiles(outputDir).catch(() => []);
 
@@ -70,5 +74,18 @@ for (const source of sources) {
       .resize(width, undefined, { fit: "inside", withoutEnlargement: true })
       .webp({ quality: 78 })
       .toFile(outputPath);
+  }
+
+  const socialPath = path.join(outputDir, socialName(source));
+  const socialFresh = await stat(socialPath)
+    .then((outputStat) => outputStat.mtimeMs >= sourceStat.mtimeMs)
+    .catch(() => false);
+  if (!socialFresh) {
+    await mkdir(path.dirname(socialPath), { recursive: true });
+    await sharp(sourcePath)
+      .resize(1200, undefined, { fit: "inside", withoutEnlargement: true })
+      .flatten({ background: "#ffffff" })
+      .jpeg({ quality: 82, mozjpeg: true })
+      .toFile(socialPath);
   }
 }
