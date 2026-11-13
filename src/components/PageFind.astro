@@ -9,6 +9,10 @@
     showImages: false,
     excerptLength: 15,
   });
+  // 検索欄には見えるラベルがないので、支援技術向けに名前を付ける。
+  document
+    .querySelector("#search input")
+    ?.setAttribute("aria-label", "記事を検索");
 </script>
 
 <style is:global>

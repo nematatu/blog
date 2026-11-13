@@ -2,7 +2,8 @@
 // 静的解析では分からない「実際にどう読み込まれ、どう動くか」を確認するためのテスト。
 // 事前に `pnpm build` が必要。`pnpm test:browser` で実行する。
 import assert from "node:assert/strict";
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { after, before, test } from "node:test";
 import { chromium } from "playwright";
@@ -402,5 +403,49 @@ test("目次: 開くと見出しへ移動でき、リンク先が本文に実在
     }
   }
   assert.ok(checked > 0, "目次のある記事が 1 つ以上ある");
+  await page.context().close();
+});
+
+test("アクセシビリティ: 全ページで axe の違反がない", async () => {
+  const axe = readFileSync(
+    createRequire(import.meta.url).resolve("axe-core/axe.min.js"),
+    "utf8",
+  );
+  // 見出しレベルの飛びは記事の書き方によるもので、サイトの実装では直せない。
+  const CONTENT_RULES = ["heading-order"];
+  const page = await open("/");
+  const pages = [
+    "/",
+    "/tags/",
+    "/stats/",
+    "/search/",
+    "/404.html",
+    ...postPaths(),
+  ];
+  const tag = await page
+    .goto(site.origin + "/tags/")
+    .then(() => page.locator(".tag-list a").first().getAttribute("href"));
+  for (const pathname of [...pages, tag]) {
+    await page.goto(site.origin + pathname, { waitUntil: "load" });
+    await page.addScriptTag({ content: axe });
+    const violations = await page.evaluate(
+      (disabled) =>
+        globalThis.axe
+          .run(document, {
+            resultTypes: ["violations"],
+            rules: Object.fromEntries(
+              disabled.map((rule) => [rule, { enabled: false }]),
+            ),
+          })
+          .then((result) =>
+            result.violations.map(
+              (violation) =>
+                `${violation.id}: ${violation.nodes[0].html.slice(0, 120)}`,
+            ),
+          ),
+      CONTENT_RULES,
+    );
+    assert.deepEqual(violations, [], pathname);
+  }
   await page.context().close();
 });

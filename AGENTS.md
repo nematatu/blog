@@ -48,5 +48,6 @@ UI を作る・直すときは次の順で判断する。`modern-web-guidance` �
 
 HTML/CSS/クライアント JS を変えたら `pnpm build && pnpm test:browser` を通す。`tests/browser/` はビルド済みの `dist/` を Chromium で開き、レンダリング後の DOM と計算済みスタイルを確認する。ソースを読むだけでは分からない不具合 (圧縮後の CSS が効かない、画面外の画像が高優先度になる、など) をここで拾う。
 
+- 全ページを axe-core で検査している。違反が出たら、ルールを無効にせず実装を直す。
 - 挙動を足したら、対応する検証を `tests/browser/web-standards.test.mjs` に足す。
 - ブラウザが未導入なら `pnpm exec playwright install chromium`。

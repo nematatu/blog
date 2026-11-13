@@ -6,6 +6,8 @@ for (const image of document.querySelectorAll(selector)) {
   image.tabIndex = 0;
   image.setAttribute("role", "button");
   image.setAttribute("aria-label", `${image.alt || "画像"}を拡大表示`);
+  // alt="" のままだと「装飾」と「操作できるボタン」が矛盾するので、名前を持たせる。
+  if (!image.alt) image.alt = "画像";
 }
 
 function openImage(image) {

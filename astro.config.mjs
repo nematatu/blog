@@ -9,6 +9,7 @@ import rehypeCodeFilename from "./src/lib/markdown/rehype-code-filename.js";
 import rehypeImageCaption from "./src/lib/markdown/rehype-image-caption.js";
 import rehypeImageSize from "./src/lib/markdown/rehype-image-size.js";
 import rehypeLcpImage from "./src/lib/markdown/rehype-lcp-image.js";
+import rehypeScrollableTable from "./src/lib/markdown/rehype-scrollable-table.js";
 import remarkCodeLanguage from "./src/lib/markdown/remark-code-language.js";
 import remarkDirectiveWidgets from "./src/lib/markdown/remark-directive-widgets.js";
 import remarkSocialEmbeds from "./src/lib/markdown/remark-social-embeds.js";
@@ -52,6 +53,7 @@ export default defineConfig({
       rehypeImageSize,
       rehypeLcpImage,
       rehypeImageCaption,
+      rehypeScrollableTable,
       [rehypeExternalLinks, { site }],
     ],
   },
