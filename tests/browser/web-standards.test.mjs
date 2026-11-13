@@ -449,3 +449,16 @@ test("アクセシビリティ: 全ページで axe の違反がない", async (
   }
   await page.context().close();
 });
+
+test("検索: 記事タイトルの語で検索すると、その記事が結果に出る", async () => {
+  const page = await open("/search/");
+  const input = page.getByRole("textbox", { name: "記事を検索" });
+  await input.fill("Drizzle");
+  const result = page.locator(".pagefind-ui__result-link").first();
+  await result.waitFor({ timeout: 15_000 });
+  assert.match(
+    await result.getAttribute("href"),
+    /\/blog\/develop\/drizzle-npm\//,
+  );
+  await page.context().close();
+});
