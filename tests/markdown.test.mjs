@@ -157,10 +157,18 @@ test("the lead image of a post without a hero is loaded with high priority", () 
 });
 
 test("images that are not LCP candidates stay lazy", () => {
-  const withHero = image("/body.png");
-  lcp([block(withHero)], { ogImage: "/ogp/hero.png" });
-  assert.equal(withHero.properties.loading, "lazy");
-  assert.equal(withHero.properties.fetchpriority, undefined);
+  const farBelowHero = image("/body.png");
+  lcp([block(text("あ".repeat(100))), block(farBelowHero)], {
+    ogImage: "/ogp/hero.png",
+  });
+  assert.equal(farBelowHero.properties.loading, "lazy");
+  assert.equal(farBelowHero.properties.fetchpriority, undefined);
+
+  // ヒーロー直下の画像は遅延させないが、高優先度はヒーローに譲る。
+  const rightBelowHero = image("/body.png");
+  lcp([block(rightBelowHero)], { ogImage: "/ogp/hero.png" });
+  assert.equal(rightBelowHero.properties.loading, "eager");
+  assert.equal(rightBelowHero.properties.fetchpriority, undefined);
 
   const belowFold = image("/far.png");
   lcp([block(text("あ".repeat(LCP_CONTENT_BUDGET + 1))), block(belowFold)]);

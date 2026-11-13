@@ -124,7 +124,13 @@ test("記事: ヒーロー画像が LCP 候補として優先され、本文の�
     checked++;
     assert.equal(hero.loading, "eager", pathname);
     assert.equal(hero.fetchpriority, "high", pathname);
-    for (const image of all.filter((image) => image.inPostBody)) {
+    // ヒーロー直下の 1 枚目だけは、初期ビューポートに入るなら遅延させない。
+    const [first, ...rest] = all.filter((image) => image.inPostBody);
+    if (first?.loading === "eager") {
+      assert.ok(first.inViewport, `${pathname}: 画面外の画像が eager`);
+      assert.equal(first.fetchpriority, null, pathname);
+    }
+    for (const image of rest) {
       assert.equal(image.loading, "lazy", `${pathname}: ${image.src}`);
     }
   }
