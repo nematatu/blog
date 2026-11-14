@@ -231,6 +231,17 @@
     margin-bottom: 2rem;
     border-radius: 4px;
   }
+  .post-related {
+    margin-top: 2.5rem;
+  }
+  .post-related > h2 {
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .post-related .reference-post-card h2 {
+    font-size: 1rem;
+  }
   .post-toc {
     margin-bottom: 1.5rem;
     padding: 0.75rem 1rem;
@@ -367,6 +378,7 @@ main:focus {
   .reference-site-header nav,
   .reference-site-footer,
   .post-nav,
+  .post-related,
   .post-toc,
   .code-copy,
   .image-viewer {

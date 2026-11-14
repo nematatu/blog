@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Container from "@components/Container.astro";
 import OgImage from "@components/OgImage.astro";
+import ArrowCard from "@components/ArrowCard.astro";
 import ContentInteractions from "@components/ContentInteractions.astro";
 import Layout from "@layouts/Layout.astro";
 import { socialImage } from "@lib/og-image";
@@ -13,8 +14,10 @@ type Props = {
   newer?: CollectionEntry<"blog">;
   older?: CollectionEntry<"blog">;
   headings?: { depth: number; slug: string; text: string }[];
+  // 同じタグの記事。前後リンクと重複しないものを渡す。
+  related?: CollectionEntry<"blog">[];
 };
-const { entry, newer, older, headings = [] } = Astro.props;
+const { entry, newer, older, headings = [], related = [] } = Astro.props;
 // 見出しが少ない記事では目次を出さない。
 const MIN_TOC_HEADINGS = 3;
 const tocHeadings = headings.filter(
@@ -153,6 +156,24 @@ const published = new Intl.DateTimeFormat("ja-JP", {
               ),
           )}
         </nav>
+      )
+    }
+    {
+      related.length > 0 && (
+        <section
+          class="post-related"
+          aria-labelledby="post-related-title"
+          data-pagefind-ignore
+        >
+          <h2 id="post-related-title">同じタグの記事</h2>
+          <ul class="reference-post-list">
+            {related.map((post) => (
+              <li>
+                <ArrowCard entry={post} />
+              </li>
+            ))}
+          </ul>
+        </section>
       )
     }
   </Container>

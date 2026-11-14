@@ -502,3 +502,35 @@ test("404: 検索と最近の記事へ移動できる", async () => {
   assert.ok(posts > 0 && posts <= 5, `最近の記事が ${posts} 件`);
   await page.context().close();
 });
+
+test("記事末尾: 同じタグの記事が、前後リンクと重ならずに最大 3 件出る", async () => {
+  const page = await open("/");
+  let checked = 0;
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    const tags = await page
+      .locator(".reference-post-header .reference-tags a")
+      .allTextContents();
+    const related = await page
+      .locator(".post-related a.reference-post-card")
+      .evaluateAll((cards) => cards.map((a) => a.getAttribute("href")));
+    if (tags.length === 0) {
+      assert.deepEqual(related, [], pathname);
+      continue;
+    }
+    checked++;
+    assert.ok(related.length <= 3, pathname);
+    const neighbors = await page
+      .locator(".post-nav a")
+      .evaluateAll((links) => links.map((a) => a.getAttribute("href")));
+    for (const href of related) {
+      assert.ok(
+        !neighbors.includes(href),
+        `${pathname}: ${href} が前後リンクと重複`,
+      );
+      assert.notEqual(href, pathname);
+    }
+  }
+  assert.ok(checked > 0);
+  await page.context().close();
+});
