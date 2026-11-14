@@ -3,6 +3,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import pagefind from "astro-pagefind";
+import { readPostDates } from "./scripts/post-dates.mjs";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import rehypeCodeFilename from "./src/lib/markdown/rehype-code-filename.js";
@@ -16,6 +17,7 @@ import remarkSocialEmbeds from "./src/lib/markdown/remark-social-embeds.js";
 import rehypeExternalLinks from "./src/lib/markdown/rehype-external-links.js";
 
 const site = "https://blog.amatatu.com";
+const postDates = readPostDates();
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,7 +28,14 @@ export default defineConfig({
     defaultStrategy: "hover",
   },
   integrations: [
-    sitemap(),
+    sitemap({
+      // 検索ページは結果を JS で描くだけで、検索エンジンに載せる内容がない。
+      filter: (page) => new URL(page).pathname !== "/search/",
+      serialize(item) {
+        const date = postDates.get(new URL(item.url).pathname);
+        return date ? { ...item, lastmod: date.toISOString() } : item;
+      },
+    }),
     mdx(),
     pagefind({ indexConfig: { rootSelector: "[data-pagefind-body]" } }),
   ],
