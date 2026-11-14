@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { imageUrls } from "../scripts/image-sizes.mjs";
 import rehypeImageSize from "../src/lib/markdown/rehype-image-size.js";
+import rehypeHeadingAnchors from "../src/lib/markdown/rehype-heading-anchors.js";
 import rehypeImageCaption from "../src/lib/markdown/rehype-image-caption.js";
 import rehypeLcpImage, {
   LCP_CONTENT_BUDGET,
@@ -228,4 +229,23 @@ test("only images on the blog's own asset host are measured", () => {
       "https://assets.blog.amatatu.com/b.jpg",
     ],
   );
+});
+
+test("headings get a link to themselves without changing their text", () => {
+  const heading = (tagName, id, value) => ({
+    type: "element",
+    tagName,
+    properties: id ? { id } : {},
+    children: [text(value)],
+  });
+  const h2 = heading("h2", "結論", "結論");
+  const h1 = heading("h1", "title", "タイトル");
+  const noId = heading("h3", undefined, "id なし");
+  rehypeHeadingAnchors()({ type: "root", children: [h1, h2, noId] });
+  assert.equal(h1.children.length, 1);
+  assert.equal(noId.children.length, 1);
+  const anchor = h2.children[1];
+  assert.equal(anchor.properties.href, "#結論");
+  assert.equal(anchor.properties.ariaLabel, "見出し「結論」へのリンク");
+  assert.deepEqual(anchor.children, []);
 });

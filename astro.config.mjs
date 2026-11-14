@@ -1,3 +1,4 @@
+import { rehypeHeadingIds } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
@@ -7,6 +8,7 @@ import { readPostDates } from "./scripts/post-dates.mjs";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import rehypeCodeFilename from "./src/lib/markdown/rehype-code-filename.js";
+import rehypeHeadingAnchors from "./src/lib/markdown/rehype-heading-anchors.js";
 import rehypeImageCaption from "./src/lib/markdown/rehype-image-caption.js";
 import rehypeImageSize from "./src/lib/markdown/rehype-image-size.js";
 import rehypeLcpImage from "./src/lib/markdown/rehype-lcp-image.js";
@@ -58,6 +60,9 @@ export default defineConfig({
       remarkSocialEmbeds,
     ],
     rehypePlugins: [
+      // 見出しへのリンクを付けるため、id を先に振る (Astro は既定では最後に振る)。
+      rehypeHeadingIds,
+      rehypeHeadingAnchors,
       rehypeCodeFilename,
       rehypeImageSize,
       rehypeLcpImage,

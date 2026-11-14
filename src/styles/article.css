@@ -36,6 +36,27 @@
     font-size: 1rem;
   }
 
+  .post-body .heading-anchor {
+    margin-inline-start: 0.4em;
+    color: var(--muted);
+    font-weight: 400;
+    text-decoration: none;
+    opacity: 0;
+  }
+  .post-body .heading-anchor::after {
+    content: "#";
+  }
+  /* マウスでは見出しに乗せたとき、キーボードとタッチでは常に見せる。 */
+  .post-body :is(h2, h3, h4):hover .heading-anchor,
+  .post-body .heading-anchor:focus-visible {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .post-body .heading-anchor {
+      opacity: 1;
+    }
+  }
+
   .post-body a {
     color: var(--link);
     text-decoration: none;
@@ -43,7 +64,7 @@
 
   /* ダークモードでは本文とリンクの明るさが近く、色だけでは見分けにくいので下線を引く。 */
   @media (prefers-color-scheme: dark) {
-    .post-body a {
+    .post-body a:not(.heading-anchor) {
       text-decoration: underline;
       text-decoration-thickness: 1px;
       text-underline-offset: 0.2em;

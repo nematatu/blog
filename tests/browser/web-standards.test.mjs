@@ -534,3 +534,26 @@ test("記事末尾: 同じタグの記事が、前後リンクと重ならずに
   assert.ok(checked > 0);
   await page.context().close();
 });
+
+test("見出しリンク: キーボードで見え、その見出しへ移動できる", async () => {
+  const page = await open("/");
+  for (const pathname of postPaths()) {
+    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
+    if (await page.locator(".post-body .heading-anchor").count()) break;
+  }
+  const anchor = page.locator(".post-body .heading-anchor").first();
+  const heading = anchor.locator("..");
+  assert.equal(
+    await heading.evaluate((h) => h.firstChild.textContent.trim()),
+    await heading.evaluate((h) => h.textContent.trim()),
+    "見出しの文字列に # が混ざらない",
+  );
+  await anchor.focus();
+  assert.equal(await anchor.evaluate((a) => getComputedStyle(a).opacity), "1");
+  await anchor.press("Enter");
+  assert.equal(
+    await page.evaluate(() => decodeURIComponent(location.hash.slice(1))),
+    await heading.getAttribute("id"),
+  );
+  await page.context().close();
+});
