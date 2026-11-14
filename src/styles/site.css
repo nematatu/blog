@@ -68,6 +68,18 @@
   a:hover {
     text-decoration: underline;
   }
+  /* 文中のリンクは、ダークモードでは色だけで見分けにくいので下線を引く。 */
+  @media (prefers-color-scheme: dark) {
+    main p a {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
+    }
+  }
+  nav a[aria-current] {
+    color: var(--fg);
+    font-weight: 700;
+  }
   .site-page-title {
     margin-bottom: 1.5rem;
     font-size: 1.5rem;

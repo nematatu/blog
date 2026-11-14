@@ -1,16 +1,37 @@
 ---
+import { getCollection } from "astro:content";
+import ArrowCard from "@components/ArrowCard.astro";
 import Container from "@components/Container.astro";
 import { SITE } from "@consts";
+import { isVisibleEntry, sortByDateDesc } from "@lib/content-sort";
 import Layout from "@layouts/Layout.astro";
+
+// 行き止まりにしないよう、検索と最近の記事への導線を置く。
+const RECENT_POST_COUNT = 5;
+const recent = sortByDateDesc(
+  (await getCollection("blog")).filter(isVisibleEntry),
+).slice(0, RECENT_POST_COUNT);
 ---
 
-<Layout title="404" description={SITE.DESCRIPTION}>
+<Layout title="ページが見つかりません" description={SITE.DESCRIPTION}>
   <Container>
-    <div class="site-card mt-16 grid place-items-center gap-3">
-      <h1 class="site-page-title">404: Page not found</h1>
-      <span>
-        <a href="/">記事一覧へ戻る</a>
-      </span>
-    </div>
+    <section data-pagefind-ignore>
+      <h1 class="site-page-title">ページが見つかりません</h1>
+      <p>
+        URL が変わったか、記事が削除された可能性があります。
+        <a href="/search/">記事を検索する</a>か、<a href="/">記事一覧</a
+        >から探してください。
+      </p>
+      <h2 class="mt-8 text-sm font-semibold text-black/60">最近の記事</h2>
+      <ul class="reference-post-list">
+        {
+          recent.map((entry) => (
+            <li>
+              <ArrowCard entry={entry} />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
   </Container>
 </Layout>

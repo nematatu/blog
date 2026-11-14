@@ -2,6 +2,10 @@
 import Container from "@components/Container.astro";
 import { SITE, PAGES } from "@consts";
 const isHome = Astro.url.pathname === "/";
+// 今いるページ (タグ別ページならタグ一覧) のリンクに aria-current を付ける。
+const currentPage = PAGES.find((page) =>
+  Astro.url.pathname.startsWith(`/${page}/`),
+);
 ---
 
 <header class:list={["reference-site-header", isHome && "home-header"]}>
@@ -13,7 +17,18 @@ const isHome = Astro.url.pathname === "/";
       !isHome && (
         <nav aria-label="サイト内リンク">
           {PAGES.map((page) => (
-            <a href={`/${page}/`}>{page}</a>
+            <a
+              href={`/${page}/`}
+              aria-current={
+                page === currentPage
+                  ? Astro.url.pathname === `/${page}/`
+                    ? "page"
+                    : "location"
+                  : undefined
+              }
+            >
+              {page}
+            </a>
           ))}
         </nav>
       )

@@ -470,3 +470,35 @@ test("検索: 記事タイトルの語で検索すると、その記事が結果
   );
   await page.context().close();
 });
+
+test("ナビゲーション: 今いるページのリンクに aria-current が付く", async () => {
+  const page = await open("/tags/");
+  const current = () =>
+    page
+      .locator("header nav a[aria-current]")
+      .evaluateAll((links) =>
+        links.map((a) => [
+          a.textContent.trim(),
+          a.getAttribute("aria-current"),
+        ]),
+      );
+  assert.deepEqual(await current(), [["tags", "page"]]);
+  await page.locator(".tag-list a").first().click();
+  assert.deepEqual(await current(), [["tags", "location"]]);
+  await page.goto(site.origin + postPaths()[0]);
+  assert.deepEqual(await current(), []);
+  await page.context().close();
+});
+
+test("404: 検索と最近の記事へ移動できる", async () => {
+  const page = await open("/404.html");
+  assert.equal(
+    await page
+      .getByRole("link", { name: "記事を検索する" })
+      .getAttribute("href"),
+    "/search/",
+  );
+  const posts = await page.locator(".reference-post-card").count();
+  assert.ok(posts > 0 && posts <= 5, `最近の記事が ${posts} 件`);
+  await page.context().close();
+});
