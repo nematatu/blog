@@ -557,3 +557,27 @@ test("見出しリンク: キーボードで見え、その見出しへ移動で
   );
   await page.context().close();
 });
+
+test("RSS: 全記事の本文がサイト外でも成り立つ形で載っている", async () => {
+  const page = await open("/");
+  const xml = await (await page.request.get(`${site.origin}/rss.xml`)).text();
+  // ブラウザの XML パーサーで本文を取り出す (エスケープの形式に依存しない)。
+  const contents = await page.evaluate(
+    (source) =>
+      [
+        ...new DOMParser()
+          .parseFromString(source, "application/xml")
+          .getElementsByTagNameNS(
+            "http://purl.org/rss/1.0/modules/content/",
+            "encoded",
+          ),
+      ].map((element) => element.textContent),
+    xml,
+  );
+  assert.equal(contents.length, postPaths().length, "全記事に本文がある");
+  const all = contents.join("\n");
+  assert.doesNotMatch(all, /<script\b/, "スクリプトを含まない");
+  assert.doesNotMatch(all, /\s(?:href|src)="\/(?!\/)/, "相対 URL を含まない");
+  assert.doesNotMatch(all, /heading-anchor/, "見出しリンクを含まない");
+  await page.context().close();
+});
