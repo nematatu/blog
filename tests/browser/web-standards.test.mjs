@@ -412,49 +412,51 @@ test("目次: 開くと見出しへ移動でき、リンク先が本文に実在
   await page.context().close();
 });
 
-test("アクセシビリティ: 全ページで axe の違反がない", async () => {
-  const axe = readFileSync(
-    createRequire(import.meta.url).resolve("axe-core/axe.min.js"),
-    "utf8",
-  );
-  // 見出しレベルの飛びは記事の書き方によるもので、サイトの実装では直せない。
-  const CONTENT_RULES = ["heading-order"];
-  const page = await open("/");
-  const pages = [
-    "/",
-    "/tags/",
-    "/stats/",
-    "/search/",
-    "/404.html",
-    ...postPaths(),
-  ];
-  const tag = await page
-    .goto(site.origin + "/tags/")
-    .then(() => page.locator(".tag-list a").first().getAttribute("href"));
-  for (const pathname of [...pages, tag]) {
-    await page.goto(site.origin + pathname, { waitUntil: "load" });
-    await page.addScriptTag({ content: axe });
-    const violations = await page.evaluate(
-      (disabled) =>
-        globalThis.axe
-          .run(document, {
-            resultTypes: ["violations"],
-            rules: Object.fromEntries(
-              disabled.map((rule) => [rule, { enabled: false }]),
-            ),
-          })
-          .then((result) =>
-            result.violations.map(
-              (violation) =>
-                `${violation.id}: ${violation.nodes[0].html.slice(0, 120)}`,
-            ),
-          ),
-      CONTENT_RULES,
+for (const colorScheme of ["light", "dark"]) {
+  test(`アクセシビリティ: 全ページで axe の違反がない (${colorScheme})`, async () => {
+    const axe = readFileSync(
+      createRequire(import.meta.url).resolve("axe-core/axe.min.js"),
+      "utf8",
     );
-    assert.deepEqual(violations, [], pathname);
-  }
-  await page.context().close();
-});
+    // 見出しレベルの飛びは記事の書き方によるもので、サイトの実装では直せない。
+    const CONTENT_RULES = ["heading-order"];
+    const page = await open("/", { colorScheme });
+    const pages = [
+      "/",
+      "/tags/",
+      "/stats/",
+      "/search/",
+      "/404.html",
+      ...postPaths(),
+    ];
+    const tag = await page
+      .goto(site.origin + "/tags/")
+      .then(() => page.locator(".tag-list a").first().getAttribute("href"));
+    for (const pathname of [...pages, tag]) {
+      await page.goto(site.origin + pathname, { waitUntil: "load" });
+      await page.addScriptTag({ content: axe });
+      const violations = await page.evaluate(
+        (disabled) =>
+          globalThis.axe
+            .run(document, {
+              resultTypes: ["violations"],
+              rules: Object.fromEntries(
+                disabled.map((rule) => [rule, { enabled: false }]),
+              ),
+            })
+            .then((result) =>
+              result.violations.map(
+                (violation) =>
+                  `${violation.id}: ${violation.nodes[0].html.slice(0, 120)}`,
+              ),
+            ),
+        CONTENT_RULES,
+      );
+      assert.deepEqual(violations, [], pathname);
+    }
+    await page.context().close();
+  });
+}
 
 test("検索: 記事タイトルの語で検索すると、その記事が結果に出る", async () => {
   const page = await open("/search/");

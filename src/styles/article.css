@@ -37,8 +37,17 @@
   }
 
   .post-body a {
-    color: #2563eb;
+    color: var(--link);
     text-decoration: none;
+  }
+
+  /* ダークモードでは本文とリンクの明るさが近く、色だけでは見分けにくいので下線を引く。 */
+  @media (prefers-color-scheme: dark) {
+    .post-body a {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
+    }
   }
 
   .post-body :is(ul, ol) {
@@ -61,7 +70,7 @@
   .post-body :not(pre) > code {
     padding: 0.2em 0.4em;
     border-radius: 4px;
-    background: #f4f4f5;
+    background: var(--surface);
     font-size: 0.85em;
     overflow-wrap: anywhere;
   }
@@ -88,15 +97,15 @@
   .post-body blockquote {
     margin-block: 1.5rem;
     padding-inline-start: 1rem;
-    border-inline-start: 4px solid #2563eb;
-    color: #666;
+    border-inline-start: 4px solid var(--link);
+    color: var(--muted);
     font-style: italic;
   }
 
   .post-body hr {
     margin-block: 2rem;
     border: 0;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid var(--border);
   }
 
   .post-body table {
@@ -109,13 +118,13 @@
 
   .post-body :is(th, td) {
     padding: 0.5rem;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border);
     text-align: start;
     white-space: nowrap;
   }
 
   .post-body th {
-    background: #f4f4f5;
+    background: var(--surface);
     font-weight: 600;
   }
 

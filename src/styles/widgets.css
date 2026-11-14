@@ -24,3 +24,13 @@
     text-decoration: none !important;
   }
 }
+
+/* GitHub カードは bg-white 固定なので、ダークモードでは背景に合わせる。 */
+@media (prefers-color-scheme: dark) {
+  article .github-card__link {
+    background: var(--surface);
+  }
+  article .github-card__thumb {
+    background: var(--border);
+  }
+}

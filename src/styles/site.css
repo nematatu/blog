@@ -4,8 +4,8 @@
     scroll-padding-top: 1rem;
   }
   body {
-    background: #fff;
-    color: #1a1a1a;
+    background: var(--bg);
+    color: var(--fg);
   }
   .site-container {
     --thumbnail-width: 6rem;
@@ -31,11 +31,11 @@
   }
   .reference-site-header > .site-container {
     padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid var(--border);
   }
   .reference-site-footer > .site-container {
     padding-top: 1rem;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid var(--border);
   }
   .reference-site-header > .site-container > a {
     color: inherit;
@@ -58,11 +58,11 @@
   }
   small,
   time {
-    color: #666;
+    color: var(--muted);
     font-size: 0.8rem;
   }
   a {
-    color: #2563eb;
+    color: var(--link);
     text-decoration: none;
   }
   a:hover {
@@ -81,7 +81,7 @@
   .site-card {
     margin-block: 1.5rem;
     padding: 1rem;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border);
     border-radius: 4px;
   }
   .reference-tag-grid {
@@ -91,11 +91,11 @@
     display: inline-flex;
     gap: 0.4rem;
     padding: 0.35rem 0.6rem;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border);
     border-radius: 4px;
   }
   .reference-tag-card span {
-    color: #666;
+    color: var(--muted);
   }
   .tag-list {
     display: grid;
@@ -110,16 +110,16 @@
     gap: 1rem;
     min-height: 3.5rem;
     padding: 1rem;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border);
     border-radius: 4px;
     color: inherit;
   }
   .tag-list a:hover {
-    background: #f4f4f5;
+    background: var(--surface);
     text-decoration: none;
   }
   .tag-list a:focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid var(--link);
     outline-offset: 3px;
   }
   .tag-name {
@@ -128,7 +128,7 @@
   }
   .tag-count {
     flex: none;
-    color: #666;
+    color: var(--muted);
     font-size: 0.875rem;
     font-variant-numeric: tabular-nums;
   }
@@ -140,7 +140,7 @@
     align-items: start;
     gap: 1rem;
     padding-block: 1.5rem;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid var(--border);
     color: inherit;
   }
   .reference-post-card.has-image {
@@ -180,7 +180,7 @@
     max-width: 100%;
   }
   .draft-label {
-    color: #2563eb;
+    color: var(--link);
     font-size: 0.875rem;
   }
   .reference-post-card-image {
@@ -199,8 +199,8 @@
   .reference-tags li {
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
-    background: #f4f4f5;
-    color: #666;
+    background: var(--surface);
+    color: var(--muted);
     font-size: 0.75rem;
   }
   .reference-tags a {
@@ -222,7 +222,7 @@
   .post-toc {
     margin-bottom: 1.5rem;
     padding: 0.75rem 1rem;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border);
     border-radius: 4px;
     font-size: 0.875rem;
   }
@@ -252,7 +252,7 @@
     gap: 1rem;
     margin-top: 3rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid var(--border);
     font-size: 0.875rem;
   }
   .post-nav a {
@@ -273,7 +273,7 @@
     text-align: end;
   }
   .post-nav-label {
-    color: #666;
+    color: var(--muted);
     font-size: 0.8rem;
   }
   .post-nav-title {
@@ -301,8 +301,8 @@
   z-index: 20;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
-  background: #fff;
-  box-shadow: 0 0 0 2px #2563eb;
+  background: var(--bg);
+  box-shadow: 0 0 0 2px var(--link);
   transform: translateY(-200%);
 }
 .skip-link:focus-visible {
@@ -313,7 +313,7 @@ main:focus {
 }
 
 .reference-post-reading-time {
-  color: #666;
+  color: var(--muted);
   font-size: 0.8rem;
 }
 
@@ -326,11 +326,11 @@ main:focus {
   right: 0.5rem;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  background: #fff;
-  color: #444;
+  background: var(--bg);
+  color: var(--muted);
   font-size: 0.75rem;
   cursor: pointer;
-  box-shadow: 0 0 0 1px #d4d4d8;
+  box-shadow: 0 0 0 1px var(--border-strong);
   opacity: 0;
 }
 /* マウスでは枠に乗せたときだけ、キーボードとタッチでは常に操作できるようにする。 */
@@ -383,7 +383,7 @@ main:focus {
       inset: 0 0 auto;
       z-index: 10;
       height: 2px;
-      background: #2563eb;
+      background: var(--link);
       pointer-events: none;
       transform-origin: 0 50%;
       /* スクロールできない短いページではタイムラインが無効になり、0 のまま見えない。 */

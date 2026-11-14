@@ -12,13 +12,29 @@ html {
   --astro-code-token-link: #032f62;
 }
 
+@media (prefers-color-scheme: dark) {
+  html {
+    --astro-code-foreground: #e1e4e8;
+    --astro-code-background: var(--surface);
+    --astro-code-token-comment: #9ba3ad;
+    --astro-code-token-keyword: #ff8a80;
+    --astro-code-token-string: #a5d6ff;
+    --astro-code-token-function: #d2a8ff;
+    --astro-code-token-constant: #79c0ff;
+    --astro-code-token-parameter: #ffb46b;
+    --astro-code-token-string-expression: #7ee787;
+    --astro-code-token-punctuation: #c9d1d9;
+    --astro-code-token-link: #a5d6ff;
+  }
+}
+
 html .post-body pre {
   display: block;
   margin-block: 1.5rem;
   padding: 1rem;
   border-radius: 8px;
-  background: #f4f4f5 !important;
-  color: #24292e !important;
+  background: var(--surface) !important;
+  color: var(--astro-code-foreground) !important;
   font-family:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
     monospace;

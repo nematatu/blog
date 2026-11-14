@@ -136,10 +136,11 @@ const monthLabels = weeks.map((week) => {
 const maxDaily = Math.max(1, ...dayCounts.values());
 const heatmapClasses = [
   "bg-black/5",
-  "bg-sky-100",
-  "bg-sky-200",
-  "bg-sky-300",
-  "bg-sky-400",
+  // ダークモードでは淡い色ほど背景に沈むよう、濃淡の向きを反転させる。
+  "bg-sky-100 dark:bg-sky-900",
+  "bg-sky-200 dark:bg-sky-700",
+  "bg-sky-300 dark:bg-sky-500",
+  "bg-sky-400 dark:bg-sky-300",
 ];
 const heatmapLevel = (count: number) => {
   if (count === 0) return 0;
