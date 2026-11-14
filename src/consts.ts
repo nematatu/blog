@@ -31,4 +31,6 @@ export const PAGES = [
 ];
 
 // 一覧の先頭でこの件数までは初期ビューポートに入るとみなし、サムネイルを遅延読み込みしない。
-export const EAGER_CARD_COUNT = 6;
+// 画像なしの短いカードだけが並ぶと、スマホの初期表示に 7 件ほど入る。
+// 多めに見積もっても、余分に読むのは 240px 幅のサムネイル (10KB 前後) が数枚で済む。
+export const EAGER_CARD_COUNT = 8;

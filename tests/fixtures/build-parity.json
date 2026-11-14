@@ -20,6 +20,7 @@
     "blog/develop/md-to-pdf/index.html",
     "blog/develop/oneliner-avifenc/index.html",
     "blog/develop/pitcms/index.html",
+    "blog/develop/post-2026-11-10/index.html",
     "blog/develop/rustdesk/index.html",
     "blog/develop/search-keybind-macos/index.html",
     "blog/develop/vim-image-popup/index.html",
@@ -42,8 +43,8 @@
     "tags/開発/index.html"
   ],
   "files": {
-    "search.json": "b4d31c3467ca4cc96a7d4ada310792fabaf361e3633c03c82d3b6d29eb9b1b23",
-    "rss.xml": "61029ed547602aa77892a9cd6ba3de693c678ade5495b71dc51a9d97877c45db",
+    "search.json": "cc9e7ab9e56d4ba73f83f415250ff3fbdb9d21c8116bd702cfde747c553a8028",
+    "rss.xml": "bd021a59aeb5927270821a35799a1af0d6ec6c6667fba0d85cc71f85f526341f",
     "og-image/blog/develop/oneliner-avifenc.png": "985fcc0ba620f6efbdd5e8c1b4e58e3afad7ce3ae293e6411f9c3f0112108b54"
   },
   "articles": {
@@ -66,6 +67,7 @@
     "blog/develop/md-to-pdf/index.html": "13b15394ab9b7c1d2e3ae071f6405389c68989b769bd3f8c54b9666835e0bb39",
     "blog/develop/oneliner-avifenc/index.html": "e084c5b3a907a536dd730b7b40dee63a423708de736f66e5b2d95b9a35801c30",
     "blog/develop/pitcms/index.html": "5d7b01ca9ebdd372ca7c375d93fda40de4bf1914f784fba2305d652fc0885658",
+    "blog/develop/post-2026-11-10/index.html": "1fea4bb1e062c40348d6b41d314d6cd9ce35e7cb0764d9b90c6f0b16cfe4b3fe",
     "blog/develop/rustdesk/index.html": "7a1b9d27e651354a6d66c0d078e4bbd8a4ddf7ffa5474de4b9eade8f4b02b6e9",
     "blog/develop/search-keybind-macos/index.html": "3b10e9dadb0a90de59a7235c0a5b1158309d92d3e60ff3b924a544b6d7f25715",
     "blog/develop/vim-image-popup/index.html": "1f44f8db2cddfb8b7308b59d4e2198dbe2fdd7d3aef29e32ca48ea882407db12",
