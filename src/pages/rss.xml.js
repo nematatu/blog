@@ -7,11 +7,10 @@ import { getExcerpt } from "@lib/post-metrics";
 
 // フィードリーダーで記事を最後まで読めるよう、本文の HTML を content として載せる。
 // リーダーはサイト外で表示するので、サイト内の相対 URL は絶対 URL にし、
-// サイトの JS に頼る要素 (スクリプト、コピーボタン用の属性など) は落とす。
+// サイトの JS に頼るスクリプトは落とす。
 function feedHtml(html, site) {
   return html
     .replace(/<script\b[\s\S]*?<\/script>/gi, "")
-    .replace(/<a class="heading-anchor"[^>]*><\/a>/g, "")
     .replace(
       /\s(href|src)="(\/[^/"][^"]*)"/g,
       (_, name, path) => ` ${name}="${new URL(path, site)}"`,

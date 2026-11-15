@@ -29,7 +29,7 @@ UI を作る・直すときは次の順で判断する。`modern-web-guidance` �
    - 注意書き・埋め込み: `:::note` などのディレクティブと `remark-*` プラグイン
    - 見た目: `src/styles/site.css` の既存クラスと Tailwind のユーティリティ
 2. **既存の部品で足りないところは、ウェブ標準のネイティブ機能を使う。** HTML/CSS/クライアント JS を書く前に Modern Web Guidance を引く (`npx -y modern-web-guidance@latest search "<2〜5語の英語クエリ>"` → `retrieve "<id>"`)。スキル本体は約 16MB あるのでリポジトリには入れない。
-   - スクロール連動の表現: `scroll` イベントではなく CSS スクロール駆動アニメーション (例: `.reading-progress`)
+   - スクロール連動の表現: `scroll` イベントではなく CSS スクロール駆動アニメーション
    - 開閉 UI: `<details name="...">` と `hidden="until-found"` (ページ内検索で見つかるようにする)
    - ツールチップやメニュー: 座標計算の JS ではなく Popover API
    - Core Web Vitals: LCP 候補の画像は `fetchpriority="high"` かつ遅延読み込みしない。画面外の画像は `loading="lazy"`
