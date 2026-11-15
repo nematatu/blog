@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "axe-core": "4.14.0",
-    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/typography": "0.5.20",
     "husky": "^9.1.7",
     "inquirer": "^13.4.3",
     "pagefind": "^1.5.2",
