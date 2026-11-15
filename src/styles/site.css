@@ -374,7 +374,6 @@ main:focus {
 
 @media print {
   .skip-link,
-  .reading-progress,
   .reference-site-header nav,
   .reference-site-footer,
   .post-nav,
@@ -394,52 +393,35 @@ main:focus {
   }
 }
 
-/* 記事の読了位置。スクロールイベントを使わず、スクロール駆動アニメーションで
-   コンポジタ上だけで動かす。未対応ブラウザと動きを減らす設定では表示しない。 */
-.reading-progress {
-  display: none;
-}
-@supports (animation-timeline: scroll()) {
-  @media screen and (prefers-reduced-motion: no-preference) {
-    .reading-progress {
-      display: block;
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 10;
-      height: 2px;
-      background: var(--link);
-      pointer-events: none;
-      transform-origin: 0 50%;
-      /* スクロールできない短いページではタイムラインが無効になり、0 のまま見えない。 */
-      scale: 0 1;
-      /* animation ショートハンドは使わない。ビルド時の CSS 圧縮がタイムラインを
-         ショートハンドへまとめてしまい、ブラウザが解釈できなくなる。 */
-      animation-name: reading-progress;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: scroll(root block);
-    }
-  }
-}
-@keyframes reading-progress {
-  to {
-    scale: 1 1;
-  }
-}
-
 .image-viewer {
   position: fixed;
   inset: 0;
   width: 100%;
   max-width: none;
-  height: 100dvh;
+  /* iOS Safari ではツールバーが半透明で、100dvh だとその裏に本文が透ける。
+     ツールバーを畳んだときの高さ (lvh) で覆い、中身は見えている範囲 (dvh) に収める。 */
+  height: 100vh;
+  height: 100lvh;
   max-height: none;
   margin: 0;
-  padding: max(1rem, env(safe-area-inset-top)) 1rem;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem
+    max(1rem, env(safe-area-inset-bottom));
+  padding-bottom: max(
+    1rem,
+    env(safe-area-inset-bottom),
+    calc(100lvh - 100dvh + 1rem)
+  );
   border: 0;
   color: white;
   background: #080808;
+}
+.image-viewer::backdrop {
+  background: #080808;
+}
+/* アニメーション中の背景は、フェードする dialog 自身の黒に任せる。
+   ::backdrop は名前を付けられず、黒のまま一瞬で出てしまうため。 */
+.image-viewer.is-animating::backdrop {
+  background: transparent;
 }
 .image-viewer[open] {
   display: grid;
@@ -468,6 +450,22 @@ main:focus {
 .image-viewer button:focus-visible {
   outline: 2px solid white;
   outline-offset: 3px;
+}
+/* 開閉のアニメーション (content-interactions.js の View Transition)。
+   タップした画像が拡大表示の位置まで広がり、黒い背景はフェードする。 */
+::view-transition-group(lightbox-image),
+::view-transition-group(lightbox-backdrop) {
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* 背景は後から現れるので、そのままだと画像の上に重なる。画像を前に出す。 */
+::view-transition-group(lightbox-image) {
+  z-index: 1;
+}
+::view-transition-old(lightbox-image),
+::view-transition-new(lightbox-image) {
+  height: 100%;
+  object-fit: contain;
 }
 html:has(.image-viewer[open]) {
   overflow: hidden;

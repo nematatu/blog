@@ -10,13 +10,62 @@ for (const image of document.querySelectorAll(selector)) {
   if (!image.alt) image.alt = "画像";
 }
 
+const preview = dialog.querySelector("img");
+let source = null;
+
+// タップした画像から拡大表示へ、拡大表示から元の画像へ、View Transition で移る。
+// 画像は同じ名前 (lightbox-image) を渡し合って広がり・縮み、黒い背景はフェードする。
+// 未対応のブラウザと、動きを減らす設定では、アニメーションなしで切り替える。
+function transition(update) {
+  if (
+    !source ||
+    !document.startViewTransition ||
+    matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    update();
+    return;
+  }
+  const opening = !dialog.open;
+  const [from, to] = opening ? [source, preview] : [preview, source];
+  from.style.viewTransitionName = "lightbox-image";
+  if (!opening) dialog.style.viewTransitionName = "lightbox-backdrop";
+  dialog.classList.add("is-animating");
+  const clear = () => {
+    dialog.classList.remove("is-animating");
+    for (const element of [source, preview, dialog]) {
+      element?.style.removeProperty("view-transition-name");
+    }
+  };
+  document
+    .startViewTransition(() => {
+      from.style.removeProperty("view-transition-name");
+      to.style.viewTransitionName = "lightbox-image";
+      if (opening) dialog.style.viewTransitionName = "lightbox-backdrop";
+      else dialog.style.removeProperty("view-transition-name");
+      update();
+    })
+    .finished.then(clear, clear);
+}
+
 function openImage(image) {
-  if (!image.matches(selector) || image.closest("a")) return;
-  const preview = dialog.querySelector("img");
+  if (!image.matches(selector) || image.closest("a") || dialog.open) return;
+  source = image;
   preview.src = image.currentSrc || image.src;
   preview.alt = image.alt;
   image.focus({ preventScroll: true });
-  dialog.showModal();
+  // 拡大画像の寸法が決まってから遷移しないと、行き先の位置がずれる。
+  preview
+    .decode()
+    .catch(() => {})
+    .finally(() => transition(() => dialog.showModal()));
+}
+
+function closeImage() {
+  if (!dialog.open) return;
+  transition(() => {
+    dialog.close();
+    source?.focus({ preventScroll: true });
+  });
 }
 
 document.addEventListener("click", (event) => {
@@ -31,8 +80,17 @@ document.addEventListener("keydown", (event) => {
     openImage(event.target);
   }
 });
+// 背景のタップ、Esc、閉じるボタンのどれで閉じても同じアニメーションにする。
 dialog.addEventListener("click", (event) => {
-  if (event.target === dialog) dialog.close();
+  if (event.target === dialog) closeImage();
+});
+dialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeImage();
+});
+dialog.querySelector("form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  closeImage();
 });
 
 // コードブロックにコピーボタンを付ける。横スクロールしても動かないよう、pre を包んだ枠に置く。

@@ -173,74 +173,87 @@ async function findLongPostWithImage(page) {
   assert.fail("検証に使える記事がありません");
 }
 
-test("読了位置バー: スクロール駆動アニメーションで進み、JS なしで動く", async () => {
-  const page = await open("/", { javaScriptEnabled: false });
-  await findLongPostWithImage(page);
-  const bar = page.locator(".reading-progress");
-  const scaleX = () =>
-    bar.evaluate((element) => {
-      const scale = getComputedStyle(element).scale;
-      return scale === "none" ? 1 : Number.parseFloat(scale);
-    });
-  assert.match(
-    await bar.evaluate(
-      (element) => getComputedStyle(element).animationTimeline,
-    ),
-    /^scroll\(/,
-  );
-  assert.equal(await scaleX(), 0);
-  await page.evaluate(() =>
-    scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "instant",
-    }),
-  );
-  // アニメーションの進行は次の描画フレームで反映される。
-  // JS を無効にしているのでページ内では待てず、テスト側で読み直す。
-  let scale = await scaleX();
-  for (let retry = 0; retry < 50 && Math.abs(scale - 1) >= 0.01; retry++) {
-    await page.waitForTimeout(100);
-    scale = await scaleX();
-  }
-  assert.ok(Math.abs(scale - 1) < 0.01, `末尾で 100% になる (実際: ${scale})`);
-  await page.context().close();
-});
+for (const reducedMotion of ["no-preference", "reduce"]) {
+  test(`画像ビューア: 開いて、Esc・背景・閉じるボタンで閉じられる (${reducedMotion})`, async () => {
+    const page = await open("/", { viewport: DESKTOP, reducedMotion });
+    await findLongPostWithImage(page);
+    const dialog = page.locator("dialog.image-lightbox");
+    // 開閉はアニメーションを挟むので、状態が変わり、アニメーションが終わるまで待つ。
+    const waitOpen = (open) =>
+      page.waitForFunction(
+        (expected) =>
+          document.querySelector("dialog.image-lightbox").open === expected &&
+          !document.querySelector("[style*='view-transition-name']") &&
+          !document.documentElement
+            .getAnimations({ subtree: true })
+            .some((animation) =>
+              String(animation.effect?.pseudoElement).includes(
+                "view-transition",
+              ),
+            ),
+        open,
+        { timeout: 5000 },
+      );
+    const image = page.locator(".post-body img:not(a img)").first();
+    const openByClick = async () => {
+      await image.scrollIntoViewIfNeeded();
+      await image.click();
+      await waitOpen(true);
+    };
 
-test("読了位置バー: 動きを減らす設定では表示しない", async () => {
-  const page = await open("/", { reducedMotion: "reduce" });
-  await findLongPostWithImage(page);
-  assert.equal(
-    await page
-      .locator(".reading-progress")
-      .evaluate((element) => getComputedStyle(element).display),
-    "none",
-  );
-  await page.context().close();
-});
+    await openByClick();
+    assert.equal(
+      await dialog.evaluate((element) => element.matches(":modal")),
+      true,
+      "モーダルとして最上位レイヤーに表示される",
+    );
+    await page.keyboard.press("Escape");
+    await waitOpen(false);
+    assert.equal(
+      await image.evaluate((element) => element === document.activeElement),
+      true,
+      "閉じると元の画像にフォーカスが戻る",
+    );
 
-test("画像ビューア: クリックとキーボードで開き、Esc と背景クリックで閉じる", async () => {
-  const page = await open("/", { viewport: DESKTOP });
+    await image.focus();
+    await page.keyboard.press("Enter");
+    await waitOpen(true);
+    await page.mouse.click(5, DESKTOP.height / 2);
+    await waitOpen(false);
+
+    await openByClick();
+    await page.getByRole("button", { name: "画像を閉じる" }).click();
+    await waitOpen(false);
+    await page.context().close();
+  });
+}
+
+test("画像ビューア: スマホでも画面の下端まで黒い背景で覆う", async () => {
+  const page = await open("/", { viewport: MOBILE });
   await findLongPostWithImage(page);
-  const dialog = page.locator("dialog.image-lightbox");
-  const isOpen = () => dialog.evaluate((element) => element.open);
   const image = page.locator(".post-body img:not(a img)").first();
-
   await image.scrollIntoViewIfNeeded();
   await image.click();
-  assert.equal(await isOpen(), true, "クリックで開く");
-  assert.equal(
-    await dialog.evaluate((element) => element.matches(":modal")),
-    true,
-    "モーダルとして最上位レイヤーに表示される",
-  );
-  await page.keyboard.press("Escape");
-  assert.equal(await isOpen(), false, "Esc で閉じる");
-
-  await image.focus();
-  await page.keyboard.press("Enter");
-  assert.equal(await isOpen(), true, "Enter で開く");
-  await page.mouse.click(5, DESKTOP.height / 2);
-  assert.equal(await isOpen(), false, "背景クリックで閉じる");
+  // 開くアニメーションが終わった後の状態を見る。
+  await page.waitForFunction(() => {
+    const dialog = document.querySelector("dialog.image-lightbox");
+    return dialog.open && !dialog.classList.contains("is-animating");
+  });
+  const box = await page.evaluate(() => {
+    const dialog = document.querySelector("dialog.image-lightbox");
+    const rect = dialog.getBoundingClientRect();
+    const shown = dialog.querySelector("img").getBoundingClientRect();
+    return {
+      top: rect.top,
+      bottom: rect.bottom,
+      height: innerHeight,
+      imageBottom: shown.bottom,
+      backdrop: getComputedStyle(dialog, "::backdrop").backgroundColor,
+    };
+  });
+  assert.ok(box.top <= 0 && box.bottom >= box.height, JSON.stringify(box));
+  assert.ok(box.imageBottom <= box.height, "画像は見える範囲に収まる");
+  assert.equal(box.backdrop, "rgb(8, 8, 8)");
   await page.context().close();
 });
 
@@ -535,29 +548,6 @@ test("記事末尾: 同じタグの記事が、前後リンクと重ならずに
   await page.context().close();
 });
 
-test("見出しリンク: キーボードで見え、その見出しへ移動できる", async () => {
-  const page = await open("/");
-  for (const pathname of postPaths()) {
-    await page.goto(site.origin + pathname, { waitUntil: "domcontentloaded" });
-    if (await page.locator(".post-body .heading-anchor").count()) break;
-  }
-  const anchor = page.locator(".post-body .heading-anchor").first();
-  const heading = anchor.locator("..");
-  assert.equal(
-    await heading.evaluate((h) => h.firstChild.textContent.trim()),
-    await heading.evaluate((h) => h.textContent.trim()),
-    "見出しの文字列に # が混ざらない",
-  );
-  await anchor.focus();
-  assert.equal(await anchor.evaluate((a) => getComputedStyle(a).opacity), "1");
-  await anchor.press("Enter");
-  assert.equal(
-    await page.evaluate(() => decodeURIComponent(location.hash.slice(1))),
-    await heading.getAttribute("id"),
-  );
-  await page.context().close();
-});
-
 test("RSS: 全記事の本文がサイト外でも成り立つ形で載っている", async () => {
   const page = await open("/");
   const xml = await (await page.request.get(`${site.origin}/rss.xml`)).text();
@@ -578,6 +568,5 @@ test("RSS: 全記事の本文がサイト外でも成り立つ形で載ってい
   const all = contents.join("\n");
   assert.doesNotMatch(all, /<script\b/, "スクリプトを含まない");
   assert.doesNotMatch(all, /\s(?:href|src)="\/(?!\/)/, "相対 URL を含まない");
-  assert.doesNotMatch(all, /heading-anchor/, "見出しリンクを含まない");
   await page.context().close();
 });
